@@ -33,9 +33,22 @@
 		32CAC0042D1D7EEF003AF1AC /* libbenchmark_main.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbenchmark_main.a; path = ../../../../usr/local/lib/libbenchmark_main.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		32CAC0262D1D85C2003AF1AC /* Exceptions for "Graph_API" folder in "Compile Sources" phase from "Graph_API" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 32CABFB52D1D7C4D003AF1AC /* Sources */;
+			membershipExceptions = (
+				ADT/linear.tpp,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		32CABFBB2D1D7C4D003AF1AC /* Graph_API */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				32CAC0262D1D85C2003AF1AC /* Exceptions for "Graph_API" folder in "Compile Sources" phase from "Graph_API" target */,
+			);
 			path = Graph_API;
 			sourceTree = "<group>";
 		};
