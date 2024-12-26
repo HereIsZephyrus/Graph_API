@@ -15,23 +15,6 @@
 using namespace tcb;
 using std::string;
 template<class Object>
-class ArrayTest : public ::testing::Test {
-protected:
-    int counter;
-    Array<Object> list;
-    ArrayTest(){
-        list = Array<Object>(10);
-        counter = 0;
-    }
-    void SetUp() override {}
-    void TearDown() override {}
-};
-using IntArrayTest = ArrayTest<int>;
-using DoubleArrayTest = ArrayTest<double>;
-using CharArrayTest = ArrayTest<char>;
-using StringArrayTest = ArrayTest<string>;
-
-template<class Object>
 class VectorTest : public ::testing::Test {
 protected:
     Vector<Object> vec;

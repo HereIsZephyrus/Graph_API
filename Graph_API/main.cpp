@@ -11,6 +11,6 @@
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
-    ::testing::FLAGS_gtest_filter = "-BinarySearchTreeTest.CopyTest";
+    //::testing::FLAGS_gtest_filter = "-BinarySearchTreeTest.CopyTest";
     return RUN_ALL_TESTS();
 }

@@ -6,77 +6,6 @@
 //
 using namespace tcb;
 
-//Array
-template <class Object>
-Array<Object>::Array():size(0),data(nullptr){};
-template <class Object>
-Array<Object>::Array(size_t setSize,Object initVal): size(setSize){
-    data = new Object[size];
-    std::fill(data,data+size, initVal);
-}
-template <class Object>
-Array<Object>::Array(const Array& rhs): size(rhs.size){
-    data = new Object[size];
-    std::copy(rhs.data, rhs.data+size, data);
-}
-template <class Object>
-Array<Object>::~Array(){delete [] data;}
-template <class Object>
-Array<Object>::Array(Array && rhs){
-    if (size != rhs.size)
-        throw std::length_error("The aray size is incomparable");
-    data = rhs.data;
-    rhs.data = nullptr;
-    rhs.size = 0;
-}
-template <class Object>
-const Array<Object>& Array<Object>::operator= (const Array& rhs){
-    if (this == &rhs)
-        return *this;
-    if (size != rhs.size && size>0)
-        throw std::length_error("The aray size is incomparable");
-    delete [] data;
-    data = new Object[rhs.size];
-    size = rhs.size;
-    std::copy(rhs.data, rhs.data+size, data);
-    return *this;
-}
-template <class Object>
-class Array<Object>::element_iter {
-    // element_iter traits
-    using iterator_category = std::forward_iterator_tag;
-    using difference_type = std::ptrdiff_t;
-    using value_type = Object;
-    using pointer = Object *;
-    using reference = Object &;
-private:
-    pointer ptr;
-public:
-    element_iter(pointer p) : ptr(p) {}
-    element_iter& operator=(const element_iter& it) {ptr = it.ptr;}
-    bool operator==(const element_iter& it) const {return ptr == it.ptr;}
-    bool operator!=(const element_iter& it) const {return ptr != it.ptr;}
-    reference operator*() {return *ptr;}
-    element_iter& operator++() {
-        ptr++;
-        return *this;
-    }
-    element_iter operator ++(int) {
-        element_iter ret_ptr = *this;
-        ++(*this);
-        return ret_ptr;
-    }
-    element_iter& operator--() {
-        ptr--;
-        return *this;
-    }
-    element_iter operator --(int) {
-        element_iter ret_ptr = *this;
-        --(*this);
-        return ret_ptr;
-    }
-};
-
 //Vector
 template <class Object>
 Vector<Object>::Vector():size(0),capacity(SPARE_CAPACITY){
@@ -124,7 +53,7 @@ void Vector<Object>::reserve(size_t newCapacity){
     delete [] datum;
 }
 template <class Object>
-void Vector<Object>::resize(size_t newSize){
+void Vector<Object>::resizeList(size_t newSize){
     if (newSize > capacity)
         reserve(newSize * 2 + 1);
     if (newSize > size)
@@ -149,6 +78,16 @@ void Vector<Object>::clear(){
     size = 0;
     capacity = SPARE_CAPACITY;
     data = new Object[capacity];
+}
+template <class Object>
+Object& Vector<Object>::operator[](size_t index){return data[index];}
+template <class Object>
+const Object& Vector<Object>::operator[](size_t index) const{return data[index];}
+template <class Object>
+Object& Vector<Object>::at(size_t index){
+    if (index >= size || index < 0)
+        throw std::out_of_range("Index out of range");
+    return data[index];
 }
 
 template <class Object>
@@ -243,14 +182,14 @@ template <class Object>
 void List<Object>::pop_front(){
     if (isEmpty())
         throw std::runtime_error("List is empty");
-    earse(begin());
+    remove(begin());
     return;
 }
 template <class Object>
 void List<Object>::pop_back(){
     if (isEmpty())
         throw std::runtime_error("List is empty");
-    earse(--end());
+    remove(--end());
     return;
 }
 
@@ -262,7 +201,7 @@ List<Object>::iterator List<Object>::insert(iterator it, const Object& x){
     return iterator(p->prev);
 }
 template <class Object>
-List<Object>::iterator List<Object>::earse(iterator it){
+List<Object>::iterator List<Object>::remove(iterator it){
     if (isEmpty())
         throw std::runtime_error("List is empty");
     Node *p = it._ptr();
@@ -274,16 +213,16 @@ List<Object>::iterator List<Object>::earse(iterator it){
     return ret_p;
 }
 template <class Object>
-List<Object>::iterator List<Object>::earse(iterator start,iterator end){
+List<Object>::iterator List<Object>::remove(iterator start,iterator end){
     for (iterator it = start; it!= end;)
-        it = earse(it);
+        it = remove(it);
     return end;
 }
 template <class Object>
 void List<Object>::clear(){
     iterator it(head->next);
     while (!isEmpty())
-        it = earse(it);
+        it = remove(it);
 }
 
 template <class Object>
