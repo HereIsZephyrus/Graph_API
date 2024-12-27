@@ -21,7 +21,9 @@ protected:
     VectorTest(){}
     void SetUp() override {}
 };
-using IntVectorTest = VectorTest<int>;
+using VectorIntTest = VectorTest<int>;
+using VectorDoubleTest = VectorTest<double>;
+using VectorStringTest = VectorTest<string>;
 
 template<class Object>
 class ListTest : public ::testing::Test {
@@ -30,5 +32,7 @@ protected:
     ListTest(){}
     void SetUp() override {}
 };
-using IntListTest = ListTest<int>;
+using ListIntTest = ListTest<int>;
+using ListDoubleTest = ListTest<double>;
+using ListStringTest = ListTest<string>;
 #endif /* linear_test_hpp */

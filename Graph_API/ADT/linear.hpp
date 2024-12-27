@@ -86,7 +86,6 @@ public:
     iterator remove(iterator it);
     iterator remove(iterator start,iterator end);
     void clear();
-    
 };
 }// namespace tcb;
 #include "linear.tpp"

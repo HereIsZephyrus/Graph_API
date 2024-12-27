@@ -44,7 +44,7 @@ const Vector<Object>& Vector<Object>::operator=(const Vector& rhs){
 
 template <class Object>
 void Vector<Object>::reserve(size_t newCapacity){
-    if (newCapacity < size)
+    if (newCapacity < capacity)
         return;
     Object *datum = data;
     capacity = newCapacity;
@@ -102,7 +102,7 @@ private:
     pointer ptr;
 public:
     element_iter(pointer p) : ptr(p){}
-    element_iter& operator=(const element_iter& it){ptr = it.ptr;}
+    element_iter& operator=(const element_iter& it){ptr = it.ptr; return *this;}
     bool operator == (const element_iter& it) const {return ptr == it.ptr;}
     bool operator != (const element_iter& it) const {return ptr != it.ptr;}
     reference operator *() {return *ptr;}
@@ -122,6 +122,7 @@ public:
     element_iter operator--(int){
         element_iter ret_ptr = *this;
         --(*this);
+        return *this;
     }
 };
 
