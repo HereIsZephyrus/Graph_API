@@ -106,7 +106,10 @@ bool HashTable<Key,Element>::search(const Key& key,const Element& element) const
 }
 template <typename Key,typename Element>
 bool HashTable<Key,Element>::insert(const HashObject& obj){
-    Bucket& orientList = hashList[hash(obj.first)];
+    //Bucket& orientList = hashList[hash(obj.first)];
+    Bucket& orientList = hashList[0];
+    std::cout<<(orientList.begin() == orientList.end())<<std::endl;
+    std::cout<<orientList.isEmpty()<<std::endl;
     typename Bucket::iterator itr = orientList.find(obj);
     if (itr!=orientList.end())
         return false;

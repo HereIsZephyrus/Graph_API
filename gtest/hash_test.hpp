@@ -17,7 +17,7 @@ using std::string;
 template <typename Key,typename Element>
 class HashTableTest : public ::testing::Test {
 protected:
-    HashTable<Key,Element> vec;
+    HashTable<Key,Element> table;
     HashTableTest(){}
     void SetUp() override {}
 };

@@ -56,8 +56,9 @@ template <class Object>
 void Vector<Object>::resizeList(size_t newSize){
     if (newSize > capacity)
         reserve(newSize * 2 + 1);
-    if (newSize > size)
-        std::fill(data + size,data + newSize, Object());
+    //this refill need a movable opeator which I havn't achieve in my list, or std::fill will destroy the old value first,which release the list memory and raise error.
+    //if (newSize > size)
+    //    std::fill(data + size,data + newSize, Object());
     size = newSize;
 }
 template <class Object>
@@ -239,6 +240,9 @@ Object& List<Object>::at(size_t index){
 template <class Object>
 List<Object>::iterator List<Object>::find(const Object& val){// the first find value's iter
     iterator it = begin();
+    //std::cout<<(begin() == end())<<std::endl;
+    std::cout<<((head->next) == tail)<<std::endl;
+    //std::cout<<isEmpty()<<std::endl;
     for (; it != end(); it++)
         if (*it == val)
             return it;
