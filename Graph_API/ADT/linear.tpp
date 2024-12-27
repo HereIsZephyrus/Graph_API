@@ -93,13 +93,13 @@ Object& Vector<Object>::at(size_t index){
 
 template <class Object>
 class Vector<Object>::iterator{
+protected:
     // iterator traits
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;
     using value_type = Object;
     using pointer = Object *;
     using reference = Object &;
-private:
     pointer ptr;
 public:
     iterator(pointer p) : ptr(p){}
@@ -127,7 +127,23 @@ public:
         return ret_ptr;
     }
 };
-
+/*
+template <class Object>
+class Vector<Object>::const_iterator : public Vector<Object>::iterator {
+using iterator = Vector<Object>::iterator;
+public:
+    using typename iterator::value_type;
+    using typename iterator::pointer;
+    using typename iterator::reference;
+    const_iterator(Object* ptr) : iterator(ptr) {}
+    const Object& operator*() const {
+        return iterator::operator*();
+    }
+    const Object* operator->() const {
+        return iterator::operator->();
+    }
+};
+*/
 //List
 template <class Object>
 List<Object>::List():size(0),head(new Node),tail(new Node){
@@ -143,20 +159,20 @@ List<Object>::~List(){
 
 template <class Object>
 class List<Object>::iterator{
+protected:
     // iterator traits
     using iterator_category = std::bidirectional_iterator_tag;
     using difference_type = std::ptrdiff_t;
     using value_type = Object;
     using pointer = Node *;
     using reference = value_type &;
-private:
     pointer ptr;
 public:
     iterator(pointer p){ptr = p;};
     iterator& operator=(const iterator& it){ptr = it.ptr; return *this;}
     bool operator == (const iterator& it) const {return ptr == it.ptr;}
     bool operator != (const iterator& it) const {return ptr != it.ptr;}
-    reference& operator *() {return ptr->data;}
+    reference operator *() {return ptr->data;}
     pointer operator->(){return ptr;}
     pointer _ptr(){return ptr;}
     iterator& operator++(){
@@ -177,7 +193,23 @@ public:
         --(*this);
     }
 };
-
+/*
+template <class Object>
+class List<Object>::const_iterator : public List<Object>::iterator {
+using iterator = List<Object>::iterator;
+public:
+    using typename iterator::value_type;
+    using typename iterator::pointer;
+    using typename iterator::reference;
+    const_iterator(pointer ptr) : iterator(ptr) {}
+    const Object& operator*() const {
+        return iterator::operator*();
+    }
+    const Object* operator->() const {
+        return iterator::operator->();
+    }
+};
+*/
 template <class Object>
 void List<Object>::push_front(const Object& x){insert(begin(),x);}
 template <class Object>
@@ -238,11 +270,8 @@ Object& List<Object>::at(size_t index){
     return *current;
 }
 template <class Object>
-List<Object>::iterator List<Object>::find(const Object& val){// the first find value's iter
+List<Object>::iterator List<Object>::find(const Object& val) const{// the first find value's iter
     iterator it = begin();
-    //std::cout<<(begin() == end())<<std::endl;
-    std::cout<<((head->next) == tail)<<std::endl;
-    //std::cout<<isEmpty()<<std::endl;
     for (; it != end(); it++)
         if (*it == val)
             return it;

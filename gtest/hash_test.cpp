@@ -12,7 +12,6 @@ TEST_F(HashIntTableTest, InsertTest) {
     ASSERT_TRUE(table.insert(2, 2.2));
     ASSERT_EQ(table.getSize(), 2);
 }
-/*
 TEST_F(HashIntTableTest, SearchTest) {
     table.insert(1, 1.1);
     table.insert(2, 2.2);
@@ -64,4 +63,3 @@ TEST_F(HashStringTableTest, RemoveTest) {
     ASSERT_EQ(strTable.getSize(), 1);
     ASSERT_EQ(strTable.remove("three", value), 0);
 }
-*/

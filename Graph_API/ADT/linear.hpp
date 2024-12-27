@@ -37,9 +37,10 @@ public:
     const Object& back(){return data[size-1];}
     
     class iterator;
+    //class const_iterator;
+    using const_iterator = const iterator;
     iterator begin() {Object* head = &data[0];return iterator(head);}
     iterator end() {Object* head = &data[0];return iterator(head + size);}
-    using const_iterator = const iterator;
     const_iterator begin() const{Object* head = &data[0];return const_iterator::begin(head);}
     const_iterator end() const{Object* head = &data[0];return const_iterator::end(head + size);}
     
@@ -69,8 +70,12 @@ public:
     size_t getSize() const {return size;}
     
     class iterator;
+    //class const_iterator;
+    using const_iterator = const iterator;
     iterator begin() {return iterator(head->next);}
     iterator end() {return iterator(tail);}
+    const_iterator begin() const{return const_iterator(head->next);}
+    const_iterator end() const{return const_iterator(tail);}
     const Object& front() const{return head->next->data;}
     const Object& back() const{return tail->prev->data;}
     void push_front(const Object& x);
@@ -79,7 +84,7 @@ public:
     void pop_back();
     
     Object& at(size_t index);
-    iterator find(const Object& val);// the first find value's iter
+    iterator find(const Object& val) const;// the first find value's iter
     
     //required
     iterator insert(iterator it, const Object& x);

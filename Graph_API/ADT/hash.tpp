@@ -62,7 +62,7 @@ int calcHash(const double& key) {
 }
 using namespace tcb;
 template <typename Key,typename Element>
-size_t HashTable<Key,Element>::hash(const Key&key){
+size_t HashTable<Key,Element>::hash(const Key&key) const{
     int hashVal = calcHash<Key>(key);
     hashVal %= capacity;
     if (hashVal < 0)
@@ -97,25 +97,22 @@ capacity(capacity),maxLoadFactor(maxLoadFactor),size(0){
 }
 template <typename Key,typename Element>
 bool HashTable<Key,Element>::search(const Key& key,const Element& element) const{
-    Bucket& orientList = hashList[hash(key)];
+    const Bucket& orientList = hashList[hash(key)];
     HashObject obj = std::make_pair(key,element);
-    typename Bucket::iterator itr = orientList.find(obj);
+    typename Bucket::const_iterator itr = orientList.find(obj);
     if (itr==orientList.end())
         return false;
     return true;
 }
 template <typename Key,typename Element>
 bool HashTable<Key,Element>::insert(const HashObject& obj){
-    //Bucket& orientList = hashList[hash(obj.first)];
-    Bucket& orientList = hashList[0];
-    std::cout<<(orientList.begin() == orientList.end())<<std::endl;
-    std::cout<<orientList.isEmpty()<<std::endl;
+    Bucket& orientList = hashList[hash(obj.first)];
     typename Bucket::iterator itr = orientList.find(obj);
     if (itr!=orientList.end())
         return false;
     orientList.insert(itr,obj);
     ++size;
-    if (size / capacity > maxLoadFactor)
+    if (static_cast<float>(size) / capacity > maxLoadFactor)
         resizeTable();
     return true;
 }
@@ -140,10 +137,9 @@ void HashTable<Key,Element>::resizeTable(){
     clear();
     capacity = nextPrime(capacity * 2);
     hashList.resizeList(capacity);
-    size = 0;
-    for (typename Vector<Bucket>::iterator bucket = hashList.begin(); bucket != hashList.end(); bucket++){
+    for (typename Vector<Bucket>::iterator bucket = oldHashList.begin(); bucket != oldHashList.end(); bucket++){
         for (typename Bucket::iterator it = bucket->begin(); it != bucket->end(); it++)
-            insert(*it++);
+            insert(*it);
     }
 }
 template <typename Key,typename Element>

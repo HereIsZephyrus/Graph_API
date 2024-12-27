@@ -27,7 +27,7 @@ class HashTable {
     using Bucket = List<HashObject>;
     float maxLoadFactor;
     size_t capacity,size;
-    size_t hash(const Key&key);
+    size_t hash(const Key&key) const;
     Vector<Bucket> hashList;
     bool insert(const HashObject&);
     size_t nextPrime(size_t currentCapacity);
