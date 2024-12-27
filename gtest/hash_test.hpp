@@ -23,4 +23,14 @@ protected:
 };
 using HashIntTableTest = HashTableTest<int,double>;
 using HashStringTableTest = HashTableTest<string,double>;
+
+template <typename Key,typename Element>
+class HashMapTest : public ::testing::Test {
+protected:
+    HashMap<Key,Element> map;
+    HashMapTest(){}
+    void SetUp() override {}
+};
+using HashIntMapTest = HashMapTest<int,double>;
+using HashStringMapTest = HashMapTest<string,double>;
 #endif /* hash_test_hpp */

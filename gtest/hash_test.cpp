@@ -63,3 +63,60 @@ TEST_F(HashStringTableTest, RemoveTest) {
     ASSERT_EQ(strTable.getSize(), 1);
     ASSERT_EQ(strTable.remove("three", value), 0);
 }
+TEST_F(HashIntMapTest, InsertTest) {
+    ASSERT_TRUE(map.insert(1, 1.1));
+    ASSERT_TRUE(map.insert(2, 2.2));
+    ASSERT_EQ(map.getKeySet().size(), 2);
+}
+
+TEST_F(HashIntMapTest, GetValueTest) {
+    map.insert(1, 1.1);
+    map.insert(2, 2.2);
+    ASSERT_EQ(map.getValue(1), 1.1);
+    ASSERT_EQ(map.getValue(2), 2.2);
+}
+
+TEST_F(HashIntMapTest, RemoveTest) {
+    map.insert(1, 1.1);
+    map.insert(2, 2.2);
+    ASSERT_EQ(map.remove(1), 1.1);
+    ASSERT_EQ(map.getKeySet().size(), 1);
+    ASSERT_EQ(map.getValue(1), double());
+}
+
+TEST_F(HashIntMapTest, ContainKeyTest) {
+    map.insert(1, 1.1);
+    map.insert(2, 2.2);
+    ASSERT_TRUE(map.containKey(1));
+    ASSERT_TRUE(map.containKey(2));
+    ASSERT_FALSE(map.containKey(3));
+}
+
+TEST_F(HashStringMapTest, InsertTest) {
+    ASSERT_TRUE(map.insert("one", 1.1));
+    ASSERT_TRUE(map.insert("two", 2.2));
+    ASSERT_EQ(map.getKeySet().size(), 2);
+}
+
+TEST_F(HashStringMapTest, GetValueTest) {
+    map.insert("one", 1.1);
+    map.insert("two", 2.2);
+    ASSERT_EQ(map.getValue("one"), 1.1);
+    ASSERT_EQ(map.getValue("two"), 2.2);
+}
+
+TEST_F(HashStringMapTest, RemoveTest) {
+    map.insert("one", 1.1);
+    map.insert("two", 2.2);
+    ASSERT_EQ(map.remove("one"), 1.1);
+    ASSERT_EQ(map.getKeySet().size(), 1);
+    ASSERT_EQ(map.getValue("one"), double());
+}
+
+TEST_F(HashStringMapTest, ContainKeyTest) {
+    map.insert("one", 1.1);
+    map.insert("two", 2.2);
+    ASSERT_TRUE(map.containKey("one"));
+    ASSERT_TRUE(map.containKey("two"));
+    ASSERT_FALSE(map.containKey("three"));
+}

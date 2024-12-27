@@ -174,3 +174,49 @@ public:
         return it;
     }
 };
+template <typename Key,typename Element>
+Element HashMap<Key,Element>::getValue(const Key&key){
+    if (!keySet.contains(key))
+        return Element();
+    const Bucket& orientList = this->hashList[this->hash(key)];
+    for (typename Bucket::iterator itr = orientList.begin(); itr != orientList.end(); itr++){
+        if ((*itr).first == key)
+            return (*itr).second;
+    }
+    return Element();
+}
+template <typename Key,typename Element>
+bool HashMap<Key,Element>::insert(const Key& key,const Element& element){
+    if (keySet.contains(key))
+        remove(key);
+    keySet.insert(key);
+    return HashTable<Key,Element>::insert(key, element);
+}
+template <typename Key,typename Element>
+Element HashMap<Key,Element>::remove(const Key& key){
+    Bucket& orientList = this->hashList[this->hash(key)];
+    for (typename Bucket::iterator itr = orientList.begin(); itr != orientList.end(); itr++){
+        if ((*itr).first == key){
+            Element value = (*itr).second;
+            orientList.remove(itr);
+            --this->size;
+            keySet.erase(key);
+            return value;
+        }
+    }
+    return Element();
+}
+template <typename Key,typename Element>
+Element& HashMap<Key,Element>::operator[](const Key& key){
+    return getValue(key);
+}
+template <typename Key,typename Element>
+const Element& HashMap<Key,Element>::operator[](const Key& key) const{
+    return getValue(key);
+}
+template <typename Key,typename Element>
+Element& HashMap<Key,Element>::at(const Key& key){
+    if (!containKey(key))
+        throw std::out_of_range("Don't have this key yet.'");
+    return getValue(key);
+}
