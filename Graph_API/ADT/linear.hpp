@@ -96,7 +96,7 @@ public:
     void pop_back();
     
     Object& at(size_t index);
-    iterator find(const Object& val) const;// the first find value's iter
+    virtual iterator find(const Object& val) const;// the first find value's iter
     
     //required
     iterator insert(iterator it, const Object& x);

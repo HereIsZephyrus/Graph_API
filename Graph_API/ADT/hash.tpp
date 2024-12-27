@@ -127,6 +127,7 @@ int HashTable<Key,Element>::remove(const Key& key,Element& element){
     typename Bucket::iterator itr = orientList.find(std::make_pair(key,element));
     if (itr == orientList.end())
         return 0;
+    element = (*itr).second;
     orientList.remove(itr);
     --size;
     return 1;
@@ -160,3 +161,16 @@ int HashTable<Key,Element>::getBucketSize(int i) const{
         throw std::out_of_range("Index out of range");
     return hashList[i].getSize();
 }
+template <typename Key,typename Element>
+class HashTable<Key,Element>::Bucket : public List<HashObject>{
+public:
+    using iterator = List<HashObject>::iterator;
+    Bucket():List<HashObject>(){}
+    iterator find(const HashObject& val) const override{
+        iterator it = this->begin();
+        for (; it != this->end(); it++)
+            if ((*it).first == val.first)
+                return it;
+        return it;
+    }
+};

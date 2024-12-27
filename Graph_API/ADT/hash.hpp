@@ -24,7 +24,7 @@ int calcHash(const T& key);
 template <typename Key,typename Element>
 class HashTable {
     using HashObject = std::pair<Key,Element>;
-    using Bucket = List<HashObject>;
+    class Bucket;
     float maxLoadFactor;
     size_t capacity,size;
     size_t hash(const Key&key) const;
