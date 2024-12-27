@@ -122,7 +122,7 @@ public:
     element_iter operator--(int){
         element_iter ret_ptr = *this;
         --(*this);
-        return *this;
+        return ret_ptr;
     }
 };
 
