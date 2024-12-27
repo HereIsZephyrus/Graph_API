@@ -27,9 +27,10 @@ class HashTable {
     using Bucket = List<HashObject>;
     float maxLoadFactor;
     size_t capacity,size;
-    size_t hash(const Key&key, int tableSize);
+    size_t hash(const Key&key);
     Vector<Bucket> hashList;
     bool insert(const HashObject&);
+    size_t nextPrime(size_t currentCapacity);
 public:
     HashTable(float maxLoadFactor = 0.7,int capacity = 17);
     ~HashTable();
@@ -40,8 +41,8 @@ public:
     virtual int remove(const Key&,Element&); // return the mount of remove item
     void resizeTable();
     void clear();
-    int getCapacity() const;
-    int getSize() const;
+    size_t getCapacity() const;
+    size_t getSize() const;
     int getBucket(const Key&) const;
     int getBucketSize(int i) const;
 };

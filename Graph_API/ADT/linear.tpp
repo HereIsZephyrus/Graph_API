@@ -91,8 +91,8 @@ Object& Vector<Object>::at(size_t index){
 }
 
 template <class Object>
-class Vector<Object>::element_iter{
-    // element_iter traits
+class Vector<Object>::iterator{
+    // iterator traits
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;
     using value_type = Object;
@@ -101,26 +101,27 @@ class Vector<Object>::element_iter{
 private:
     pointer ptr;
 public:
-    element_iter(pointer p) : ptr(p){}
-    element_iter& operator=(const element_iter& it){ptr = it.ptr; return *this;}
-    bool operator == (const element_iter& it) const {return ptr == it.ptr;}
-    bool operator != (const element_iter& it) const {return ptr != it.ptr;}
+    iterator(pointer p) : ptr(p){}
+    iterator& operator=(const iterator& it){ptr = it.ptr; return *this;}
+    bool operator == (const iterator& it) const {return ptr == it.ptr;}
+    bool operator != (const iterator& it) const {return ptr != it.ptr;}
     reference operator *() {return *ptr;}
-    element_iter& operator++(){
+    pointer operator->(){return ptr;}
+    iterator& operator++(){
         ptr++;
         return *this;
     }
-    element_iter operator ++(int){
-        element_iter ret_ptr = *this;
+    iterator operator ++(int){
+        iterator ret_ptr = *this;
         ++(*this);
         return ret_ptr;
     }
-    element_iter& operator--(){
+    iterator& operator--(){
         ptr--;
         return *this;
     }
-    element_iter operator--(int){
-        element_iter ret_ptr = *this;
+    iterator operator--(int){
+        iterator ret_ptr = *this;
         --(*this);
         return ret_ptr;
     }
@@ -155,6 +156,7 @@ public:
     bool operator == (const iterator& it) const {return ptr == it.ptr;}
     bool operator != (const iterator& it) const {return ptr != it.ptr;}
     reference& operator *() {return ptr->data;}
+    pointer operator->(){return ptr;}
     pointer _ptr(){return ptr;}
     iterator& operator++(){
         ptr = ptr->next;

@@ -35,8 +35,7 @@ public:
     size_t getCapacity() const{return capacity;}
     const Object& back(){return data[size-1];}
     
-    class element_iter;
-    using iterator = element_iter;
+    class iterator;
     iterator begin() {Object* head = &data[0];return iterator(head);}
     iterator end() {Object* head = &data[0];return iterator(head + size);}
     using const_iterator = const iterator;

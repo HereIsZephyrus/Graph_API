@@ -62,12 +62,29 @@ int calcHash(const double& key) {
 }
 using namespace tcb;
 template <typename Key,typename Element>
-size_t HashTable<Key,Element>::hash(const Key&key, int tableSize){
+size_t HashTable<Key,Element>::hash(const Key&key){
     int hashVal = calcHash<Key>(key);
-    hashVal %= tableSize;
+    hashVal %= capacity;
     if (hashVal < 0)
-        hashVal += tableSize;
+        hashVal += capacity;
     return static_cast<size_t>(hashVal);
+}
+template <typename Key,typename Element>
+size_t HashTable<Key,Element>::nextPrime(size_t currentCapacity){
+    size_t current = currentCapacity;
+    current += 3 - currentCapacity%4;
+    int maxIter = 20;
+    while (maxIter--){
+        bool isPrime = true;
+        for (int i = 2; i * i < current; i++)
+            if (current % i == 0){
+                isPrime = false;
+                break;
+            }
+        if (isPrime)    return current;
+        current +=4;
+    }
+    return currentCapacity;
 }
 template <typename Key,typename Element>
 HashTable<Key,Element>::~HashTable(){
@@ -76,7 +93,7 @@ HashTable<Key,Element>::~HashTable(){
 template <typename Key,typename Element>
 HashTable<Key,Element>::HashTable(float maxLoadFactor,int capacity):
 capacity(capacity),maxLoadFactor(maxLoadFactor),size(0){
-    hashList.resize(capacity);
+    hashList.resizeList(capacity);
 }
 template <typename Key,typename Element>
 bool HashTable<Key,Element>::search(const Key& key,const Element& element) const{
@@ -119,23 +136,23 @@ void HashTable<Key,Element>::resizeTable(){
     Vector<Bucket> oldHashList = hashList;
     clear();
     capacity = nextPrime(capacity * 2);
-    hashList.resize(capacity);
+    hashList.resizeList(capacity);
     size = 0;
-    for (typename Bucket::iterator bucket = hashList.begin(); bucket != hashList.end(); bucket++){
+    for (typename Vector<Bucket>::iterator bucket = hashList.begin(); bucket != hashList.end(); bucket++){
         for (typename Bucket::iterator it = bucket->begin(); it != bucket->end(); it++)
             insert(*it++);
     }
 }
 template <typename Key,typename Element>
 void HashTable<Key,Element>::clear(){
-    for (typename Bucket::iterator bucket = hashList.begin(); bucket != hashList.end(); bucket++)
+    for (typename Vector<Bucket>::iterator bucket = hashList.begin(); bucket != hashList.end(); bucket++)
         bucket->clear();
 }
 
 template <typename Key,typename Element>
-int HashTable<Key,Element>::getCapacity() const{return capacity;}
+size_t HashTable<Key,Element>::getCapacity() const{return capacity;}
 template <typename Key,typename Element>
-int HashTable<Key,Element>::getSize() const{return size;}
+size_t HashTable<Key,Element>::getSize() const{return size;}
 template <typename Key,typename Element>
 int HashTable<Key,Element>::getBucket(const Key& key) const{return hash(key);}
 template <typename Key,typename Element>
