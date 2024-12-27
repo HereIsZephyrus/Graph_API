@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		32CAC0002D1D7ED2003AF1AC /* libgtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32CABFFF2D1D7EC7003AF1AC /* libgtest.a */; };
+		32CAC0012D1D7ED9003AF1AC /* libgtest_main.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32CABFFE2D1D7EBD003AF1AC /* libgtest_main.a */; };
+		32CAC0032D1D7EE8003AF1AC /* libbenchmark.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32CAC0022D1D7EE0003AF1AC /* libbenchmark.a */; };
+		32CAC0052D1D7EFA003AF1AC /* libbenchmark_main.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32CAC0042D1D7EEF003AF1AC /* libbenchmark_main.a */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		32CABFB72D1D7C4D003AF1AC /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -20,12 +27,36 @@
 
 /* Begin PBXFileReference section */
 		32CABFB92D1D7C4D003AF1AC /* Graph_API */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Graph_API; sourceTree = BUILT_PRODUCTS_DIR; };
+		32CABFFE2D1D7EBD003AF1AC /* libgtest_main.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgtest_main.a; path = ../../../../usr/local/lib/libgtest_main.a; sourceTree = "<group>"; };
+		32CABFFF2D1D7EC7003AF1AC /* libgtest.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgtest.a; path = ../../../../usr/local/lib/libgtest.a; sourceTree = "<group>"; };
+		32CAC0022D1D7EE0003AF1AC /* libbenchmark.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbenchmark.a; path = ../../../../usr/local/lib/libbenchmark.a; sourceTree = "<group>"; };
+		32CAC0042D1D7EEF003AF1AC /* libbenchmark_main.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbenchmark_main.a; path = ../../../../usr/local/lib/libbenchmark_main.a; sourceTree = "<group>"; };
+		32CAC0272D1D99BF003AF1AC /* libclang-cpp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libclang-cpp.dylib"; path = "../../../../opt/homebrew/Cellar/llvm/19.1.6/lib/libclang-cpp.dylib"; sourceTree = "<group>"; };
+		32CAC02B2D1D99CF003AF1AC /* libclang.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libclang.dylib; path = ../../../../opt/homebrew/Cellar/llvm/19.1.6/lib/libclang.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		32CAC0262D1D85C2003AF1AC /* Exceptions for "Graph_API" folder in "Compile Sources" phase from "Graph_API" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 32CABFB52D1D7C4D003AF1AC /* Sources */;
+			membershipExceptions = (
+				ADT/linear.tpp,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		32CABFBB2D1D7C4D003AF1AC /* Graph_API */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				32CAC0262D1D85C2003AF1AC /* Exceptions for "Graph_API" folder in "Compile Sources" phase from "Graph_API" target */,
+			);
 			path = Graph_API;
+			sourceTree = "<group>";
+		};
+		32CAC01F2D1D8341003AF1AC /* gtest */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = gtest;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -35,6 +66,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32CAC0052D1D7EFA003AF1AC /* libbenchmark_main.a in Frameworks */,
+				32CAC0032D1D7EE8003AF1AC /* libbenchmark.a in Frameworks */,
+				32CAC0012D1D7ED9003AF1AC /* libgtest_main.a in Frameworks */,
+				32CAC0002D1D7ED2003AF1AC /* libgtest.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,7 +79,9 @@
 		32CABFB02D1D7C4D003AF1AC = {
 			isa = PBXGroup;
 			children = (
+				32CAC01F2D1D8341003AF1AC /* gtest */,
 				32CABFBB2D1D7C4D003AF1AC /* Graph_API */,
+				32CABFFD2D1D7EBC003AF1AC /* Frameworks */,
 				32CABFBA2D1D7C4D003AF1AC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,6 +92,19 @@
 				32CABFB92D1D7C4D003AF1AC /* Graph_API */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		32CABFFD2D1D7EBC003AF1AC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				32CAC02B2D1D99CF003AF1AC /* libclang.dylib */,
+				32CAC0272D1D99BF003AF1AC /* libclang-cpp.dylib */,
+				32CAC0042D1D7EEF003AF1AC /* libbenchmark_main.a */,
+				32CAC0022D1D7EE0003AF1AC /* libbenchmark.a */,
+				32CABFFF2D1D7EC7003AF1AC /* libgtest.a */,
+				32CABFFE2D1D7EBD003AF1AC /* libgtest_main.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,6 +124,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				32CABFBB2D1D7C4D003AF1AC /* Graph_API */,
+				32CAC01F2D1D8341003AF1AC /* gtest */,
 			);
 			name = Graph_API;
 			packageProductDependencies = (
@@ -178,11 +229,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/local/include/;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -233,10 +287,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/local/include/;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				SDKROOT = macosx;
 			};
 			name = Release;
