@@ -12,6 +12,7 @@
 #include <cstring>
 #include <string>
 #include <stdexcept>
+#include <algorithm>
 namespace tcb{
 template <class Object>
 class Vector {
@@ -66,6 +67,17 @@ protected:
 public:
     List();
     ~List();
+    List(const List& rhs);
+    List(List && rhs);
+    const List& operator=(const List& rhs){
+        if (this == &rhs)
+            return *this;
+        clear();
+        iterator current = begin();
+        for(iterator it = rhs.begin(); it != rhs.end(); it++)
+            current = insert(current,*it);
+        return *this;
+    }
     bool isEmpty(){return size == 0;}
     size_t getSize() const {return size;}
     

@@ -57,8 +57,8 @@ void Vector<Object>::resizeList(size_t newSize){
     if (newSize > capacity)
         reserve(newSize * 2 + 1);
     //this refill need a movable opeator which I havn't achieve in my list, or std::fill will destroy the old value first,which release the list memory and raise error.
-    //if (newSize > size)
-    //    std::fill(data + size,data + newSize, Object());
+    if (newSize > size)
+        std::fill(data + size,data + newSize, Object());
     size = newSize;
 }
 template <class Object>
@@ -156,7 +156,32 @@ List<Object>::~List(){
     delete tail;
     delete head;
 }
-
+template <class Object>
+List<Object>::List(const List& rhs) : size(rhs.size){
+    head->next = tail;
+    tail->prev = head;
+    iterator current = begin();
+    for(iterator it = rhs.begin(); it != rhs.end(); it++,current++)
+        insert(current,*it);
+}
+template <class Object>
+List<Object>::List(List && rhs) : size(rhs.size),head(rhs.head),tail(rhs.tail){
+    rhs.size = 0;
+    rhs.head = nullptr;
+    rhs.tail = nullptr;
+}
+/*
+template <class Object>
+const List<Object>& List<Object>::operator=(const List& rhs){
+    if (this == &rhs)
+        return *this;
+    clear();
+    iterator current = begin();
+    for(iterator it = rhs.begin(); it != rhs.end(); it++,current++)
+        insert(current,*it);
+    return *this;
+}
+*/
 template <class Object>
 class List<Object>::iterator{
 protected:
