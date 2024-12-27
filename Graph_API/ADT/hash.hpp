@@ -15,6 +15,7 @@
 #include <memory>
 #include <stdexcept>
 #include <map>
+#include <set>
 #include "linear.hpp"
 using std::string;
 namespace tcb{
@@ -24,16 +25,18 @@ class HashTable {
     using HashObject = std::pair<Key,Element>;
     using Bucket = List<HashObject>;
     float maxLoadFactor;
-    int capacity,size;
-    int hash(const Key&key, int tableSize);
+    size_t capacity,size;
+    size_t hash(const Key&key, int tableSize);
     Vector<Bucket> hashList;
+    bool insert(const HashObject&);
 public:
-    HashTable(int capacity = 17,float maxLoadFactor = 0.7);
+    HashTable(float maxLoadFactor = 0.7,int capacity = 17);
     ~HashTable();
+    void setMaxLoadFactor(float loadFactor){maxLoadFactor = loadFactor;}
     //required
-    bool search(const Key&) const;
-    bool insert(const Key&) const;
-    int remove(const Key&,const Element&); // return the mount of remove item
+    bool search(const Key&,const Element&) const;
+    virtual bool insert(const Key&,const Element&);
+    virtual int remove(const Key&,Element&); // return the mount of remove item
     void resizeTable();
     void clear();
     int getCapacity() const;
@@ -42,5 +45,18 @@ public:
     int getBucketSize(int i) const;
 };
 }
+template <typename Key,typename Element>
+class HashMap : public HashTable<Key,Element>{
+    std::set<Key> keySet;
+public:
+    HashMap(float maxLoadFactor = 0.7,int capacity = 17):HashTable(maxLoadFactor,capacity){};
+    //required
+    const Element& getValue(const Key&key);
+    bool insert(const Key&,const Element&) override;
+    Element remove(const Key&);
+    int remove(const Key&,Element&) override;
+    bool containKey(const Key& key) const;
+    const std::set<K> getKeySet() {return keySet;}
+};
 #include "hash.tpp"
 #endif /* hash_hpp */

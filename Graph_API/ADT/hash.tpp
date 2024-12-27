@@ -61,36 +61,51 @@ int calcHash(double key) {
 }
 
 template <typename Key,typename Element>
-int HashTable<Key,Element>::hash(const Key&key, int tableSize){
+size_t HashTable<Key,Element>::hash(const Key&key, int tableSize){
     int hashVal = calcHash<Key>(key);
     hashVal %= tableSize;
     if (hashVal < 0)
         hashVal += tableSize;
-    return hashVal;
+    return static_cast<size_t>(hashVal);
 }
 template <typename Key,typename Element>
 HashTable<Key,Element>::~HashTable(){
     clear();
 }
 template <typename Key,typename Element>
-HashTable<Key,Element>::HashTable(int capacity,float maxLoadFactor):
+HashTable<Key,Element>::HashTable(float maxLoadFactor,int capacity):
 capacity(capacity),maxLoadFactor(maxLoadFactor),size(0){
+    hashList.resize(capacity);
 }
 template <typename Key,typename Element>
-bool HashTable<Key,Element>::search(const Key&) const{
-    
+bool HashTable<Key,Element>::search(const Key& key,const Element& element) const{
+    List<HashObject>& orientList = hashList[hash(key)];
+    HashObject obj = std::make_pair(key,element);
+    List<HashObject>::iterator itr = orientList.find(obj);
+    if (itr==orientList.end())
+        return false;
+    return true;
 }
 template <typename Key,typename Element>
-bool HashTable<Key,Element>::insert(const Element&) const{
-    HashObject obj = std::make_pair()
-    List<HashObject>& orientList = hashList[calcHash(key)];
-    if (orientList.find(std::make_pair)) {
-        <#statements#>
-    }
+bool HashTable<Key,Element>::insert(const HashObject& obj){
+    List<HashObject>& orientList = hashList[hash(key)];
+    List<HashObject>::iterator itr = orientList.find(obj);
+    if (itr!=orientList.end())
+        return false;
+    orientList.insert(itr,obj);
+    ++size;
+    if (size / capacity > maxLoadFactor)
+        resizeTable();
+    return true;
+}
+template <typename Key,typename Element>
+bool HashTable<Key,Element>::insert(const Key& key,const Element&element){
+    HashObject obj = std::make_pair(key,element);
+    return insert(obj);
 }
 template <typename Key,typename Element>
 int HashTable<Key,Element>::remove(const Key&,const Element&){
-    List<HashObject>& orientList = hashList[calcHash(key)];
+    List<HashObject>& orientList = hashList[hash(key)];
     List<HashObject>::iterator itr = orientList.find(std::make_pair(Key,Element));
     if (itr == orientList.end())
         return 0;
@@ -100,7 +115,15 @@ int HashTable<Key,Element>::remove(const Key&,const Element&){
 }
 template <typename Key,typename Element>
 void HashTable<Key,Element>::resizeTable(){
-    
+    Vector<Bucket> oldHashList = hashList;
+    clear();
+    capacity = nextPrime(capacity * 2);
+    hashList.resize(capacity);
+    size = 0;
+    for (Node bucket = hashList.begin(); bucket != hashList.end(); bucket++){
+        for (List<HashObject>::iterator it = bucket->begin(); it != bucke->end(); it++)
+            insert(*itr++);
+    }
 }
 template <typename Key,typename Element>
 void HashTable<Key,Element>::clear(){
@@ -113,7 +136,7 @@ int HashTable<Key,Element>::getCapacity() const{return capacity;}
 template <typename Key,typename Element>
 int HashTable<Key,Element>::getSize() const{return size;}
 template <typename Key,typename Element>
-int HashTable<Key,Element>::getBucket(const Key& key) const{return calcHash(key);}
+int HashTable<Key,Element>::getBucket(const Key& key) const{return hash(key);}
 template <typename Key,typename Element>
 int getBucketSize(int i) const{
     if (i >= capacity)
