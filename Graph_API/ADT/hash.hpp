@@ -19,7 +19,8 @@
 #include "linear.hpp"
 using std::string;
 namespace tcb{
-template <typename T> int calcHash(const T& key);
+template <typename T>
+int calcHash(const T& key);
 template <typename Key,typename Element>
 class HashTable {
     using HashObject = std::pair<Key,Element>;
@@ -49,14 +50,14 @@ template <typename Key,typename Element>
 class HashMap : public HashTable<Key,Element>{
     std::set<Key> keySet;
 public:
-    HashMap(float maxLoadFactor = 0.7,int capacity = 17):HashTable(maxLoadFactor,capacity){};
+    HashMap(float maxLoadFactor = 0.7,int capacity = 17):HashTable<Key,Element>(maxLoadFactor,capacity){};
     //required
     const Element& getValue(const Key&key);
     bool insert(const Key&,const Element&) override;
     Element remove(const Key&);
     int remove(const Key&,Element&) override;
     bool containKey(const Key& key) const;
-    const std::set<K> getKeySet() {return keySet;}
+    const std::set<Key> getKeySet() {return keySet;}
 };
 #include "hash.tpp"
 #endif /* hash_hpp */
