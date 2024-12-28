@@ -24,9 +24,23 @@ class WUSGraph{
         Edge(Vertex to,W w):orient(to),weight(w),friendEdge(nullptr){}
     };
     struct AdjList{
+        using iterator = typename List<Edge>::iterator;
+        using const_iterator = List<Edge>::const_iterator;
         List<Edge> edges;
         Vertex vertexID;
-        void remove(){}
+        iterator begin() {return edges.begin();}
+        iterator end() {return edges.end();}
+        const_iterator begin() const{return edges.begin();}
+        const_iterator end() const{return edges.end();}
+        void insert(std::shared_ptr<Edge> edge){
+            edges.insert(*edge);
+        }
+        void remove(){
+            for (iterator it = begin(); it != end(); it++){
+                
+                //it->friendEdge
+            }
+        }
         AdjList(Vertex ID = 0):vertexID(ID){}
     };
     HashMap<V, Vertex> alias;
@@ -37,7 +51,7 @@ class WUSGraph{
     size_t vertexNum;
 public:
     explicit WUSGraph(int v): vertexSize(v),edgeNum(0),vertexNum(0),vertexCounter(0){
-        graph.reserve(v);
+       graph.reserve(v);
     }
     int vertexCount() const {return vertexSize;}
     int edgeCount() const {return edgeNum;}

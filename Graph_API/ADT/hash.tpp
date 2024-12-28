@@ -7,26 +7,26 @@
 
 namespace tcb{
 template <>
-int calcHash(const string& key){
+inline int calcHash(const string& key){
     int hashVal = 0;
     for (int i = 0; i < key.length(); i++)
         hashVal = 37 * hashVal + key[i];
     return hashVal;
 }
 template <>
-int calcHash(const int& key) {
+inline int calcHash(const int& key) {
     size_t hashVal = key * VALUE_HASH;
     return static_cast<int>(hashVal);
 }
 
 template <>
-int calcHash(const size_t& key) {
+inline int calcHash(const size_t& key) {
     size_t hashVal = key * VALUE_HASH;
     return static_cast<int>(hashVal);
 }
 
 template <>
-int calcHash(const long long& key) {
+inline int calcHash(const long long& key) {
     uint64_t hashVal = static_cast<uint64_t>(key);
     hashVal ^= (hashVal >> 33);
     hashVal *= 0xff51afd7ed558ccdULL;
@@ -37,7 +37,7 @@ int calcHash(const long long& key) {
 }
 
 template <>
-int calcHash(const float& key) {
+inline int calcHash(const float& key) {
     if (key == 0.0f) return 0;
     if (key == -0.0f) return 0;
     uint32_t bits;
@@ -46,7 +46,7 @@ int calcHash(const float& key) {
 }
 
 template <>
-int calcHash(const double& key) {
+inline int calcHash(const double& key) {
     if (key == 0.0) return 0;
     if (key == -0.0) return 0;
     uint64_t bits;

@@ -20,7 +20,7 @@
 using std::string;
 namespace tcb{
 template <typename T>
-int calcHash(const T& key);
+inline int calcHash(const T& key);
 template <typename Key,typename Element>
 class HashTable {
 protected:
