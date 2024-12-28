@@ -32,14 +32,6 @@ class WUSGraph{
         bool operator==(const Edge& other) const {
             return orient == other.orient && weight == other.weight;
         }
-        ~Edge(){
-            if (friendEdge != nullptr){
-                friendEdge->prev->next = friendEdge->next;
-                friendEdge->next->prev = friendEdge->prev;
-                delete friendEdge;
-                --friendBucket->size;
-            }
-        }
     };
     class EdgeTable : public HashMap<VertexPair, pEdge>{
     public:
@@ -47,12 +39,21 @@ class WUSGraph{
             pEdge orientEdge = this->getRefValue(vertices);
             orientEdge->prev->next = orientEdge->next;
             orientEdge->next->prev = orientEdge->prev;
+            pEdge friendEdge = orientEdge->data.friendEdge;
+            pList friendBucket = orientEdge->data.friendBucket;
+            if (friendEdge != nullptr){
+                friendEdge->prev->next = friendEdge->next;
+                friendEdge->next->prev = friendEdge->prev;
+                delete friendEdge;
+                --friendBucket->size;
+                friendBucket = nullptr;
+            }
             delete orientEdge;
         }
     };
     EdgeTable edgeTable;
     class AdjList : public List<Edge>{
-        friend Edge;
+        friend EdgeTable;
     public:
         using Node = typename List<Edge>::Node;
         using iterator = typename List<Edge>::iterator;

@@ -37,7 +37,7 @@ TEST_F(WUSGraphIntTest, GetDegreeReturnsCorrectDegree) {
     graph.addEdge(1, 2, 1.0);
     EXPECT_EQ(graph.getDegree(1), 1);
 }
-/*
+
 TEST_F(WUSGraphIntTest, AddEdgeIncreasesEdgeCount) {
     graph.addVertex(1);
     graph.addVertex(2);
@@ -52,7 +52,7 @@ TEST_F(WUSGraphIntTest, RemoveEdgeDecreasesEdgeCount) {
     graph.removeEdge(1, 2);
     EXPECT_EQ(graph.edgeCount(), 0);
 }
-
+/*
 TEST_F(WUSGraphIntTest, HasEdgeReturnsTrueForAddedEdge) {
     graph.addVertex(1);
     graph.addVertex(2);
