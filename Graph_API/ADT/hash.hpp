@@ -32,6 +32,7 @@ protected:
     Vector<Bucket> hashList;
     bool insert(const HashObject&);
     size_t nextPrime(size_t currentCapacity);
+    constexpr static  Element zeroElement = Element();
 public:
     HashTable(float maxLoadFactor = 0.7,int capacity = 17);
     ~HashTable();
@@ -56,7 +57,7 @@ class HashMap : public HashTable<Key,Element>{
 public:
     HashMap(float maxLoadFactor = 0.7,int capacity = 17):HashTable<Key,Element>(maxLoadFactor,capacity){};
     //required
-    Element getValue(const Key&key);// return const Element& will return a local refer, I don't know how to solve
+    const Element& getValue(const Key&key) const;// return const Element& will return a local refer, I don't know how to solve
     bool insert(const Key& key,const Element& element) override;
     Element remove(const Key& key);
     bool containKey(const Key& key) const{return keySet.contains(key);};

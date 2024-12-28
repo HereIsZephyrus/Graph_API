@@ -21,25 +21,30 @@ class WUSGraph{
         Vertex orient;
         W weight;
         std::shared_ptr<Edge> friendEdge;
-        Edge(Vertex to,W w):orient(to),weight(w),friendEdge(nullptr){}
+        Edge(Vertex to = 0,W w = W()):orient(to),weight(w),friendEdge(nullptr){}
+        bool operator==(const Edge& other) const {
+            return orient == other.orient && weight == other.weight;
+        }
     };
-    struct AdjList{
+    class AdjList : public List<Edge>{
+    public:
         using iterator = typename List<Edge>::iterator;
-        using const_iterator = List<Edge>::const_iterator;
-        List<Edge> edges;
+        using const_iterator = typename List<Edge>::const_iterator;
         Vertex vertexID;
-        iterator begin() {return edges.begin();}
-        iterator end() {return edges.end();}
-        const_iterator begin() const{return edges.begin();}
-        const_iterator end() const{return edges.end();}
         void insert(std::shared_ptr<Edge> edge){
-            edges.insert(*edge);
+            //edges.insert(*edge);
         }
         void remove(){
-            for (iterator it = begin(); it != end(); it++){
+            for (iterator it = this->begin(); it != this->end(); it++){
                 
                 //it->friendEdge
             }
+        }
+        void removeNode(Vertex id){
+            
+        }
+        iterator searchNode(Vertex id){
+            return this->end();
         }
         AdjList(Vertex ID = 0):vertexID(ID){}
     };
@@ -68,7 +73,7 @@ public:
         if (!alias.containKey(delVertex))
             return;
         alias.remove(delVertex);
-        size_t location = locateMap[delVertex];
+        size_t location = locateMap[alias[delVertex]];
         Vertex backVertexID = graph.back().vertexID;
         graph[location].remove();
         graph[location] = graph.back();
@@ -79,7 +84,7 @@ public:
         if (!alias.containKey(checkVertex))
             return -1;
         size_t location = locateMap[alias[checkVertex]];
-        return graph[location].edges.size();
+        return static_cast<int>(graph[location].getSize());
     }
     void addEdge(V v1,V v2,W weight){
         if (!alias.containKey(v1) || !alias.containKey(v2))
@@ -87,7 +92,7 @@ public:
         Vertex id1 = alias[v1], id2 = alias[v2];
         size_t location1 = locateMap[id1],location2 = locateMap[id2];
         std::shared_ptr<Edge> edge1 = std::make_shared<Edge>(id2,weight),edge2 = std::make_shared<Edge>(id1,weight);
-        edge1->frendEdge = edge2;   edge2->frendEdge = edge1;
+        edge1->friendEdge = edge2;   edge2->friendEdge = edge1;
         graph[location1].insert(edge1);    graph[location2].insert(edge2);
     }
     void removeEdge(V v1,V v2){
@@ -100,17 +105,18 @@ public:
     bool hasEdge(V v1,V v2){
         if (!alias.containKey(v1) || !alias.containKey(v2))
             return false;
-        AdjList& list = graph[locateMap[alias[v1]]];
-        return (list.searchNode(v2) != list.end());
+        Vertex id1 = alias[v1], id2 = alias[v2];
+        AdjList& list = graph[locateMap[id1]];
+        return (list.searchNode(id2) != list.end());
     }
     W getWeight(V v1,V v2){
         if (!alias.containKey(v1) || !alias.containKey(v2))
             return W();
-        W weight = W();
-        AdjList& list = graph[locateMap[alias[v1]]];
-        typename List<Edge>::iterator loc = list.searchNode(v2);
+        Vertex id1 = alias[v1], id2 = alias[v2];
+        AdjList& list = graph[locateMap[id1]];
+        typename List<Edge>::iterator loc = list.searchNode(id2);
         if (loc != list.end())
-            return loc.weight;
+            return (*loc).weight; //loc->weight failed for weight is not in node, how to solve?
         return W();
     }
 };

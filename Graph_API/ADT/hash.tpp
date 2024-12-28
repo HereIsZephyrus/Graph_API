@@ -175,15 +175,15 @@ public:
     }
 };
 template <typename Key,typename Element>
-Element HashMap<Key,Element>::getValue(const Key&key){
+const Element& HashMap<Key,Element>::getValue(const Key&key) const{
     if (!keySet.contains(key))
-        return Element();
+        return this->zeroElement;
     const Bucket& orientList = this->hashList[this->hash(key)];
     for (typename Bucket::iterator itr = orientList.begin(); itr != orientList.end(); itr++){
         if ((*itr).first == key)
             return (*itr).second;
     }
-    return Element();
+    return this->zeroElement;
 }
 template <typename Key,typename Element>
 Element& HashMap<Key,Element>::getRefValue(const Key&key){
@@ -215,12 +215,12 @@ Element HashMap<Key,Element>::remove(const Key& key){
             return value;
         }
     }
-    return Element();
+    return this->zeroElement;
 }
 template <typename Key,typename Element>
 Element& HashMap<Key,Element>::operator[](const Key& key){
     if (!containKey(key))
-        insert(key,Element());
+        insert(key,this->zeroElement);
     return getRefValue(key);
 }
 template <typename Key,typename Element>

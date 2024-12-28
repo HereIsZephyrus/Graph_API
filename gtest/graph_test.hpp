@@ -18,7 +18,7 @@ template <typename V,typename W>
 class WUSGraphTest : public ::testing::Test {
 protected:
     WUSGraph<V,W> graph;
-    WUSGraphTest(){}
+    WUSGraphTest():graph(10){}
     void SetUp() override {}
 };
 using WUSGraphIntTest = WUSGraphTest<int,double>;
