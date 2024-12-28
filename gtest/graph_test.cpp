@@ -70,7 +70,43 @@ TEST_F(WUSGraphIntTest, GetWeightReturnsCorrectWeight) {
     graph.addEdge(1, 2, 1.0);
     EXPECT_EQ(graph.getWeight(1, 2), 1.0);
 }
-
+TEST_F(WUSGraphIntTest, ComplexGraphOperations) {
+    for (int i = 1; i <= 10; ++i)
+        graph.addVertex(i);
+    graph.addEdge(1, 2, 1.0);
+    graph.addEdge(2, 3, 2.0);
+    graph.addEdge(3, 4, 3.0);
+    graph.addEdge(4, 5, 4.0);
+    graph.addEdge(5, 6, 5.0);
+    graph.addEdge(6, 7, 6.0);
+    graph.addEdge(7, 8, 7.0);
+    graph.addEdge(8, 9, 8.0);
+    graph.addEdge(9, 10, 9.0);
+    graph.addEdge(10, 1, 10.0);
+    EXPECT_EQ(graph.vertexCount(), 10);
+    EXPECT_EQ(graph.edgeCount(), 10);
+    for (int i = 1; i <= 10; ++i)
+        EXPECT_EQ(graph.getDegree(i), 2);
+    EXPECT_EQ(graph.getWeight(1, 2), 1.0);
+    EXPECT_EQ(graph.getWeight(2, 3), 2.0);
+    EXPECT_EQ(graph.getWeight(3, 4), 3.0);
+    EXPECT_EQ(graph.getWeight(4, 5), 4.0);
+    EXPECT_EQ(graph.getWeight(5, 6), 5.0);
+    EXPECT_EQ(graph.getWeight(6, 7), 6.0);
+    EXPECT_EQ(graph.getWeight(7, 8), 7.0);
+    EXPECT_EQ(graph.getWeight(8, 9), 8.0);
+    EXPECT_EQ(graph.getWeight(9, 10), 9.0);
+    EXPECT_EQ(graph.getWeight(10, 1), 10.0);
+    graph.removeEdge(1, 2);
+    EXPECT_EQ(graph.edgeCount(), 9);
+    EXPECT_FALSE(graph.hasEdge(1, 2));
+    graph.removeVertex(5);
+    EXPECT_EQ(graph.vertexCount(), 9);
+    EXPECT_EQ(graph.edgeCount(), 7);
+    EXPECT_FALSE(graph.isVertex(5));
+    EXPECT_FALSE(graph.hasEdge(4, 5));
+    EXPECT_FALSE(graph.hasEdge(5, 6));
+}
 TEST_F(WUSGraphStringTest, VertexCountInitiallyZero) {
     EXPECT_EQ(graph.vertexCount(), 0);
 }

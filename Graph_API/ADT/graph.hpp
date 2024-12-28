@@ -35,21 +35,33 @@ class WUSGraph{
     };
     class EdgeTable : public HashMap<VertexPair, pEdge>{
     public:
-        void removeNode(VertexPair vertices){
-            pEdge orientEdge = this->getRefValue(vertices);
-            orientEdge->prev->next = orientEdge->next;
-            orientEdge->next->prev = orientEdge->prev;
-            pEdge friendEdge = orientEdge->data.friendEdge;
-            pList friendBucket = orientEdge->data.friendBucket;
+        pEdge removeNode(VertexPair vertices,size_t& currentSize){
+            using Bucket = HashMap<VertexPair, pEdge>::Bucket;
+            //I can't use the getRef below, is it return a copy of the pointer? why?
+            //pEdge orientEdge = this->getRefValue(vertices);
+            //that's why delete orientEdge will not raise a double release!
+            const Bucket& orientList = this->hashList[this->hash(vertices)];
+            typename Bucket::iterator itr = orientList.begin();
+            for (; itr != orientList.end(); itr++){
+                if ((*itr).first == vertices)
+                    break;
+            }
+            pEdge ret_p = (*itr).second->next;
+            (*itr).second->next->prev->next = (*itr).second->next->next;
+            (*itr).second->next->next->prev = (*itr).second->next->prev;
+            pEdge friendEdge = (*itr).second->next->data.friendEdge;
+            pList friendBucket = (*itr).second->next->data.friendBucket;
             if (friendEdge != nullptr){
                 friendEdge->prev->next = friendEdge->next;
                 friendEdge->next->prev = friendEdge->prev;
                 delete friendEdge;
-                --friendBucket->size;
-                friendBucket = nullptr;
             }
-            delete orientEdge; //why this will not double release?
+            delete (*itr).second->next; //why this will not double release?
             this->remove(vertices);
+            --friendBucket->size;
+            --currentSize;
+            friendBucket = nullptr;
+            return ret_p;
         }
     };
     EdgeTable edgeTable;
@@ -61,7 +73,7 @@ class WUSGraph{
         using const_iterator = typename List<Edge>::const_iterator;
         int vertexID;
         void insert(pEdge edge){
-            Node *p = this->end()._ptr();
+            Node *p = this->begin()._ptr();
             edge->prev = p->prev;
             edge->next = p;
             this->size++;
@@ -69,18 +81,18 @@ class WUSGraph{
         }
         void pop() {--this->size;}
         void remove(EdgeTable& edgeTable){
-            iterator it(this->head->next);
+            pEdge it = this->head->next;
             while (!this->isEmpty()){
-                VertexPair verticesForward = std::make_pair(vertexID,(*it).orient); //I can't use it->weight since weight is not the member of Node but the menber of data,how to overload?
-                VertexPair verticesBackward = std::make_pair((*it).orient,vertexID);
+                VertexPair verticesForward = std::make_pair(vertexID,it->data.orient); //I can't use it->weight since weight is not the member of Node but the menber of data,how to overload?
+                VertexPair verticesBackward = std::make_pair(it->data.orient,vertexID);
                 if (edgeTable.containKey(verticesForward))
-                    edgeTable.removeNode(verticesForward);
+                    it = edgeTable.removeNode(verticesForward,this->size);
                 if (edgeTable.containKey(verticesBackward))
-                    edgeTable.removeNode(verticesBackward);
-                it = List<Edge>::remove(it);
+                    it = edgeTable.removeNode(verticesBackward,this->size);
             }
         }
         AdjList(int ID = -1):vertexID(ID){}
+        size_t& refSize() {return this->size;}
     };
     HashMap<V, int> alias;
     HashMap<int, size_t> locateMap;
@@ -106,8 +118,8 @@ public:
     void removeVertex(V delVertex){
         if (!alias.containKey(delVertex))
             return;
-        alias.remove(delVertex);
         size_t location = locateMap[alias[delVertex]];
+        alias.remove(delVertex);
         int backVertexID = graph.back().vertexID;
         graph[location].remove(edgeTable);
         graph[location] = graph.back();
@@ -141,12 +153,12 @@ public:
         VertexPair verticesForward = std::make_pair(id1,id2);
         VertexPair verticesBackward = std::make_pair(id2,id1);
         if (edgeTable.containKey(verticesForward)){
-            graph[location1].pop();
-            edgeTable.removeNode(verticesForward);
+            //graph[location1].pop();
+            edgeTable.removeNode(verticesForward,graph[location1].refSize());
         }
         if (edgeTable.containKey(verticesBackward)){
-            graph[location2].pop();
-            edgeTable.removeNode(verticesBackward);
+            //graph[location2].pop();
+            edgeTable.removeNode(verticesBackward,graph[location2].refSize());
         }
     }
     bool hasEdge(V v1,V v2) const{
