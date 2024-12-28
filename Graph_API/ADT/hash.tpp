@@ -219,6 +219,8 @@ Element HashMap<Key,Element>::remove(const Key& key){
 }
 template <typename Key,typename Element>
 Element& HashMap<Key,Element>::operator[](const Key& key){
+    if (!containKey(key))
+        insert(key,Element());
     return getRefValue(key);
 }
 template <typename Key,typename Element>
