@@ -66,21 +66,32 @@ class WUSGraph{
             p->prev = p->prev->next = edge;
         }
         void pop() {--this->size;}
-        void remove(){this->clear();}
+        void remove(EdgeTable& edgeTable){
+            iterator it(this->head->next);
+            while (!this->isEmpty()){
+                VertexPair verticesForward = std::make_pair(vertexID,(*it).orient); //I can't use it->weight since weight is not the member of Node but the menber of data,how to overload?
+                VertexPair verticesBackward = std::make_pair((*it).orient,vertexID);
+                if (edgeTable.containKey(verticesForward))
+                    edgeTable.removeNode(verticesForward);
+                if (edgeTable.containKey(verticesBackward))
+                    edgeTable.removeNode(verticesBackward);
+                it = List<Edge>::remove(it);
+            }
+        }
         AdjList(int ID = -1):vertexID(ID){}
     };
     HashMap<V, int> alias;
     HashMap<int, size_t> locateMap;
     Vector<AdjList> graph;
-    int vertexSize,edgeNum;
+    int vertexSize;
     int vertexCounter;
     size_t vertexNum;
 public:
-    explicit WUSGraph(int v): vertexSize(v),edgeNum(0),vertexNum(0),vertexCounter(0){
+    explicit WUSGraph(int v): vertexSize(v),vertexNum(0),vertexCounter(0){
        graph.reserve(v);
     }
-    int vertexCount() const {return vertexCounter;}
-    int edgeCount() const {return edgeNum;}
+    size_t vertexCount() const {return vertexNum;}
+    size_t edgeCount() const {return edgeTable.getSize();}
     void addVertex(V newVertex){
         if (alias.containKey(newVertex))
             return;
@@ -96,7 +107,7 @@ public:
         alias.remove(delVertex);
         size_t location = locateMap[alias[delVertex]];
         int backVertexID = graph.back().vertexID;
-        graph[location].remove();
+        graph[location].remove(edgeTable);
         graph[location] = graph.back();
         locateMap[backVertexID] = location;
         --vertexNum;
@@ -117,7 +128,7 @@ public:
         pEdge edge2 = new Node(Edge(id1,weight,&graph[id2]));
         edge1->data.friendEdge = edge2;   edge2->data.friendEdge = edge1;
         graph[location1].insert(edge1);    graph[location2].insert(edge2);
-        VertexPair vertices = std::make_pair(graph[location1].vertexID,graph[location2].vertexID);
+        VertexPair vertices = std::make_pair(id1,id2);
         edgeTable.insert(vertices, edge1); //has linked preview and next(I gusses
     }
     void removeEdge(V v1,V v2){
@@ -125,13 +136,16 @@ public:
             return;
         int id1 = alias[v1], id2 = alias[v2];
         size_t location1 = locateMap[id1],location2 = locateMap[id2];
-        VertexPair vertices = std::make_pair(id1,id2);
-        bool oneway = edgeTable.containKey(vertices);
-        if (oneway)
+        VertexPair verticesForward = std::make_pair(id1,id2);
+        VertexPair verticesBackward = std::make_pair(id2,id1);
+        if (edgeTable.containKey(verticesForward)){
             graph[location1].pop();
-        else
+            edgeTable.removeNode(verticesForward);
+        }
+        if (edgeTable.containKey(verticesBackward)){
             graph[location2].pop();
-        edgeTable.removeNode(vertices);
+            edgeTable.removeNode(verticesBackward);
+        }
     }
     bool hasEdge(V v1,V v2) const{
         if (!alias.containKey(v1) || !alias.containKey(v2))
