@@ -420,9 +420,11 @@ TEST_F(ListIntTest, AtFunction) {
 }
 
 TEST_F(ListIntTest, FindFunction) {
+    List<int>::iterator it = list.find(3);
+    EXPECT_EQ(it, list.end());
     for (int i = 0; i < 5; i++)
         list.push_back(i);
-    List<int>::iterator it = list.find(3);
+    it = list.find(3);
     EXPECT_EQ(*it, 3);
     it = list.find(5);
     EXPECT_EQ(it, list.end());
