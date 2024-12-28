@@ -11,54 +11,75 @@
 #include <cstring>
 #include <string>
 #include <memory>
+#include <map>
+#include <stdexcept>
 #include "hash.hpp"
 using std::string;
 namespace tcb {
 template <typename V = string, typename W = double>
 class WUSGraph{
-    using Vertex = int;
+    class AdjList;
+    struct Edge;
+    using Node = typename List<Edge>::Node;
+    using pEdge = Node*;
+    using pList = AdjList*;
     struct Edge{
-        Vertex orient;
+        int orient;
         W weight;
-        std::shared_ptr<Edge> friendEdge;
-        Edge(Vertex to = 0,W w = W()):orient(to),weight(w),friendEdge(nullptr){}
+        pEdge friendEdge;
+        pList friendBucket;
+        Edge(int to = 0,W w = W(),pList friendList = nullptr):orient(to),weight(w),friendEdge(nullptr),friendBucket(friendList){}
         bool operator==(const Edge& other) const {
             return orient == other.orient && weight == other.weight;
         }
-    };
-    class AdjList : public List<Edge>{
-    public:
-        using iterator = typename List<Edge>::iterator;
-        using const_iterator = typename List<Edge>::const_iterator;
-        Vertex vertexID;
-        void insert(std::shared_ptr<Edge> edge){
-            //edges.insert(*edge);
-        }
-        void remove(){
-            for (iterator it = this->begin(); it != this->end(); it++){
-                
-                //it->friendEdge
+        ~Edge(){
+            if (friendEdge != nullptr){
+                friendEdge->prev->next = friendEdge->next;
+                friendEdge->next->prev = friendEdge->prev;
+                delete friendEdge;
+                --friendBucket->size;
             }
         }
-        void removeNode(Vertex id){
-            
-        }
-        iterator searchNode(Vertex id){
-            return this->end();
-        }
-        AdjList(Vertex ID = 0):vertexID(ID){}
     };
-    HashMap<V, Vertex> alias;
-    HashMap<Vertex, size_t> locateMap;
+    class EdgeTable : public HashMap<VertexPair, pEdge>{
+    public:
+        void removeNode(VertexPair vertices){
+            pEdge orientEdge = this->getRefValue(vertices);
+            orientEdge->prev->next = orientEdge->next;
+            orientEdge->next->prev = orientEdge->prev;
+            delete orientEdge;
+        }
+    };
+    EdgeTable edgeTable;
+    class AdjList : public List<Edge>{
+        friend Edge;
+    public:
+        using Node = typename List<Edge>::Node;
+        using iterator = typename List<Edge>::iterator;
+        using const_iterator = typename List<Edge>::const_iterator;
+        int vertexID;
+        void insert(pEdge edge){
+            Node *p = this->end()._ptr();
+            edge->prev = p->prev;
+            edge->next = p;
+            this->size++;
+            p->prev = p->prev->next = edge;
+        }
+        void pop() {--this->size;}
+        void remove(){this->clear();}
+        AdjList(int ID = -1):vertexID(ID){}
+    };
+    HashMap<V, int> alias;
+    HashMap<int, size_t> locateMap;
     Vector<AdjList> graph;
     int vertexSize,edgeNum;
-    Vertex vertexCounter;
+    int vertexCounter;
     size_t vertexNum;
 public:
     explicit WUSGraph(int v): vertexSize(v),edgeNum(0),vertexNum(0),vertexCounter(0){
        graph.reserve(v);
     }
-    int vertexCount() const {return vertexSize;}
+    int vertexCount() const {return vertexCounter;}
     int edgeCount() const {return edgeNum;}
     void addVertex(V newVertex){
         if (alias.containKey(newVertex))
@@ -74,10 +95,11 @@ public:
             return;
         alias.remove(delVertex);
         size_t location = locateMap[alias[delVertex]];
-        Vertex backVertexID = graph.back().vertexID;
+        int backVertexID = graph.back().vertexID;
         graph[location].remove();
         graph[location] = graph.back();
         locateMap[backVertexID] = location;
+        --vertexNum;
     }
     bool isVertex(V checkVertex) const {return alias.containKey(checkVertex);}
     int getDegree(V checkVertex) const {
@@ -89,34 +111,46 @@ public:
     void addEdge(V v1,V v2,W weight){
         if (!alias.containKey(v1) || !alias.containKey(v2))
             return;
-        Vertex id1 = alias[v1], id2 = alias[v2];
+        int id1 = alias[v1], id2 = alias[v2];
         size_t location1 = locateMap[id1],location2 = locateMap[id2];
-        std::shared_ptr<Edge> edge1 = std::make_shared<Edge>(id2,weight),edge2 = std::make_shared<Edge>(id1,weight);
-        edge1->friendEdge = edge2;   edge2->friendEdge = edge1;
+        pEdge edge1 = new Node(Edge(id2,weight,&graph[id1]));
+        pEdge edge2 = new Node(Edge(id1,weight,&graph[id2]));
+        edge1->data.friendEdge = edge2;   edge2->data.friendEdge = edge1;
         graph[location1].insert(edge1);    graph[location2].insert(edge2);
+        VertexPair vertices = std::make_pair(graph[location1].vertexID,graph[location2].vertexID);
+        edgeTable.insert(vertices, edge1); //has linked preview and next(I gusses
     }
     void removeEdge(V v1,V v2){
         if (!alias.containKey(v1) || !alias.containKey(v2))
             return;
-        Vertex id1 = alias[v1], id2 = alias[v2];
+        int id1 = alias[v1], id2 = alias[v2];
         size_t location1 = locateMap[id1],location2 = locateMap[id2];
-        graph[location1].removeNode(id2);    graph[location2].removeNode(id1);
+        VertexPair vertices = std::make_pair(id1,id2);
+        bool oneway = edgeTable.containKey(vertices);
+        if (oneway)
+            graph[location1].pop();
+        else
+            graph[location2].pop();
+        edgeTable.removeNode(vertices);
     }
-    bool hasEdge(V v1,V v2){
+    bool hasEdge(V v1,V v2) const{
         if (!alias.containKey(v1) || !alias.containKey(v2))
             return false;
-        Vertex id1 = alias[v1], id2 = alias[v2];
-        AdjList& list = graph[locateMap[id1]];
-        return (list.searchNode(id2) != list.end());
+        int id1 = alias[v1], id2 = alias[v2];
+        VertexPair verticesForward = std::make_pair(id1,id2);
+        VertexPair verticesBackward = std::make_pair(id2,id1);
+        return edgeTable.containKey(verticesForward) || edgeTable.containKey(verticesBackward);
     }
-    W getWeight(V v1,V v2){
-        if (!alias.containKey(v1) || !alias.containKey(v2))
+    W getWeight(V v1,V v2) const{
+        if (!hasEdge(v1, v2))
             return W();
-        Vertex id1 = alias[v1], id2 = alias[v2];
-        AdjList& list = graph[locateMap[id1]];
-        typename List<Edge>::iterator loc = list.searchNode(id2);
-        if (loc != list.end())
-            return (*loc).weight; //loc->weight failed for weight is not in node, how to solve?
+        int id1 = alias[v1], id2 = alias[v2];
+        VertexPair verticesForward = std::make_pair(id1,id2);
+        VertexPair verticesBackward = std::make_pair(id2,id1);
+        if (edgeTable.containKey(verticesForward))
+            return edgeTable[verticesForward]->data.weight;
+        if (edgeTable.containKey(verticesBackward))
+            return edgeTable[verticesBackward]->data.weight;
         return W();
     }
 };

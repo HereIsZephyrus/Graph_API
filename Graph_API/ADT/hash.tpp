@@ -18,7 +18,11 @@ inline int calcHash(const int& key) {
     size_t hashVal = key * VALUE_HASH;
     return static_cast<int>(hashVal);
 }
-
+template <>
+inline int calcHash(const VertexPair& key) {
+    size_t hashVal1 = key.first * VALUE_HASH, hashVal2 = key.second * VALUE_HASH;
+    return static_cast<int>(hashVal1 ^ hashVal2);
+}
 template <>
 inline int calcHash(const size_t& key) {
     size_t hashVal = key * VALUE_HASH;

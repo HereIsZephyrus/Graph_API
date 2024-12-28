@@ -54,14 +54,15 @@ public:
 
 template <class Object>
 class List {
-protected:
-    size_t size;
+public:
     struct Node{
         Object data;
         Node *prev, *next;
         Node(const Object& d = Object(), Node* p = nullptr, Node* n = nullptr):data(d),prev(p),next(n){}
         ~Node(){prev = nullptr; next = nullptr;}
     };
+protected:
+    size_t size;
     Node *head, *tail;
 public:
     List();

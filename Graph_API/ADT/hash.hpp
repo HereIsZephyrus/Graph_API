@@ -18,6 +18,7 @@
 #include <set>
 #include "linear.hpp"
 using std::string;
+typedef std::pair<int,int> VertexPair;
 namespace tcb{
 template <typename T>
 inline int calcHash(const T& key);
@@ -51,6 +52,7 @@ public:
 }
 template <typename Key,typename Element>
 class HashMap : public HashTable<Key,Element>{
+protected:
     std::set<Key> keySet;
     using Bucket = HashTable<Key,Element>::Bucket;
     Element& getRefValue(const Key&key);
