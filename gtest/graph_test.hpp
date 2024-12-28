@@ -14,6 +14,14 @@
 #include "../Graph_API/ADT/graph.hpp"
 using namespace tcb;
 using std::string;
-
+template <typename V,typename W>
+class WUSGraphTest : public ::testing::Test {
+protected:
+    WUSGraph<V,W> graph;
+    WUSGraphTest(){}
+    void SetUp() override {}
+};
+using WUSGraphIntTest = WUSGraphTest<int,double>;
+using WUSGraphStringTest = WUSGraphTest<string,double>;
 
 #endif /* graph_test_hpp */
