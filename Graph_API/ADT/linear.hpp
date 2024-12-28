@@ -8,7 +8,6 @@
 #ifndef linear_hpp
 #define linear_hpp
 
-#include <iostream>
 #include <cstring>
 #include <string>
 #include <stdexcept>
