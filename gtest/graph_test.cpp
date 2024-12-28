@@ -52,7 +52,7 @@ TEST_F(WUSGraphIntTest, RemoveEdgeDecreasesEdgeCount) {
     graph.removeEdge(1, 2);
     EXPECT_EQ(graph.edgeCount(), 0);
 }
-/*
+
 TEST_F(WUSGraphIntTest, HasEdgeReturnsTrueForAddedEdge) {
     graph.addVertex(1);
     graph.addVertex(2);
@@ -134,4 +134,3 @@ TEST_F(WUSGraphStringTest, GetWeightReturnsCorrectWeight) {
     graph.addEdge("A", "B", 1.0);
     EXPECT_EQ(graph.getWeight("A", "B"), 1.0);
 }
-*/

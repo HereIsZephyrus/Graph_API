@@ -48,7 +48,8 @@ class WUSGraph{
                 --friendBucket->size;
                 friendBucket = nullptr;
             }
-            delete orientEdge;
+            delete orientEdge; //why this will not double release?
+            this->remove(vertices);
         }
     };
     EdgeTable edgeTable;
@@ -125,8 +126,8 @@ public:
             return;
         int id1 = alias[v1], id2 = alias[v2];
         size_t location1 = locateMap[id1],location2 = locateMap[id2];
-        pEdge edge1 = new Node(Edge(id2,weight,&graph[id1]));
-        pEdge edge2 = new Node(Edge(id1,weight,&graph[id2]));
+        pEdge edge1 = new Node(Edge(id2,weight,&graph[id2]));
+        pEdge edge2 = new Node(Edge(id1,weight,&graph[id1]));
         edge1->data.friendEdge = edge2;   edge2->data.friendEdge = edge1;
         graph[location1].insert(edge1);    graph[location2].insert(edge2);
         VertexPair vertices = std::make_pair(id1,id2);
