@@ -52,6 +52,7 @@ template <typename Key,typename Element>
 class HashMap : public HashTable<Key,Element>{
     std::set<Key> keySet;
     using Bucket = HashTable<Key,Element>::Bucket;
+    Element& getRefValue(const Key&key);
 public:
     HashMap(float maxLoadFactor = 0.7,int capacity = 17):HashTable<Key,Element>(maxLoadFactor,capacity){};
     //required

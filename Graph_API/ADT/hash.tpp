@@ -186,6 +186,17 @@ Element HashMap<Key,Element>::getValue(const Key&key){
     return Element();
 }
 template <typename Key,typename Element>
+Element& HashMap<Key,Element>::getRefValue(const Key&key){
+    if (!keySet.contains(key))
+        throw std::runtime_error("Don't have the key'");
+    const Bucket& orientList = this->hashList[this->hash(key)];
+    for (typename Bucket::iterator itr = orientList.begin(); itr != orientList.end(); itr++){
+        if ((*itr).first == key)
+            return (*itr).second;
+    }
+    throw std::runtime_error("Don't have the value'");
+}
+template <typename Key,typename Element>
 bool HashMap<Key,Element>::insert(const Key& key,const Element& element){
     if (keySet.contains(key))
         remove(key);
@@ -208,7 +219,7 @@ Element HashMap<Key,Element>::remove(const Key& key){
 }
 template <typename Key,typename Element>
 Element& HashMap<Key,Element>::operator[](const Key& key){
-    return getValue(key);
+    return getRefValue(key);
 }
 template <typename Key,typename Element>
 const Element& HashMap<Key,Element>::operator[](const Key& key) const{
@@ -218,5 +229,5 @@ template <typename Key,typename Element>
 Element& HashMap<Key,Element>::at(const Key& key){
     if (!containKey(key))
         throw std::out_of_range("Don't have this key yet.'");
-    return getValue(key);
+    return getRefValue(key);
 }

@@ -35,6 +35,9 @@ TEST_F(HashIntTableTest, ResizeTest) {
         table.insert(i, i * 1.1);
     }
     ASSERT_GT(table.getCapacity(), 17);
+    for (int i = 0; i < 100; ++i) {
+        table.insert(i, i * 1.1);
+    }
 }
 
 TEST_F(HashStringTableTest, InsertTest) {
@@ -117,6 +120,42 @@ TEST_F(HashStringMapTest, ContainKeyTest) {
     map.insert("one", 1.1);
     map.insert("two", 2.2);
     ASSERT_TRUE(map.containKey("one"));
+    ASSERT_TRUE(map.containKey("two"));
+    ASSERT_FALSE(map.containKey("three"));
+}
+TEST_F(HashIntTableTest, ComplexHashTableTest) {
+    ASSERT_TRUE(table.insert(1, 1.1));
+    ASSERT_TRUE(table.insert(2, 2.2));
+    ASSERT_EQ(table.getSize(), 2);
+    ASSERT_TRUE(table.search(1, 1.1));
+    ASSERT_TRUE(table.search(2, 2.2));
+    ASSERT_FALSE(table.search(3, 3.3));
+    double value;
+    ASSERT_EQ(table.remove(1, value), 1);
+    ASSERT_EQ(value, 1.1);
+    ASSERT_EQ(table.getSize(), 1);
+    ASSERT_EQ(table.remove(3, value), 0);
+    for (int i = 0; i < 20; ++i) {
+        table.insert(i, i * 1.1);
+    }
+    ASSERT_GT(table.getCapacity(), 17);
+    for (int i = 0; i < 100; ++i) {
+        table.insert(i, i * 1.1);
+    }
+}
+
+TEST_F(HashStringMapTest, ComplexHashMapTest) {
+    ASSERT_TRUE(map.insert("one", 1.1));
+    ASSERT_TRUE(map.insert("two", 2.2));
+    ASSERT_EQ(map.getKeySet().size(), 2);
+    ASSERT_EQ(map.getValue("one"), 1.1);
+    ASSERT_EQ(map.getValue("two"), 2.2);
+    ASSERT_EQ(map.at("one"), 1.1);
+    ASSERT_EQ(map["two"], 2.2);
+    ASSERT_EQ(map.remove("one"), 1.1);
+    ASSERT_EQ(map.getKeySet().size(), 1);
+    ASSERT_EQ(map.getValue("one"), double());
+    ASSERT_FALSE(map.containKey("one"));
     ASSERT_TRUE(map.containKey("two"));
     ASSERT_FALSE(map.containKey("three"));
 }
