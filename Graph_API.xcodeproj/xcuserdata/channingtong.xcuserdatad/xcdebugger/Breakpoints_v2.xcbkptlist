@@ -18,36 +18,6 @@
             endingLineNumber = "108"
             landmarkName = "TEST_F()"
             landmarkType = "9">
-            <Locations>
-               <Location
-                  uuid = "9CB01DE8-8524-4F68-97E8-ACB75D1400B7 - 914b1b85f0bfb27f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "WUSGraphIntTest_ComplexGraphOperations_Test::TestBody()"
-                  moduleName = "Graph_API"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/channingtong/Program/Graph_API/gtest/graph_test.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "108"
-                  endingLineNumber = "108">
-               </Location>
-               <Location
-                  uuid = "9CB01DE8-8524-4F68-97E8-ACB75D1400B7 - 914b1b85f0bfb27f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "WUSGraphIntTest_ComplexGraphOperations_Test::TestBody()"
-                  moduleName = "Graph_API"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/channingtong/Program/Graph_API/gtest/graph_test.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "108"
-                  endingLineNumber = "108">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -69,15 +39,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2DFEE0BC-42BA-4E75-85CF-2BEC3B71BEB2"
+            uuid = "938A5139-9564-42E3-BA59-CE26E5176EA8"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "gtest/graph_test.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
             landmarkName = "TEST_F()"
             landmarkType = "9">
          </BreakpointContent>
