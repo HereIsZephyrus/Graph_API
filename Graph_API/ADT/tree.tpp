@@ -85,13 +85,13 @@ template <class Object,class TreeNode>
 TreeNode* BinarySearchTree<Object,TreeNode>::clone(TreeNode* rhst) {
     if (rhst == nullptr)
         return nullptr;
-    return new TreeNode(rhst->element,clone(rhst->left),clone(rhst->right));
+    return new node(rhst->element,clone(rhst->left),clone(rhst->right));
 }
 template <class Object>
 const AVLSearchTree<Object> & AVLSearchTree<Object>::operator = (const AVLSearchTree & rhs){
     if (this != &rhs){
         this->clear();
-        this->root = this->clone(rhs.root);
+        this->root = clone(rhs.root);
     }
     return *this;
 }
@@ -116,8 +116,8 @@ AVLTreeNode<Object>*AVLSearchTree<Object>::leftRotate(AVLTreeNode<Object>* x) {
     return y;
 }
 template <class Object>
-AVLTreeNode<Object>* AVLSearchTree<Object>::clone(AVLTreeNode<Object>* rhst) const{
+AVLTreeNode<Object>* AVLSearchTree<Object>::clone(AVLTreeNode<Object>* rhst){
     if (rhst == nullptr)
         return nullptr;
-    return new AVLTreeNode<Object>(rhst->element,rhst->height,clone(rhst->left),clone(rhst->right));
+    return new node(rhst);
 }

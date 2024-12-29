@@ -24,15 +24,19 @@ class WUSGraph{
     using Neighbor = Vector<std::pair<V,W>>;
     struct Edge;
     struct EdgeInfo{
-        VertexPair vertex;
+        int v1,v2;
         W weight;
         bool operator==(const EdgeInfo& other) const {
-            return vertex == other.vertex && weight == other.weight;
+            return v1 == other.v1 && v2 == other.v2 && weight == other.weight;
         }
         bool operator<(const EdgeInfo& other) const {
             return weight < other.weight;
         }
-        EdgeInfo(VertexPair v = std::make_pair(0,0),W w = W()):vertex(v),weight(w){}
+        bool operator>(const EdgeInfo& other) const {
+            return weight > other.weight;
+        }
+        EdgeInfo() : v1(0), v2(0), weight(W()) {}
+        EdgeInfo(int v1, int v2, W w) : v1(v1), v2(v2), weight(w) {}
     };
     struct Message{
         enum {add = true,remove = false} type;

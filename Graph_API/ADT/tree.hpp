@@ -53,8 +53,8 @@ public:
     }
     virtual void clear() = 0;
     virtual bool contains(const Object& x) const = 0;
-    virtual void insert(const Object& x, NodeStructure* & node) = 0;
-    virtual void remove(const Object& x, NodeStructure* & node) = 0;
+    //virtual void insert(const Object& x, NodeStructure* & node) = 0; node structure overload problem
+    //virtual void remove(const Object& x, NodeStructure* & node) = 0;
 };
 
 template <class Object,class TreeNode = BinaryTreeNode<Object>>
@@ -68,9 +68,9 @@ public:
     const BST & operator = (const BST & rhs);
     BinarySearchTree(const BST & rhs);
     friend ostream& operator<<(ostream& os, const BST& tree);
-    bool contains(const Object& x) const override{return contains(x, this->root);}
-    void insert(const Object& x){insert(x, this->root);}
-    void remove(const Object& x){remove(x, this->root);}
+    virtual bool contains(const Object& x) const override{return contains(x, this->root);}
+    virtual void insert(const Object& x){insert(x, this->root);}
+    virtual void remove(const Object& x){remove(x, this->root);}
     void clear() override{destroy(this->root);}
     const Object& findMin() const;
     const Object& findMax() const;
@@ -92,10 +92,10 @@ protected:
     bool contains(const Object& x, node* p) const;
     node* findMin(node* p) const;
     node* findMax(node * p) const;
-    node* clone(node* rhst);
-    void insert(const Object& x, node* & p) override{
+    virtual node* clone(node* rhst);
+    virtual void insert(const Object& x, node* & p){
         if ( p == nullptr)
-            p  = new TreeNode(x, nullptr, nullptr);
+            p  = new node(x, nullptr, nullptr);
         if (p->element == x)
             return;
         else if (x < p->element)
@@ -103,7 +103,7 @@ protected:
         else
             insert(x, p->right);
     }
-    void remove(const Object& x, node* & p) override{
+    virtual void remove(const Object& x, node* & p){
         if (p == nullptr)
             return;
         if (x < p->element)
@@ -116,7 +116,7 @@ protected:
                 remove(p->element, p->right);
             }
             else{
-                TreeNode* ret_p = p;
+                node* ret_p = p;
                 if (p->left == nullptr)
                     p = p->right;
                 else
@@ -137,8 +137,12 @@ struct AVLTreeNode{
     Object element;
     AVLTreeNode *left;
     AVLTreeNode *right;
-    AVLTreeNode(const Object& x, int h, AVLTreeNode* lt = nullptr, AVLTreeNode* rt = nullptr):
+    AVLTreeNode(const Object& x, AVLTreeNode* lt = nullptr, AVLTreeNode* rt = nullptr, int h = 1):
     element(x),height(h),left(lt),right(rt){}
+    AVLTreeNode(AVLTreeNode* rhs)
+    : element(rhs->element), height(rhs->height),
+      left(rhs->left ? new AVLTreeNode(*rhs->left) : nullptr),
+      right(rhs->right ? new AVLTreeNode(*rhs->right) : nullptr) {}
 };
 template <class Object>
 class AVLSearchTree : public BinarySearchTree<Object,AVLTreeNode<Object>>{
@@ -148,18 +152,18 @@ public:
     AVLSearchTree(){this->root = nullptr;}
     ~AVLSearchTree(){}
     const AVL & operator = (const AVL & rhs);
-    void insert(const Object& x){insert(x, this->root);}
-    void remove(const Object& x){remove(x, this->root);}
+    void insert(const Object& x) override{insert(x, this->root);}
+    void remove(const Object& x) override{remove(x, this->root);}
 private:
     int getHeight(node* p) const {return (p != nullptr) ? p->height : 0;}
     int getBalance(node* p) const {return (p != nullptr) ?  0 : getHeight(p->left) - getHeight(p->right);}
     node* rightRotate(node* y);
     node* leftRotate(node* x);
 protected:
-    node* clone(node* rhst) const;
-    void insert(const Object& x, node* & p){
+    node* clone(node* rhst) override;
+    void insert(const Object& x, node* & p) override{
         if ( p == nullptr)
-            p  = new node(x, 1, nullptr, nullptr);
+            p  = new node(x, nullptr, nullptr, 1);
         if (p->element == x)
             return;
         else if (x < p->element)
@@ -181,7 +185,7 @@ protected:
            p = leftRotate(p);
        }
     }
-    void remove(const Object& x, node* & p){
+    void remove(const Object& x, node* & p) override{
         if (p == nullptr)
             return;
         if (x < p->element)

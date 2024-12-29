@@ -28,4 +28,18 @@ protected:
         bst.insert(18);
     }
 };
+class AVLSearchTreeTest : public ::testing::Test {
+protected:
+    AVLSearchTree<int> avl;
+
+    void SetUp() override {
+        avl.insert(10);
+        avl.insert(5);
+        avl.insert(15);
+        avl.insert(3);
+        avl.insert(7);
+        avl.insert(12);
+        avl.insert(18);
+    }
+};
 #endif /* tree_test_hpp */
