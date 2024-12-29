@@ -14,14 +14,44 @@
 #include <map>
 #include <stdexcept>
 #include "hash.hpp"
+#include "disjsets.hpp"
+#include "heap.hpp"
+#include "tree.hpp"
 using std::string;
 namespace tcb {
+template <typename V, typename W>
+struct EdgeInfo{
+    V v1,v2;
+    W weight;
+    bool operator==(const EdgeInfo& other) const {
+        bool sameVertex = (v1 == other.v1 && v2 == other.v2) || (v1 == other.v2 && v2 == other.v1);
+        bool sameWeight = weight == other.weight;
+        return sameVertex && sameWeight;
+    }
+    bool operator<(const EdgeInfo& other) const {
+        return weight < other.weight;
+    }
+    bool operator>(const EdgeInfo& other) const {
+        return weight > other.weight;
+    }
+    EdgeInfo() : v1(V()), v2(V()), weight(W()) {}
+    EdgeInfo(V v1, V v2, W w) : v1(v1), v2(v2), weight(w) {}
+};
 template <typename V = string, typename W = double>
 class WUSGraph{
     using Neighbor = Vector<std::pair<V,W>>;
+    using EdgeInfo = EdgeInfo<V, W>;
     struct Edge;
+    struct Message{
+        enum {add = true,remove = false} type;
+        EdgeInfo edge;
+        bool operator==(const Message& other) const {
+            return type == other.type && edge == other.edge;
+        }
+    };
     class AdjList;
     class EdgeTable;
+    class MinSpanForest;
     using Node = typename List<Edge>::Node;
     using pEdge = Node*;
     using pList = AdjList*;
@@ -32,9 +62,10 @@ class WUSGraph{
     int vertexSize;
     int vertexCounter;
     size_t vertexNum;
+    MinSpanForest MST;
     void remove(size_t location,EdgeTable& edgeTable);
 public:
-    explicit WUSGraph(int v): vertexSize(v),vertexNum(0),vertexCounter(0){graph.reserve(v);}
+    explicit WUSGraph(int v): vertexSize(v),vertexNum(0),vertexCounter(0),MST(*this){graph.reserve(v);}
     //required
     size_t vertexCount() const {return vertexNum;}
     size_t edgeCount() const {return edgeTable.getSize();}
@@ -48,6 +79,62 @@ public:
     bool hasEdge(V v1,V v2) const;
     W getWeight(V v1,V v2) const;
     Neighbor getNeighbor(V checkNode);
+    const Vector<EdgeInfo>& getMST(){
+        MST.calcMST();
+        return MST.getMSTEdges();
+    }
+    W getMSTWeight() {return MST.getTotalWeight();}
+};
+template <typename V, typename W>
+class WUSGraph<V,W>::MinSpanForest{
+    Queue<Message> MsgQue;
+    Vector<EdgeInfo> mstEdges;
+    W totalWeight;
+    AVLSearchTree<EdgeInfo> edges;
+    WUSGraph& graph;
+    void ProcessMessage(){
+        while (!MsgQue.isEmpty()) {
+            Message msg = MsgQue.front();
+            MsgQue.dequeue();
+            if (msg.type == Message::add)
+                edges.insert(msg.edge);
+            else
+                edges.remove(msg.edge);
+        }
+    }
+public:
+    MinSpanForest(WUSGraph& graph) : totalWeight(0),graph(graph) {}
+    void PushMessage(const Message& Message) {MsgQue.enqueue(Message);}
+    void calcMST() {
+        if (MsgQue.isEmpty())
+            return;
+        DisjSets ds(static_cast<int>(graph.vertexCount()));
+        ProcessMessage();
+        Queue<EdgeInfo> addedEdge;
+        mstEdges.clear();
+        totalWeight = 0;
+        while (mstEdges.getSize() < graph.vertexCount() - 1) {
+            EdgeInfo edge = edges.findMin();
+            addedEdge.enqueue(edge);
+            edges.remove(edge);
+            int uset = ds.find(static_cast<int>(graph.locateMap[edge.v1]));
+            int vset = ds.find(static_cast<int>(graph.locateMap[edge.v2]));
+            if (uset != vset) {
+                mstEdges.push_back(edge);
+                totalWeight += edge.weight;
+                ds.unionSets(uset, vset);
+            }
+        }
+        while (!addedEdge.isEmpty()){
+            edges.insert(addedEdge.front());
+            addedEdge.dequeue();
+        }
+    }
+    const Vector<EdgeInfo>& getMSTEdges() const {return mstEdges;}
+    W getTotalWeight() {
+        calcMST();
+        return totalWeight;
+    }
 };
 }
 #include "graph.tpp"

@@ -209,6 +209,34 @@ TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
         }
     }
 }
+TEST_F(WUSGraphIntTest, MSTCalculations) {
+    for (int i = 1; i <= 10; ++i)
+        graph.addVertex(i);
+    graph.addEdge(1, 2, 4);
+    graph.addEdge(1, 5, 2);
+    graph.addEdge(2, 3, 7);
+    graph.addEdge(2, 6, 1);
+    graph.addEdge(3, 6, 2);
+    graph.addEdge(3, 4, 5);
+    graph.addEdge(5, 6, 3);
+    graph.addEdge(7, 6, 2);
+    graph.addEdge(4, 6, 4);
+    graph.addEdge(4, 8, 1);
+    graph.addEdge(9, 8, 3);
+    graph.addEdge(10, 8, 5);
+    graph.addEdge(9, 8, 6);
+    auto mstEdges = graph.getMST();
+    double totalWeight = graph.getMSTWeight();
+    EXPECT_EQ(mstEdges.getSize(), 9);
+    EXPECT_DOUBLE_EQ(totalWeight, 23);
+    graph.removeEdge(6, 3);
+    graph.addEdge(8, 3, 3);
+    totalWeight = graph.getMSTWeight();
+    EXPECT_DOUBLE_EQ(totalWeight, 24);
+    graph.removeVertex(2);
+    totalWeight = graph.getMSTWeight();
+    EXPECT_DOUBLE_EQ(totalWeight, 21);
+}
 TEST_F(WUSGraphStringTest, VertexCountInitiallyZero) {
     EXPECT_EQ(graph.vertexCount(), 0);
 }

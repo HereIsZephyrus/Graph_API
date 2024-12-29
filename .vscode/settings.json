@@ -33,6 +33,12 @@
         "optional": "cpp",
         "ratio": "cpp",
         "variant": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "__hash_table": "cpp",
+        "__tree": "cpp",
+        "__assertion_handler": "cpp",
+        "__config": "cpp",
+        "filesystem": "cpp",
+        "print": "cpp"
     }
 }

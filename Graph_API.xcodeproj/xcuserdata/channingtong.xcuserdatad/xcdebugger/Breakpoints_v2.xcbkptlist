@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "1630B2D1-B42C-46CD-9C30-214F408142B9"
+            uuid = "0AD0A68E-1C08-4B18-8E4B-C05E5394AD44"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "gtest/graph_test.cpp"
+            filePath = "Graph_API/ADT/graph.hpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "157"
-            endingLineNumber = "157"
-            landmarkName = "TEST_F()"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
+            landmarkName = "calcMST()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

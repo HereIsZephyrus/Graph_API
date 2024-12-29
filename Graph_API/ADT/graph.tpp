@@ -49,6 +49,7 @@ public:
     using iterator = typename List<Edge>::iterator;
     using const_iterator = typename List<Edge>::const_iterator;
     int vertexID;
+    V vertex;
     void insert(pEdge edge){
         Node *p = this->begin()._ptr();
         edge->prev = p->prev;
@@ -57,7 +58,7 @@ public:
         p->prev = p->prev->next = edge;
     }
     void pop() {--this->size;}
-    AdjList(int ID = -1):vertexID(ID){}
+    AdjList(V v = V(),int ID = -1):vertex(v),vertexID(ID){}
     size_t& refSize() {return this->size;}
 };
 template <typename V, typename W>
@@ -77,10 +78,17 @@ void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
         }
         VertexPair verticesForward = std::make_pair(delList.vertexID,orientID); //I can't use it->weight since weight is not the member of Node but the menber of data,how to overload?
         VertexPair verticesBackward = std::make_pair(orientID,delList.vertexID);
-        if (edgeTable.containKey(verticesForward))
+        W weight;
+        if (edgeTable.containKey(verticesForward)){
+            weight = edgeTable[verticesForward]->data.weight;
             edgeTable.remove(verticesForward);
-        if (edgeTable.containKey(verticesBackward))
+        }
+        if (edgeTable.containKey(verticesBackward)){
+            weight = edgeTable[verticesBackward]->data.weight;
             edgeTable.remove(verticesBackward);
+        }
+        EdgeInfo edgeInfo(orientEdge->data.orient,delList.vertex,weight);
+        MST.PushMessage(Message(Message::remove,edgeInfo));
     }
     delList.clear();
 }
@@ -89,7 +97,7 @@ void WUSGraph<V,W>::addVertex(V newVertex){
     if (alias.containKey(newVertex))
         return;
     alias.insert(newVertex,vertexCounter);
-    graph.push_back(AdjList(vertexCounter));
+    graph.push_back(AdjList(newVertex,vertexCounter));
     locateMap.insert(vertexCounter, vertexNum);
     ++vertexCounter;
     ++vertexNum;
@@ -124,7 +132,9 @@ void WUSGraph<V,W>::addEdge(V v1,V v2,W weight){
     edge1->data.friendEdge = edge2;   edge2->data.friendEdge = edge1;
     graph[location1].insert(edge1);    graph[location2].insert(edge2);
     VertexPair vertices = std::make_pair(id1,id2);
-    edgeTable.insert(vertices, edge1); //has linked preview and next(I gusses
+    edgeTable.insert(vertices, edge1);
+    EdgeInfo edgeInfo(v1,v2,weight);
+    MST.PushMessage(Message(Message::add,edgeInfo));
 }
 template <typename V, typename W>
 void WUSGraph<V,W>::removeEdge(V v1,V v2){
@@ -136,10 +146,17 @@ void WUSGraph<V,W>::removeEdge(V v1,V v2){
     VertexPair verticesBackward = std::make_pair(id2,id1);
     graph[location1].pop();
     graph[location2].pop();
-    if (edgeTable.containKey(verticesForward))
+    W weight;
+    if (edgeTable.containKey(verticesForward)){
+        weight = edgeTable[verticesForward]->data.weight;
         edgeTable.removeNode(verticesForward,true);
-    if (edgeTable.containKey(verticesBackward))
+    }
+    if (edgeTable.containKey(verticesBackward)){
+        weight = edgeTable[verticesBackward]->data.weight;
         edgeTable.removeNode(verticesBackward,false);
+    }
+    EdgeInfo edgeInfo(v1,v2,weight);
+    MST.PushMessage(Message(Message::remove,edgeInfo));
 }
 template <typename V, typename W>
 bool WUSGraph<V,W>::hasEdge(V v1,V v2) const{

@@ -35,4 +35,11 @@ protected:
 using ListIntTest = ListTest<int>;
 using ListDoubleTest = ListTest<double>;
 using ListStringTest = ListTest<string>;
+
+class QueueTest : public ::testing::Test {
+protected:
+    Queue<int> queue;
+    QueueTest(){}
+    void SetUp() override {}
+};
 #endif /* linear_test_hpp */
