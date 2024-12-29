@@ -20,4 +20,47 @@ TEST_F(GraphAPITest, CreateGraphFromFile) {
     EXPECT_TRUE(graph.hasEdge("D", "B"));
     EXPECT_DOUBLE_EQ(graph.getWeight("A", "B"), 1.0);
     EXPECT_DOUBLE_EQ(graph.getWeight("B", "D"), 3.0);
+    graph.removeEdge("A", "B");
+    EXPECT_FALSE(graph.hasEdge("A", "B"));
+
+    graph.addEdge("A", "C", 2.5);
+    EXPECT_TRUE(graph.hasEdge("A", "C"));
+    EXPECT_DOUBLE_EQ(graph.getWeight("A", "C"), 2.5);
+
+    graph.removeVertex("E");
+    EXPECT_FALSE(graph.isVertex("E"));
+
+    // Additional complex operations
+    graph.addVertex("F");
+    EXPECT_TRUE(graph.isVertex("F"));
+
+    graph.addEdge("F", "C", 4.0);
+    EXPECT_TRUE(graph.hasEdge("F", "C"));
+    EXPECT_DOUBLE_EQ(graph.getWeight("F", "C"), 4.0);
+
+    graph.addEdge("F", "D", 5.0);
+    EXPECT_TRUE(graph.hasEdge("F", "D"));
+    EXPECT_DOUBLE_EQ(graph.getWeight("F", "D"), 5.0);
+
+    graph.removeEdge("F", "C");
+    EXPECT_FALSE(graph.hasEdge("F", "C"));
+
+    graph.removeVertex("F");
+    EXPECT_FALSE(graph.isVertex("F"));
+
+    graph.addEdge("B", "C", 1.5);
+    EXPECT_TRUE(graph.hasEdge("B", "C"));
+    EXPECT_DOUBLE_EQ(graph.getWeight("B", "C"), 1.5);
+
+    graph.removeEdge("B", "C");
+    EXPECT_FALSE(graph.hasEdge("B", "C"));
+
+    graph.addEdge("A", "D", 2.0);
+    EXPECT_TRUE(graph.hasEdge("A", "D"));
+    EXPECT_DOUBLE_EQ(graph.getWeight("A", "D"), 2.0);
+
+    graph.removeVertex("D");
+    EXPECT_FALSE(graph.isVertex("D"));
+    EXPECT_FALSE(graph.hasEdge("A", "D"));
+    EXPECT_FALSE(graph.hasEdge("F", "D"));
 }
