@@ -54,6 +54,7 @@ class WUSGraph{
             }
             delete orientEdge;
             this->remove(vertices);
+            
             return ret_p;
         }
     };
@@ -84,18 +85,26 @@ class WUSGraph{
     size_t vertexNum;
     void remove(size_t location,EdgeTable& edgeTable){
         AdjList& delList = graph[location];
-        typename AdjList::iterator it = delList.begin();
-        while (!delList.isEmpty()){
-            int orientID = it->data.orient;
+        for (typename AdjList::iterator orientEdge = delList.begin(); orientEdge!= delList.end(); orientEdge++){
+            //pEdge orientEdge = it->data;
+            pEdge friendEdge = orientEdge->data.friendEdge;
+            pList friendBucket = orientEdge->data.friendBucket;
+            int orientID = orientEdge->data.orient;
+            graph[orientID].pop();
+            if (friendEdge != nullptr){
+                friendEdge->prev->next = friendEdge->next;
+                friendEdge->next->prev = friendEdge->prev;
+                delete friendEdge;
+                friendBucket = nullptr;
+            }
             VertexPair verticesForward = std::make_pair(delList.vertexID,orientID); //I can't use it->weight since weight is not the member of Node but the menber of data,how to overload?
             VertexPair verticesBackward = std::make_pair(orientID,delList.vertexID);
-            delList.pop();
-            graph[orientID].pop();
             if (edgeTable.containKey(verticesForward))
-                it = edgeTable.removeNode(verticesForward,true);
+                edgeTable.remove(verticesForward);
             if (edgeTable.containKey(verticesBackward))
-                it = edgeTable.removeNode(verticesBackward,false);
+                edgeTable.remove(verticesBackward);
         }
+        delList.clear();
     }
 public:
     explicit WUSGraph(int v): vertexSize(v),vertexNum(0),vertexCounter(0){

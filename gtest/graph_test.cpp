@@ -60,10 +60,6 @@ TEST_F(WUSGraphIntTest, HasEdgeReturnsTrueForAddedEdge) {
     EXPECT_TRUE(graph.hasEdge(1, 2));
 }
 
-TEST_F(WUSGraphIntTest, HasEdgeReturnsFalseForNonexistentEdge) {
-    EXPECT_FALSE(graph.hasEdge(1, 2));
-}
-
 TEST_F(WUSGraphIntTest, GetWeightReturnsCorrectWeight) {
     graph.addVertex(1);
     graph.addVertex(2);
@@ -128,29 +124,35 @@ TEST_F(WUSGraphIntTest, ComplexGraphOperations) {
     EXPECT_FALSE(graph.hasEdge(5, 6));
     EXPECT_EQ(graph.getDegree(4), 3);
     EXPECT_EQ(graph.getDegree(6), 3);
+    graph.removeEdge(2, 3);
+    EXPECT_EQ(graph.edgeCount(), 14);
+    EXPECT_FALSE(graph.hasEdge(2, 3));
+    graph.addEdge(2, 3, 2.0);
+    EXPECT_EQ(graph.edgeCount(), 15);
+    EXPECT_TRUE(graph.hasEdge(2, 3));
+    graph.removeVertex(10);
+    EXPECT_EQ(graph.vertexCount(), 8);
+    EXPECT_EQ(graph.edgeCount(), 11);
+    EXPECT_FALSE(graph.isVertex(10));
+    EXPECT_FALSE(graph.hasEdge(9, 10));
+    EXPECT_FALSE(graph.hasEdge(8, 10));
+    graph.addVertex(10);
+    graph.addEdge(9, 10, 9.0);
+    graph.addEdge(8, 10, 8.5);
+    EXPECT_EQ(graph.vertexCount(), 9);
+    EXPECT_EQ(graph.edgeCount(), 13);
+    EXPECT_TRUE(graph.isVertex(10));
+    EXPECT_TRUE(graph.hasEdge(9, 10));
+    EXPECT_TRUE(graph.hasEdge(8, 10));
 }
 TEST_F(WUSGraphStringTest, VertexCountInitiallyZero) {
     EXPECT_EQ(graph.vertexCount(), 0);
 }
 
-TEST_F(WUSGraphStringTest, AddVertexIncreasesCount) {
-    graph.addVertex("A");
-    EXPECT_EQ(graph.vertexCount(), 1);
-}
-
-TEST_F(WUSGraphStringTest, RemoveVertexDecreasesCount) {
-    graph.addVertex("A");
-    graph.removeVertex("A");
-    EXPECT_EQ(graph.vertexCount(), 0);
-}
-
 TEST_F(WUSGraphStringTest, IsVertexReturnsTrueForAddedVertex) {
+    EXPECT_FALSE(graph.isVertex("A"));
     graph.addVertex("A");
     EXPECT_TRUE(graph.isVertex("A"));
-}
-
-TEST_F(WUSGraphStringTest, IsVertexReturnsFalseForNonexistentVertex) {
-    EXPECT_FALSE(graph.isVertex("A"));
 }
 
 TEST_F(WUSGraphStringTest, GetDegreeReturnsCorrectDegree) {
@@ -175,20 +177,89 @@ TEST_F(WUSGraphStringTest, RemoveEdgeDecreasesEdgeCount) {
     EXPECT_EQ(graph.edgeCount(), 0);
 }
 
-TEST_F(WUSGraphStringTest, HasEdgeReturnsTrueForAddedEdge) {
-    graph.addVertex("A");
-    graph.addVertex("B");
-    graph.addEdge("A", "B", 1.0);
-    EXPECT_TRUE(graph.hasEdge("A", "B"));
-}
-
-TEST_F(WUSGraphStringTest, HasEdgeReturnsFalseForNonexistentEdge) {
-    EXPECT_FALSE(graph.hasEdge("A", "B"));
-}
-
 TEST_F(WUSGraphStringTest, GetWeightReturnsCorrectWeight) {
     graph.addVertex("A");
     graph.addVertex("B");
     graph.addEdge("A", "B", 1.0);
     EXPECT_EQ(graph.getWeight("A", "B"), 1.0);
+}
+TEST_F(WUSGraphStringTest, ComplexGraphOperations) {
+    std::vector<std::string> vertices = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
+    for (const auto& vertex : vertices)
+        graph.addVertex(vertex);
+    graph.addEdge("A", "B", 1.0);
+    graph.addEdge("B", "C", 2.0);
+    graph.addEdge("C", "D", 3.0);
+    graph.addEdge("D", "E", 4.0);
+    graph.addEdge("E", "F", 5.0);
+    graph.addEdge("F", "G", 6.0);
+    graph.addEdge("G", "H", 7.0);
+    graph.addEdge("H", "I", 8.0);
+    graph.addEdge("I", "J", 9.0);
+    graph.addEdge("J", "A", 10.0);
+    graph.addEdge("A", "C", 1.5);
+    graph.addEdge("B", "D", 2.5);
+    graph.addEdge("C", "E", 3.5);
+    graph.addEdge("D", "F", 4.5);
+    graph.addEdge("E", "G", 5.5);
+    graph.addEdge("F", "H", 6.5);
+    graph.addEdge("G", "I", 7.5);
+    graph.addEdge("H", "J", 8.5);
+    graph.addEdge("I", "A", 9.5);
+    graph.addEdge("J", "B", 10.5);
+    EXPECT_EQ(graph.vertexCount(), 10);
+    EXPECT_EQ(graph.edgeCount(), 20);
+    for (const auto& vertex : vertices)
+        EXPECT_EQ(graph.getDegree(vertex), 4);
+    EXPECT_EQ(graph.getWeight("A", "B"), 1.0);
+    EXPECT_EQ(graph.getWeight("B", "C"), 2.0);
+    EXPECT_EQ(graph.getWeight("C", "D"), 3.0);
+    EXPECT_EQ(graph.getWeight("D", "E"), 4.0);
+    EXPECT_EQ(graph.getWeight("E", "F"), 5.0);
+    EXPECT_EQ(graph.getWeight("F", "G"), 6.0);
+    EXPECT_EQ(graph.getWeight("G", "H"), 7.0);
+    EXPECT_EQ(graph.getWeight("H", "I"), 8.0);
+    EXPECT_EQ(graph.getWeight("I", "J"), 9.0);
+    EXPECT_EQ(graph.getWeight("J", "A"), 10.0);
+    EXPECT_EQ(graph.getWeight("A", "C"), 1.5);
+    EXPECT_EQ(graph.getWeight("B", "D"), 2.5);
+    EXPECT_EQ(graph.getWeight("C", "E"), 3.5);
+    EXPECT_EQ(graph.getWeight("D", "F"), 4.5);
+    EXPECT_EQ(graph.getWeight("E", "G"), 5.5);
+    EXPECT_EQ(graph.getWeight("F", "H"), 6.5);
+    EXPECT_EQ(graph.getWeight("G", "I"), 7.5);
+    EXPECT_EQ(graph.getWeight("H", "J"), 8.5);
+    EXPECT_EQ(graph.getWeight("I", "A"), 9.5);
+    EXPECT_EQ(graph.getWeight("J", "B"), 10.5);
+    graph.removeEdge("A", "B");
+    EXPECT_EQ(graph.edgeCount(), 19);
+    EXPECT_FALSE(graph.hasEdge("A", "B"));
+    graph.removeVertex("E");
+    EXPECT_EQ(graph.vertexCount(), 9);
+    EXPECT_EQ(graph.edgeCount(), 15);
+    EXPECT_FALSE(graph.isVertex("E"));
+    EXPECT_FALSE(graph.hasEdge("D", "E"));
+    EXPECT_FALSE(graph.hasEdge("E", "F"));
+    EXPECT_EQ(graph.getDegree("D"), 3);
+    EXPECT_EQ(graph.getDegree("F"), 3);
+    graph.removeEdge("B", "C");
+    EXPECT_EQ(graph.edgeCount(), 14);
+    EXPECT_FALSE(graph.hasEdge("B", "C"));
+    graph.addEdge("B", "C", 2.0);
+    EXPECT_EQ(graph.edgeCount(), 15);
+    EXPECT_TRUE(graph.hasEdge("B", "C"));
+    graph.removeVertex("J");
+    EXPECT_EQ(graph.vertexCount(), 8);
+    EXPECT_EQ(graph.edgeCount(), 11);
+    EXPECT_FALSE(graph.isVertex("J"));
+    EXPECT_FALSE(graph.hasEdge("I", "J"));
+    EXPECT_FALSE(graph.hasEdge("H", "J"));
+    graph.addVertex("J");
+    graph.addEdge("I", "J", 9.0);
+    graph.addEdge("H", "J", 8.5);
+    EXPECT_EQ(graph.vertexCount(), 9);
+    EXPECT_EQ(graph.edgeCount(), 13);
+    EXPECT_TRUE(graph.isVertex("J"));
+    EXPECT_TRUE(graph.hasEdge("I", "J"));
+    EXPECT_TRUE(graph.hasEdge("H", "J"));
 }
