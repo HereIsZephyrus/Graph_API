@@ -665,3 +665,56 @@ TEST_F(ListStringTest, ClearFunction) {
     EXPECT_EQ(list.isEmpty(), true);
     EXPECT_EQ(list.getSize(), 0);
 }
+
+TEST_F(QueueTest, EnqueueFunction) {
+    queue.enqueue(1);
+    EXPECT_EQ(queue.front(), 1);
+    queue.enqueue(2);
+    EXPECT_EQ(queue.front(), 1);
+    queue.enqueue(3);
+    EXPECT_EQ(queue.front(), 1);
+    EXPECT_EQ(queue.getSize(), 3);
+}
+
+TEST_F(QueueTest, DequeueFunction) {
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    queue.dequeue();
+    EXPECT_EQ(queue.front(), 2);
+    queue.dequeue();
+    EXPECT_EQ(queue.front(), 3);
+    queue.dequeue();
+    EXPECT_EQ(queue.isEmpty(), true);
+    EXPECT_THROW(queue.dequeue(), std::out_of_range); // Dequeue from empty queue
+}
+
+TEST_F(QueueTest, FrontFunction) {
+    EXPECT_THROW(queue.front(), std::out_of_range); // Front from empty queue
+    queue.enqueue(1);
+    EXPECT_EQ(queue.front(), 1);
+    queue.enqueue(2);
+    EXPECT_EQ(queue.front(), 1);
+    queue.dequeue();
+    EXPECT_EQ(queue.front(), 2);
+}
+
+TEST_F(QueueTest, IsEmptyFunction) {
+    EXPECT_EQ(queue.isEmpty(), true);
+    queue.enqueue(1);
+    EXPECT_EQ(queue.isEmpty(), false);
+    queue.dequeue();
+    EXPECT_EQ(queue.isEmpty(), true);
+}
+
+TEST_F(QueueTest, GetSizeFunction) {
+    EXPECT_EQ(queue.getSize(), 0);
+    queue.enqueue(1);
+    EXPECT_EQ(queue.getSize(), 1);
+    queue.enqueue(2);
+    EXPECT_EQ(queue.getSize(), 2);
+    queue.dequeue();
+    EXPECT_EQ(queue.getSize(), 1);
+    queue.dequeue();
+    EXPECT_EQ(queue.getSize(), 0);
+}

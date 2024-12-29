@@ -78,7 +78,7 @@ public:
             current = insert(current,*it);
         return *this;
     }
-    bool isEmpty(){return size == 0;}
+    bool isEmpty() const{return size == 0;}
     size_t getSize() const {return size;}
     
     class iterator;
@@ -103,6 +103,25 @@ public:
     iterator remove(iterator it);
     iterator remove(iterator start,iterator end);
     void clear();
+};
+
+template <class Object>
+class Queue : public List<Object> {
+public:
+    Queue() : List<Object>() {}
+    void enqueue(const Object& x) {this->push_back(x);}
+    void dequeue() {
+        if (this->isEmpty())
+            throw std::out_of_range("Queue is empty");
+        this->pop_front();
+    }
+    const Object& front() const {
+        if (this->isEmpty())
+            throw std::out_of_range("Queue is empty");
+        return List<Object>::front();
+    }
+    bool isEmpty() const {return List<Object>::isEmpty();}
+    size_t getSize() const {return List<Object>::getSize();}
 };
 }// namespace tcb;
 #include "linear.tpp"
