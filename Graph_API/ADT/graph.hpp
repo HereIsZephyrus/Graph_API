@@ -15,14 +15,31 @@
 #include <stdexcept>
 #include "hash.hpp"
 #include "disjsets.hpp"
+#include "heap.hpp"
+#include "tree.hpp"
 using std::string;
 namespace tcb {
 template <typename V = string, typename W = double>
 class WUSGraph{
     using Neighbor = Vector<std::pair<V,W>>;
     struct Edge;
+    struct EdgeInfo{
+        VertexPair vertex;
+        W weight;
+        bool operator==(const EdgeInfo& other) const {
+            return vertex == other.vertex && weight == other.weight;
+        }
+        bool operator<(const EdgeInfo& other) const {
+            return weight < other.weight;
+        }
+    };
+    struct Message{
+        enum {add = true,remove = false} type;
+        EdgeInfo edge;
+    };
     class AdjList;
     class EdgeTable;
+    class MinSpanForest;
     using Node = typename List<Edge>::Node;
     using pEdge = Node*;
     using pList = AdjList*;
@@ -49,6 +66,43 @@ public:
     bool hasEdge(V v1,V v2) const;
     W getWeight(V v1,V v2) const;
     Neighbor getNeighbor(V checkNode);
+};
+template <typename V, typename W>
+class WUSGraph<V,W>::MinSpanForest{
+    Queue<Message> MsgQue;
+    Vector<EdgeInfo> mstEdges;
+    W totalWeight;
+    AVLSearchTree<EdgeInfo> edges;
+    WUSGraph& graph;
+    void ProcessMessage(){
+        while (!MsgQue.isEmpty()) {
+            Message msg = MsgQue.front();
+            MsgQue.dequeue();
+            if (msg.type == Message::add)
+                edges.insert(msg.edge);
+            else
+                edges.remove(msg.edge);
+        }
+    }
+public:
+    MinSpanForest(WUSGraph& graph) : totalWeight(0),graph(graph) {}
+    void PushMessage(const Message& Message) {MsgQue.enqueue(Message);}
+    void kruskal() {
+        DisjSets ds(graph.vertexCount());
+        ProcessMessage();
+        for (const auto& edge : edges) {
+            int root1 = ds.find(graph.alias[edge.vertex1]);
+            int root2 = ds.find(graph.alias[edge.vertex2]);
+            if (root1 != root2) {
+                mstEdges.push_back(edge);
+                totalWeight += edge.weight;
+                ds.unionSets(root1, root2);
+            }
+        }
+    }
+
+    const Vector<Edge>& getMSTEdges() const {return mstEdges;}
+    W getTotalWeight() const {return totalWeight;}
 };
 }
 #include "graph.tpp"
