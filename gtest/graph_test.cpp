@@ -83,10 +83,20 @@ TEST_F(WUSGraphIntTest, ComplexGraphOperations) {
     graph.addEdge(8, 9, 8.0);
     graph.addEdge(9, 10, 9.0);
     graph.addEdge(10, 1, 10.0);
+    graph.addEdge(1, 3, 1.5);
+    graph.addEdge(2, 4, 2.5);
+    graph.addEdge(3, 5, 3.5);
+    graph.addEdge(4, 6, 4.5);
+    graph.addEdge(5, 7, 5.5);
+    graph.addEdge(6, 8, 6.5);
+    graph.addEdge(7, 9, 7.5);
+    graph.addEdge(8, 10, 8.5);
+    graph.addEdge(9, 1, 9.5);
+    graph.addEdge(10, 2, 10.5);
     EXPECT_EQ(graph.vertexCount(), 10);
-    EXPECT_EQ(graph.edgeCount(), 10);
+    EXPECT_EQ(graph.edgeCount(), 20);
     for (int i = 1; i <= 10; ++i)
-        EXPECT_EQ(graph.getDegree(i), 2);
+        EXPECT_EQ(graph.getDegree(i), 4);
     EXPECT_EQ(graph.getWeight(1, 2), 1.0);
     EXPECT_EQ(graph.getWeight(2, 3), 2.0);
     EXPECT_EQ(graph.getWeight(3, 4), 3.0);
@@ -97,15 +107,27 @@ TEST_F(WUSGraphIntTest, ComplexGraphOperations) {
     EXPECT_EQ(graph.getWeight(8, 9), 8.0);
     EXPECT_EQ(graph.getWeight(9, 10), 9.0);
     EXPECT_EQ(graph.getWeight(10, 1), 10.0);
+    EXPECT_EQ(graph.getWeight(1, 3), 1.5);
+    EXPECT_EQ(graph.getWeight(2, 4), 2.5);
+    EXPECT_EQ(graph.getWeight(3, 5), 3.5);
+    EXPECT_EQ(graph.getWeight(4, 6), 4.5);
+    EXPECT_EQ(graph.getWeight(5, 7), 5.5);
+    EXPECT_EQ(graph.getWeight(6, 8), 6.5);
+    EXPECT_EQ(graph.getWeight(7, 9), 7.5);
+    EXPECT_EQ(graph.getWeight(8, 10), 8.5);
+    EXPECT_EQ(graph.getWeight(9, 1), 9.5);
+    EXPECT_EQ(graph.getWeight(10, 2), 10.5);
     graph.removeEdge(1, 2);
-    EXPECT_EQ(graph.edgeCount(), 9);
+    EXPECT_EQ(graph.edgeCount(), 19);
     EXPECT_FALSE(graph.hasEdge(1, 2));
     graph.removeVertex(5);
     EXPECT_EQ(graph.vertexCount(), 9);
-    EXPECT_EQ(graph.edgeCount(), 7);
+    EXPECT_EQ(graph.edgeCount(), 15);
     EXPECT_FALSE(graph.isVertex(5));
     EXPECT_FALSE(graph.hasEdge(4, 5));
     EXPECT_FALSE(graph.hasEdge(5, 6));
+    EXPECT_EQ(graph.getDegree(4), 3);
+    EXPECT_EQ(graph.getDegree(6), 3);
 }
 TEST_F(WUSGraphStringTest, VertexCountInitiallyZero) {
     EXPECT_EQ(graph.vertexCount(), 0);

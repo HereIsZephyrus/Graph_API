@@ -142,6 +142,7 @@ void HashTable<Key,Element>::resizeTable(){
     clear();
     capacity = nextPrime(capacity * 2);
     hashList.resizeList(capacity);
+    size = 0;
     for (typename Vector<Bucket>::iterator bucket = oldHashList.begin(); bucket != oldHashList.end(); bucket++){
         for (typename Bucket::iterator it = bucket->begin(); it != bucket->end(); it++)
             insert(*it);

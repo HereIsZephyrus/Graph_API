@@ -35,22 +35,17 @@ class WUSGraph{
     };
     class EdgeTable : public HashMap<VertexPair, pEdge>{
     public:
-        pEdge removeNode(VertexPair vertices){
+        pEdge removeNode(VertexPair vertices,bool oneway){
             using Bucket = HashMap<VertexPair, pEdge>::Bucket;
             //I can't use the getRef below, is it return a copy of the pointer? why?
             pEdge orientEdge = this->getRefValue(vertices);
-            //that's why delete orientEdge will not raise a double release!
-            const Bucket& orientList = this->hashList[this->hash(vertices)];
-            typename Bucket::iterator itr = orientList.begin();
-            for (; itr != orientList.end(); itr++){
-                if ((*itr).first == vertices)
-                    break;
-            }
             pEdge ret_p = orientEdge->next;
             orientEdge->prev->next = orientEdge->next;
             orientEdge->next->prev = orientEdge->prev;
             pEdge friendEdge = orientEdge->data.friendEdge;
             pList friendBucket = orientEdge->data.friendBucket;
+            if (!oneway)
+                ret_p = friendEdge->next;
             if (friendEdge != nullptr){
                 friendEdge->prev->next = friendEdge->next;
                 friendEdge->next->prev = friendEdge->prev;
@@ -97,9 +92,9 @@ class WUSGraph{
             delList.pop();
             graph[orientID].pop();
             if (edgeTable.containKey(verticesForward))
-                it = edgeTable.removeNode(verticesForward);
+                it = edgeTable.removeNode(verticesForward,true);
             if (edgeTable.containKey(verticesBackward))
-                it = edgeTable.removeNode(verticesBackward);
+                it = edgeTable.removeNode(verticesBackward,false);
         }
     }
 public:
@@ -157,9 +152,9 @@ public:
         graph[location1].pop();
         graph[location2].pop();
         if (edgeTable.containKey(verticesForward))
-            edgeTable.removeNode(verticesForward);
+            edgeTable.removeNode(verticesForward,true);
         if (edgeTable.containKey(verticesBackward))
-            edgeTable.removeNode(verticesBackward);
+            edgeTable.removeNode(verticesBackward,false);
     }
     bool hasEdge(V v1,V v2) const{
         if (!alias.containKey(v1) || !alias.containKey(v2))
