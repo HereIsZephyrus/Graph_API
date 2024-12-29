@@ -42,6 +42,7 @@
 			membershipExceptions = (
 				ADT/graph.tpp,
 				ADT/hash.tpp,
+				ADT/heap.tpp,
 				ADT/linear.tpp,
 				ADT/tree.tpp,
 			);
