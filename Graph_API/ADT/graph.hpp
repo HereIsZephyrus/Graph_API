@@ -18,17 +18,18 @@ using std::string;
 namespace tcb {
 template <typename V = string, typename W = double>
 class WUSGraph{
+    using Neighbor = Vector<std::pair<V,W>>;
     class AdjList;
     struct Edge;
     using Node = typename List<Edge>::Node;
     using pEdge = Node*;
     using pList = AdjList*;
     struct Edge{
-        int orient;
+        V orient;
         W weight;
         pEdge friendEdge;
         pList friendBucket;
-        Edge(int to = 0,W w = W(),pList friendList = nullptr):orient(to),weight(w),friendEdge(nullptr),friendBucket(friendList){}
+        Edge(V to = V(),W w = W(),pList friendList = nullptr):orient(to),weight(w),friendEdge(nullptr),friendBucket(friendList){}
         bool operator==(const Edge& other) const {
             return orient == other.orient && weight == other.weight;
         }
@@ -37,7 +38,6 @@ class WUSGraph{
     public:
         pEdge removeNode(VertexPair vertices,bool oneway){
             using Bucket = HashMap<VertexPair, pEdge>::Bucket;
-            //I can't use the getRef below, is it return a copy of the pointer? why?
             pEdge orientEdge = this->getRefValue(vertices);
             pEdge ret_p = orientEdge->next;
             orientEdge->prev->next = orientEdge->next;
@@ -54,7 +54,6 @@ class WUSGraph{
             }
             delete orientEdge;
             this->remove(vertices);
-            
             return ret_p;
         }
     };
@@ -89,7 +88,7 @@ class WUSGraph{
             //pEdge orientEdge = it->data;
             pEdge friendEdge = orientEdge->data.friendEdge;
             pList friendBucket = orientEdge->data.friendBucket;
-            int orientID = orientEdge->data.orient;
+            int orientID = alias[orientEdge->data.orient];
             graph[orientID].pop();
             if (friendEdge != nullptr){
                 friendEdge->prev->next = friendEdge->next;
@@ -144,8 +143,8 @@ public:
             return;
         int id1 = alias[v1], id2 = alias[v2];
         size_t location1 = locateMap[id1],location2 = locateMap[id2];
-        pEdge edge1 = new Node(Edge(id2,weight,&graph[id2]));
-        pEdge edge2 = new Node(Edge(id1,weight,&graph[id1]));
+        pEdge edge1 = new Node(Edge(v2,weight,&graph[id2]));
+        pEdge edge2 = new Node(Edge(v1,weight,&graph[id1]));
         edge1->data.friendEdge = edge2;   edge2->data.friendEdge = edge1;
         graph[location1].insert(edge1);    graph[location2].insert(edge2);
         VertexPair vertices = std::make_pair(id1,id2);
@@ -185,6 +184,14 @@ public:
             return edgeTable[verticesBackward]->data.weight;
         return W();
     }
+    Neighbor getNeighbor(V checkNode){
+        Neighbor neighbors;
+        const AdjList& list = graph[alias[checkNode]];
+        for (typename AdjList::iterator it = list.begin(); it != list.end(); it++)
+            neighbors.push_back(std::make_pair(it->data.orient, it->data.weight));
+        return neighbors;
+    }
+    void getVertice(Vector<V>& vertexArray) const{alias.getKeyArray(vertexArray);}
 };
 }
 #endif /* graph_hpp */

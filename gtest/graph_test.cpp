@@ -4,7 +4,8 @@
 //
 //  Created by ChanningTong on 12/28/24.
 //
-
+#include <ctime>
+#include <cstdlib>
 #include "graph_test.hpp"
 
 TEST_F(WUSGraphIntTest, VertexCountInitiallyZero) {
@@ -144,6 +145,70 @@ TEST_F(WUSGraphIntTest, ComplexGraphOperations) {
     EXPECT_TRUE(graph.isVertex(10));
     EXPECT_TRUE(graph.hasEdge(9, 10));
     EXPECT_TRUE(graph.hasEdge(8, 10));
+}
+TEST_F(WUSGraphIntTest, GetNeighborReturnsCorrectNeighbors) {
+    graph.addVertex(1);
+    graph.addVertex(2);
+    graph.addVertex(3);
+    graph.addEdge(1, 2, 1.0);
+    graph.addEdge(1, 3, 2.0);
+    Vector<std::pair<int,double>> neighbors = graph.getNeighbor(1);
+    EXPECT_EQ(neighbors.getSize(), 2);
+    EXPECT_TRUE((neighbors[0].first == 2 && neighbors[0].second == 1.0) || 
+                (neighbors[0].first == 3 && neighbors[0].second == 2.0));
+    EXPECT_TRUE((neighbors[1].first == 2 && neighbors[1].second == 1.0) || 
+                (neighbors[1].first == 3 && neighbors[1].second == 2.0));
+}
+
+TEST_F(WUSGraphIntTest, GetVerticeReturnsAllVertices) {
+    for (int i = 1; i <= 5; ++i)
+        graph.addVertex(i);
+    Vector<int> vertices;
+    graph.getVertice(vertices);
+    EXPECT_EQ(vertices.getSize(), 5);
+    for (int i = 1; i <= 5; ++i)
+        EXPECT_TRUE(std::find(vertices.begin(), vertices.end(), i) != vertices.end());
+}
+TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
+    const int numVertices = 1000;
+    const int numEdges = 5000;
+    for (int i = 1; i <= numVertices; ++i)
+        graph.addVertex(i);
+    EXPECT_EQ(graph.vertexCount(), numVertices);
+    for (int i = 1; i <= numEdges; ++i) {
+        int v1 = rand() % numVertices + 1;
+        int v2 = rand() % numVertices + 1;
+        double weight = static_cast<double>(rand()) / RAND_MAX;
+        if (v1 != v2 && !graph.hasEdge(v1, v2))
+            graph.addEdge(v1, v2, weight);
+    }
+    for (int i = 1; i <= numVertices; ++i) {
+        int degree = graph.getDegree(i);
+        EXPECT_GE(degree, 0);
+        EXPECT_LE(degree, numVertices - 1);
+    }
+    for (int i = 1; i <= numVertices; ++i) {
+        for (int j = i + 1; j <= numVertices; ++j) {
+            if (graph.hasEdge(i, j)) {
+                double weight = graph.getWeight(i, j);
+                EXPECT_GE(weight, 0.0);
+                EXPECT_LE(weight, 1.0);
+            }
+        }
+    }
+    for (int i = 1; i <= numEdges / 2; ++i) {
+        int v1 = rand() % numVertices + 1;
+        int v2 = rand() % numVertices + 1;
+        if (graph.hasEdge(v1, v2)) {
+            graph.removeEdge(v1, v2);
+        }
+    }
+    for (int i = 1; i <= numVertices / 2; ++i) {
+        int v = rand() % numVertices + 1;
+        if (graph.isVertex(v)) {
+            graph.removeVertex(v);
+        }
+    }
 }
 TEST_F(WUSGraphStringTest, VertexCountInitiallyZero) {
     EXPECT_EQ(graph.vertexCount(), 0);

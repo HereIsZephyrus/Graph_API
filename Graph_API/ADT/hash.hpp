@@ -58,6 +58,11 @@ protected:
     Element& getRefValue(const Key&key);
 public:
     HashMap(float maxLoadFactor = 0.7,int capacity = 17):HashTable<Key,Element>(maxLoadFactor,capacity){};
+    void getKeyArray(Vector<Key>& keyArray) const{
+        keyArray.clear();
+        for (typename std::set<Key>::const_iterator it = keySet.begin(); it != keySet.end(); it++)
+            keyArray.push_back(*it);
+    }
     //required
     const Element& getValue(const Key&key) const;// return const Element& will return a local refer, I don't know how to solve
     bool insert(const Key& key,const Element& element) override;
