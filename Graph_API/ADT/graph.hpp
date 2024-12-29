@@ -32,10 +32,14 @@ class WUSGraph{
         bool operator<(const EdgeInfo& other) const {
             return weight < other.weight;
         }
+        EdgeInfo(VertexPair v = std::make_pair(0,0),W w = W()):vertex(v),weight(w){}
     };
     struct Message{
         enum {add = true,remove = false} type;
         EdgeInfo edge;
+        bool operator==(const Message& other) const {
+            return type == other.type && edge == other.edge;
+        }
     };
     class AdjList;
     class EdgeTable;
@@ -50,9 +54,10 @@ class WUSGraph{
     int vertexSize;
     int vertexCounter;
     size_t vertexNum;
+    MinSpanForest MST;
     void remove(size_t location,EdgeTable& edgeTable);
 public:
-    explicit WUSGraph(int v): vertexSize(v),vertexNum(0),vertexCounter(0){graph.reserve(v);}
+    explicit WUSGraph(int v): vertexSize(v),vertexNum(0),vertexCounter(0),MST(*this){graph.reserve(v);}
     //required
     size_t vertexCount() const {return vertexNum;}
     size_t edgeCount() const {return edgeTable.getSize();}
@@ -87,20 +92,28 @@ class WUSGraph<V,W>::MinSpanForest{
 public:
     MinSpanForest(WUSGraph& graph) : totalWeight(0),graph(graph) {}
     void PushMessage(const Message& Message) {MsgQue.enqueue(Message);}
-    void kruskal() {
+    void calcMST() {
         DisjSets ds(graph.vertexCount());
         ProcessMessage();
-        for (const auto& edge : edges) {
-            int root1 = ds.find(graph.alias[edge.vertex1]);
-            int root2 = ds.find(graph.alias[edge.vertex2]);
-            if (root1 != root2) {
+        Queue<EdgeInfo> addedEdge;
+        mstEdges.clear();
+        while (mstEdges.getSize() < graph.vertexCount() - 1) {
+            EdgeInfo edge = edges.findMin();
+            addedEdge.enqueue(edge);
+            edges.remove(edge);
+            int uset = ds.find(graph.locateMap[edge.vertex.first]);
+            int vset = ds.find(graph.locateMap[edge.vertex.second]);
+            if (uset != vset) {
                 mstEdges.push_back(edge);
                 totalWeight += edge.weight;
-                ds.unionSets(root1, root2);
+                ds.unionSets(uset, vset);
             }
         }
+        while (!addedEdge.isEmpty()){
+            edges.insert(addedEdge.front());
+            addedEdge.dequeue();
+        }
     }
-
     const Vector<Edge>& getMSTEdges() const {return mstEdges;}
     W getTotalWeight() const {return totalWeight;}
 };

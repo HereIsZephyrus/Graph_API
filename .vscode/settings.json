@@ -33,6 +33,8 @@
         "optional": "cpp",
         "ratio": "cpp",
         "variant": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "__hash_table": "cpp",
+        "__tree": "cpp"
     }
 }
