@@ -13,7 +13,7 @@
 namespace WUSG{
 using namespace tcb;
 void CreateGraphFromFile(const std::string& filename, WUSGraph<std::string, double>& graph);
-void MaxDegree();
+void MaxDegree(const WUSGraph<std::string, double>& graph);
 void DFS();
 void BFS();
 }

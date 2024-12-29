@@ -163,9 +163,8 @@ TEST_F(WUSGraphIntTest, GetNeighborReturnsCorrectNeighbors) {
 TEST_F(WUSGraphIntTest, GetVerticeReturnsAllVertices) {
     for (int i = 1; i <= 5; ++i)
         graph.addVertex(i);
-    Vector<int> vertices;
-    graph.getVertice(vertices);
-    EXPECT_EQ(vertices.getSize(), 5);
+    std::set<int> vertices = graph.getVertice();
+    EXPECT_EQ(vertices.size(), 5);
     for (int i = 1; i <= 5; ++i)
         EXPECT_TRUE(std::find(vertices.begin(), vertices.end(), i) != vertices.end());
 }

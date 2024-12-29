@@ -38,7 +38,7 @@ public:
     //required
     size_t vertexCount() const {return vertexNum;}
     size_t edgeCount() const {return edgeTable.getSize();}
-    void getVertice(Vector<V>& vertexArray) const{alias.getKeyArray(vertexArray);}
+    const std::set<V>& getVertice() const{return alias.getKeySet();}
     bool isVertex(V checkVertex) const {return alias.containKey(checkVertex);}
     void addVertex(V newVertex);
     void removeVertex(V delVertex);

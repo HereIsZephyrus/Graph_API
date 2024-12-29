@@ -15,25 +15,16 @@ void CreateGraphFromFile(const std::string& filename, WUSGraph<std::string, doub
     if (!file.is_open()) {
         throw std::runtime_error("Unable to open file");
     }
-    
     std::string line;
     int numVertices, numEdges;
-    
-    // Read number of vertices
     std::getline(file, line);
     std::istringstream(line) >> numVertices;
-    
-    // Read number of edges
     std::getline(file, line);
     std::istringstream(line) >> numEdges;
-    
-    // Read vertices
     for (int i = 0; i < numVertices; ++i) {
         std::getline(file, line);
         graph.addVertex(line);
     }
-    
-    // Read edges
     for (int i = 0; i < numEdges; ++i) {
         std::getline(file, line);
         std::istringstream iss(line);
@@ -42,7 +33,9 @@ void CreateGraphFromFile(const std::string& filename, WUSGraph<std::string, doub
         iss >> vertex1 >> vertex2 >> weight;
         graph.addEdge(vertex1, vertex2, weight);
     }
-    
     file.close();
+}
+void MaxDegree(const WUSGraph<std::string, double>& graph){
+    
 }
 }
