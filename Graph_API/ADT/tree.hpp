@@ -65,34 +65,15 @@ class BinarySearchTree : protected Tree<Object, TreeNode>{
 public:
     BinarySearchTree(){this->root = nullptr;}
     ~BinarySearchTree(){clear();}
-    const BST & operator = (const BST & rhs){
-        if (this != &rhs){
-            clear();
-            this->root = clone(rhs.root);
-        }
-        return *this;
-    }
-    BinarySearchTree(const BST & rhs) {
-        if (this != &rhs){
-            clear();
-            this->root = clone(rhs.root);
-        }
-    }
+    const BST & operator = (const BST & rhs);
+    BinarySearchTree(const BST & rhs);
     friend ostream& operator<<(ostream& os, const BST& tree);
     bool contains(const Object& x) const override{return contains(x, this->root);}
     void insert(const Object& x){insert(x, this->root);}
     void remove(const Object& x){remove(x, this->root);}
     void clear() override{destroy(this->root);}
-    const Object& findMin() const{
-        if (this -> root == nullptr)
-            throw std::logic_error("the tree is empty");
-        return findMin(this->root)->element;
-    }
-    const Object& findMax() const{
-        if (this -> root == nullptr)
-            throw std::logic_error("the tree is empty");
-        return findMax(this->root)->element;
-    }
+    const Object& findMin() const;
+    const Object& findMax() const;
     static ostream& preorder(ostream& os){
         outputFlag = TraversalType::preorder;
         return os;
@@ -106,57 +87,15 @@ public:
         return os;
     }
 protected:
-    static ostream& print(ostream& os, node* p){
-        if (p == nullptr)
-            return os;
-        switch (outputFlag) {
-            case TraversalType::inorder:
-                os<<print(os, p->left)<<p->element<<print(os,p->right);
-                break;
-            case TraversalType::preorder:
-                os<<p->element<<print(os, p->left)<<print(os,p->right);
-                break;
-            case TraversalType::postorder:
-                os<<print(os, p->left)<<print(os,p->right)<<p->element;
-                break;
-        }
-    }
-    void destroy(node* p){
-        if (p != nullptr){
-            destroy(p->left);
-            destroy(p->right);
-            delete p;
-        }
-    }
-    bool contains(const Object& x, node* p) const{
-        if (p == nullptr)
-            return false;
-        else if (x == p->element)
-            return true;
-        else if (x < p->element)
-            return  contains(x,p->left);
-        else
-            return contains(x,p->right);
-        return true;
-    }
-    node* findMin(node* p) const{
-        if (p->left == nullptr)
-            return p;
-        return findMin(p->left);
-    }
-    node* findMax(node * p) const{
-        if (p->right == nullptr)
-            return p;
-        return findMax(p->right);
-    }
-    node* clone(node* rhst) {
-        if (rhst == nullptr)
-            return nullptr;
-        return new node(rhst->element,clone(rhst->left),clone(rhst->right));
-    }
+    static ostream& print(ostream& os, node* p);
+    void destroy(node* p);
+    bool contains(const Object& x, node* p) const;
+    node* findMin(node* p) const;
+    node* findMax(node * p) const;
+    node* clone(node* rhst);
     void insert(const Object& x, node* & p) override{
         if ( p == nullptr)
-            p  = new node(x, nullptr, nullptr);
+            p  = new TreeNode(x, nullptr, nullptr);
         if (p->element == x)
             return;
         else if (x < p->element)
@@ -177,7 +116,7 @@ protected:
                 remove(p->element, p->right);
             }
             else{
-                node* ret_p = p;
+                TreeNode* ret_p = p;
                 if (p->left == nullptr)
                     p = p->right;
                 else
@@ -186,6 +125,7 @@ protected:
             }
         }
     }
+
 };
 template <class Object,class TreeNode>
 TraversalType BinarySearchTree<Object,TreeNode>::outputFlag = TraversalType::inorder;
@@ -207,42 +147,16 @@ class AVLSearchTree : public BinarySearchTree<Object,AVLTreeNode<Object>>{
 public:
     AVLSearchTree(){this->root = nullptr;}
     ~AVLSearchTree(){}
-    const AVL & operator = (const AVL & rhs){
-        if (this != &rhs){
-            this->clear();
-            this->root = this->clone(rhs.root);
-        }
-        return *this;
-    }
+    const AVL & operator = (const AVL & rhs);
     void insert(const Object& x){insert(x, this->root);}
     void remove(const Object& x){remove(x, this->root);}
 private:
     int getHeight(node* p) const {return (p != nullptr) ? p->height : 0;}
     int getBalance(node* p) const {return (p != nullptr) ?  0 : getHeight(p->left) - getHeight(p->right);}
-    node* rightRotate(node* y) {
-        node* x = y->left;
-        node* T2 = x->right;
-        x->right = y;
-        y->left = T2;
-        y->height = std::max(getHeight(y->left), getHeight(y->right)) + 1;
-        x->height = std::max(getHeight(x->left), getHeight(x->right)) + 1;
-        return x;
-    }
-    node* leftRotate(node* x) {
-        node* y = x->right;
-        node* T2 = y->left;
-        y->left = x;
-        x->right = T2;
-        x->height = std::max(getHeight(x->left), getHeight(x->right)) + 1;
-        y->height = std::max(getHeight(y->left), getHeight(y->right)) + 1;
-        return y;
-    }
+    node* rightRotate(node* y);
+    node* leftRotate(node* x);
 protected:
-    node* clone(node* rhst) const{
-        if (rhst == nullptr)
-            return nullptr;
-        return new node(rhst->element,rhst->height,clone(rhst->left),clone(rhst->right));
-    }
+    node* clone(node* rhst) const;
     void insert(const Object& x, node* & p){
         if ( p == nullptr)
             p  = new node(x, 1, nullptr, nullptr);
@@ -307,4 +221,5 @@ protected:
     }
 };
 }
+#include "tree.tpp"
 #endif /* tree_h */
