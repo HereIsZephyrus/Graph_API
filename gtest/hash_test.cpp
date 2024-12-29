@@ -39,6 +39,46 @@ TEST_F(HashIntTableTest, ResizeTest) {
         table.insert(i, i * 1.1);
     }
 }
+TEST_F(HashIntTableTest, LargeScaleComprehensiveTest) {
+    for (int i = 0; i < 1000; ++i) {
+        ASSERT_TRUE(table.insert(i, i * 1.1));
+    }
+    ASSERT_EQ(table.getSize(), 1000);
+
+    for (int i = 0; i < 1000; ++i) {
+        ASSERT_TRUE(table.search(i, i * 1.1));
+    }
+
+    for (int i = 0; i < 500; i += 2) {
+        double value;
+        ASSERT_EQ(table.remove(i, value), 1);
+        ASSERT_EQ(value, i * 1.1);
+    }
+    ASSERT_EQ(table.getSize(), 750);
+    for (int i = 1; i < 1000; i += 2)
+        ASSERT_TRUE(table.search(i, i * 1.1));
+    for (int i = 0; i < 500; i += 2)
+        ASSERT_FALSE(table.search(i, i * 1.1));
+    for (int i = 1000; i < 2000; ++i)
+        ASSERT_TRUE(table.insert(i, i * 1.1));
+    ASSERT_GT(table.getCapacity(), 1500);
+    ASSERT_EQ(table.getSize(), 1750);
+    for (int i = 1; i < 1000; i += 2)
+        ASSERT_TRUE(table.search(i, i * 1.1));
+    for (int i = 1000; i < 2000; ++i)
+        ASSERT_TRUE(table.search(i, i * 1.1));
+    for (int i = 1; i < 1000; i += 2) {
+        double value;
+        ASSERT_EQ(table.remove(i, value), 1);
+        ASSERT_EQ(value, i * 1.1);
+    }
+    for (int i = 1000; i < 2000; ++i) {
+        double value;
+        ASSERT_EQ(table.remove(i, value), 1);
+        ASSERT_EQ(value, i * 1.1);
+    }
+    ASSERT_EQ(table.getSize(), 250);
+}
 
 TEST_F(HashStringTableTest, InsertTest) {
     HashTable<string, double> strTable;

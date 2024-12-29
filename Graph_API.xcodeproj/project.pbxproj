@@ -40,6 +40,7 @@
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = 32CABFB52D1D7C4D003AF1AC /* Sources */;
 			membershipExceptions = (
+				ADT/graph.tpp,
 				ADT/hash.tpp,
 				ADT/linear.tpp,
 			);

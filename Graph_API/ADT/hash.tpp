@@ -7,26 +7,30 @@
 
 namespace tcb{
 template <>
-int calcHash(const string& key){
+inline int calcHash(const string& key){
     int hashVal = 0;
     for (int i = 0; i < key.length(); i++)
         hashVal = 37 * hashVal + key[i];
     return hashVal;
 }
 template <>
-int calcHash(const int& key) {
+inline int calcHash(const int& key) {
+    size_t hashVal = key * VALUE_HASH;
+    return static_cast<int>(hashVal);
+}
+template <>
+inline int calcHash(const VertexPair& key) {
+    size_t hashVal1 = key.first * VALUE_HASH, hashVal2 = key.second * VALUE_HASH;
+    return static_cast<int>(hashVal1 ^ hashVal2);
+}
+template <>
+inline int calcHash(const size_t& key) {
     size_t hashVal = key * VALUE_HASH;
     return static_cast<int>(hashVal);
 }
 
 template <>
-int calcHash(const size_t& key) {
-    size_t hashVal = key * VALUE_HASH;
-    return static_cast<int>(hashVal);
-}
-
-template <>
-int calcHash(const long long& key) {
+inline int calcHash(const long long& key) {
     uint64_t hashVal = static_cast<uint64_t>(key);
     hashVal ^= (hashVal >> 33);
     hashVal *= 0xff51afd7ed558ccdULL;
@@ -37,7 +41,7 @@ int calcHash(const long long& key) {
 }
 
 template <>
-int calcHash(const float& key) {
+inline int calcHash(const float& key) {
     if (key == 0.0f) return 0;
     if (key == -0.0f) return 0;
     uint32_t bits;
@@ -46,7 +50,7 @@ int calcHash(const float& key) {
 }
 
 template <>
-int calcHash(const double& key) {
+inline int calcHash(const double& key) {
     if (key == 0.0) return 0;
     if (key == -0.0) return 0;
     uint64_t bits;
@@ -138,6 +142,7 @@ void HashTable<Key,Element>::resizeTable(){
     clear();
     capacity = nextPrime(capacity * 2);
     hashList.resizeList(capacity);
+    size = 0;
     for (typename Vector<Bucket>::iterator bucket = oldHashList.begin(); bucket != oldHashList.end(); bucket++){
         for (typename Bucket::iterator it = bucket->begin(); it != bucket->end(); it++)
             insert(*it);
@@ -175,15 +180,15 @@ public:
     }
 };
 template <typename Key,typename Element>
-Element HashMap<Key,Element>::getValue(const Key&key){
+const Element& HashMap<Key,Element>::getValue(const Key&key) const{
     if (!keySet.contains(key))
-        return Element();
+        return this->zeroElement;
     const Bucket& orientList = this->hashList[this->hash(key)];
     for (typename Bucket::iterator itr = orientList.begin(); itr != orientList.end(); itr++){
         if ((*itr).first == key)
             return (*itr).second;
     }
-    return Element();
+    return this->zeroElement;
 }
 template <typename Key,typename Element>
 Element& HashMap<Key,Element>::getRefValue(const Key&key){
@@ -215,10 +220,12 @@ Element HashMap<Key,Element>::remove(const Key& key){
             return value;
         }
     }
-    return Element();
+    return this->zeroElement;
 }
 template <typename Key,typename Element>
 Element& HashMap<Key,Element>::operator[](const Key& key){
+    if (!containKey(key))
+        insert(key,this->zeroElement);
     return getRefValue(key);
 }
 template <typename Key,typename Element>
