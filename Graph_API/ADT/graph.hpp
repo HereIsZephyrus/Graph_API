@@ -14,6 +14,7 @@
 #include <map>
 #include <stdexcept>
 #include "hash.hpp"
+#include "disjsets.hpp"
 using std::string;
 namespace tcb {
 template <typename V = string, typename W = double>

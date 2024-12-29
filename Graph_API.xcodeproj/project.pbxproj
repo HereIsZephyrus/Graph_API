@@ -305,6 +305,7 @@
 		32CABFC12D1D7C4D003AF1AC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Graph_API/Graph_API.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 379P4X5DA9;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -315,6 +316,7 @@
 		32CABFC22D1D7C4D003AF1AC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Graph_API/Graph_API.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 379P4X5DA9;
 				ENABLE_HARDENED_RUNTIME = YES;
