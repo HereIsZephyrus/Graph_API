@@ -9,7 +9,9 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <set>
 namespace WUSG{
+using std::string;
 void CreateGraphFromFile(const std::string& filename, WUSGraph<std::string, double>& graph) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -35,7 +37,14 @@ void CreateGraphFromFile(const std::string& filename, WUSGraph<std::string, doub
     }
     file.close();
 }
-void MaxDegree(const WUSGraph<std::string, double>& graph){
-    
+int MaxDegree(const WUSGraph<std::string, double>& graph){
+    std::set<string> vertices = graph.getVertice();
+    int maxDegree = 0;
+    for (std::set<string>::const_iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++){
+        int degree = graph.getDegree(*vertex);
+        if (degree > maxDegree)
+            maxDegree = degree;
+        }
+    return maxDegree;
 }
 }
