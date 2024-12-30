@@ -13,12 +13,17 @@
 #include <memory>
 #include <map>
 #include <stdexcept>
+#include <sstream>
 #include "hash.hpp"
 #include "disjsets.hpp"
 #include "heap.hpp"
 #include "tree.hpp"
 using std::string;
 namespace tcb {
+enum class WalkMethod : bool{
+    DFS,
+    BFS
+};
 template <typename V, typename W>
 struct EdgeInfo{
     VertexPair vertex;
@@ -58,6 +63,47 @@ class WUSGraph{
     int vertexCounter;
     MinSpanForest MST;
     void remove(size_t location,EdgeTable& edgeTable);
+    std::stringstream DFS(V startNode){
+        std::stringstream res;
+        size_t vertexNum = graph.getSize();
+        Vector<bool> visited(vertexNum,false);
+        size_t startLocation = locateMap[alias[startNode]];
+        DFSUtil(startLocation,visited,res);
+        res << "end";
+        return res;
+    }
+    void DFSUtil(size_t startLocation,Vector<bool>& visited,std::stringstream& res){
+        visited[startLocation] = true;
+        res << graph[startLocation].vertex << "->";
+        for (typename AdjList::iterator it = graph[startLocation].begin(); it != graph[startLocation].end(); it++){
+            size_t nextLocation = locateMap[alias[it->data.orient]];
+            if (!visited[nextLocation])
+                DFSUtil(nextLocation,visited,res);
+        }
+    }
+    std::stringstream BFS(V startNode){
+        std::stringstream res;
+        size_t vertexNum = graph.getSize();
+        Vector<bool> visited(vertexNum,false);
+        size_t startLocation = locateMap[alias[startNode]];
+        Queue<size_t> queue;
+        queue.enqueue(startLocation);
+        visited[startLocation] = true;
+        while (!queue.isEmpty()){
+            size_t currentLocation = queue.front();
+            queue.dequeue();
+            res << graph[currentLocation].vertex << "->";
+            for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
+                size_t nextLocation = locateMap[alias[it->data.orient]];
+                if (!visited[nextLocation]){
+                    queue.enqueue(nextLocation);
+                    visited[nextLocation] = true;
+                }
+            }
+        }
+        res << "end";
+        return res;
+    }
 public:
     explicit WUSGraph(int v): vertexSize(v),vertexCounter(0),MST(*this){graph.reserve(v);}
     //required
@@ -75,6 +121,13 @@ public:
     Neighbor getNeighbor(V checkNode);
     const Vector<EdgeInfo>& getMST();
     W getMSTWeight() {return MST.getTotalWeight();}
+    std::stringstream WalkThrough(V startNode,WalkMethod method){
+        if (!isVertex(startNode))
+            throw std::out_of_range("The start node is not in the graph");
+        if (method == WalkMethod::DFS)
+            return DFS(startNode);
+        return BFS(startNode);
+    }
 };
 }
 #include "graph.tpp"

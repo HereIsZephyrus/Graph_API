@@ -256,6 +256,8 @@ TEST_F(WUSGraphIntTest, MSTCalculations) {
     graph.removeVertex(10);
     totalWeight = graph.getMSTWeight();
     EXPECT_DOUBLE_EQ(totalWeight, 19);
+    std::cout<<graph.WalkThrough(1, WalkMethod::BFS).str()<<std::endl;
+    std::cout<<graph.WalkThrough(1, WalkMethod::DFS).str()<<std::endl;
 }
 TEST_F(WUSGraphStringTest, VertexCountInitiallyZero) {
     EXPECT_EQ(graph.vertexCount(), 0);
