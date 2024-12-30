@@ -14,6 +14,7 @@
 #include <map>
 #include <stdexcept>
 #include <sstream>
+#include <cmath>
 #include "hash.hpp"
 #include "disjsets.hpp"
 #include "heap.hpp"
@@ -127,6 +128,30 @@ public:
         if (method == WalkMethod::DFS)
             return DFS(startNode);
         return BFS(startNode);
+    }
+    W calcDistace(V startNode,V endNode){
+        if (!isVertex(startNode) || !isVertex(endNode))
+            throw std::out_of_range("The start or end node is not in the graph");
+        if (startNode == endNode)
+            return W();
+        Vector<W> distance(vertexSize,std::numeric_limits<W>::max());
+        distance[alias[startNode]] = 0;
+        Heap<std::pair<W,V>> heap;
+        heap.insert(std::make_pair(0,startNode));
+        while (!heap.isEmpty()){
+            V current = heap.findMin().second;
+            heap.deleteMin();
+            size_t currentLocation = locateMap[alias[current]];
+            for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
+                size_t nextLocation = locateMap[alias[it->data.orient]];
+                W weight = it->data.weight;
+                if (distance[nextLocation] > distance[currentLocation] + weight){
+                    distance[nextLocation] = distance[currentLocation] + weight;
+                    heap.insert(std::make_pair(distance[nextLocation],it->data.orient));
+                }
+            }
+        }
+        return distance[alias[endNode]];
     }
 };
 }
