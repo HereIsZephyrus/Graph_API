@@ -39,6 +39,12 @@
         "__assertion_handler": "cpp",
         "__config": "cpp",
         "filesystem": "cpp",
-        "print": "cpp"
+        "print": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "array": "cpp",
+        "ios": "cpp",
+        "__bit_reference": "cpp",
+        "bitset": "cpp"
     }
 }

@@ -263,14 +263,14 @@ List<Object>::iterator List<Object>::insert(iterator it, const Object& x){
 }
 template <class Object>
 List<Object>::iterator List<Object>::remove(iterator it){
-    if (isEmpty())
+    if (isEmpty() || head == nullptr)
         throw std::runtime_error("List is empty");
     Node *p = it._ptr();
     iterator ret_p(p->next);
     p->prev->next = p->next;
     p->next->prev = p->prev;
     delete p;
-    size --;
+    --size;
     return ret_p;
 }
 template <class Object>
@@ -301,4 +301,44 @@ List<Object>::iterator List<Object>::find(const Object& val) const{// the first 
         if (*it == val)
             return it;
     return it;
+}
+template <class Object>
+struct List<Object>::Node{
+    Object data;
+    Node *prev, *next;
+    Node(const Object& d = Object(), Node* p = nullptr, Node* n = nullptr):data(d),prev(p),next(n){}
+    ~Node(){prev = nullptr; next = nullptr;}
+    Node(const Node& rhs) : data(rhs.data), prev(rhs.prev), next(rhs.next) {}
+    Node& operator=(const Node& rhs) {
+        if (this == &rhs)
+        return *this;
+        data = rhs.data;
+        prev = rhs.prev;
+        next = rhs.next;
+        return *this;
+    }
+};
+template <class Object>
+const List<Object>& List<Object>::operator=(const List& rhs){
+    if (this == &rhs)
+        return *this;
+    clear();
+    iterator current = begin();
+    for(iterator it = rhs.begin(); it != rhs.end(); it++)
+        current = insert(current,*it);
+    return *this;
+}
+template <class Object>
+void List<Object>::reverse(){
+    Node *current = head;
+    Node *temp = nullptr;
+    while (current != nullptr){
+        temp = current->prev;
+        current->prev = current->next;
+        current->next = temp;
+        current = current->prev;
+    }
+    temp = head;
+    head = tail;
+    tail = temp;
 }
