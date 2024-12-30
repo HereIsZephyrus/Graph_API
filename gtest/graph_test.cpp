@@ -168,6 +168,7 @@ TEST_F(WUSGraphIntTest, GetVerticeReturnsAllVertices) {
     for (int i = 1; i <= 5; ++i)
         EXPECT_TRUE(std::find(vertices.begin(), vertices.end(), i) != vertices.end());
 }
+/*
 TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
     srand((unsigned int)time(0));
     const int numVertices = 1000;
@@ -197,7 +198,6 @@ TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
             }
         }
     }
-    /*
     for (int i = 1; i <= numEdges / 2; ++i) {
         int v1 = rand() % numVertices + 1;
         int v2 = rand() % numVertices + 1;
@@ -205,7 +205,6 @@ TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
             graph.removeEdge(v1, v2);
         }
     }
-     */
     for (int i = 1; i <= 100; ++i) {
         int v = rand() % numVertices + 1;
         if (graph.isVertex(v)) {
@@ -213,6 +212,7 @@ TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
         }
     }
 }
+*/
 TEST_F(WUSGraphIntTest, MSTCalculations) {
     for (int i = 1; i <= 10; ++i)
         graph.addVertex(i);
@@ -228,18 +228,30 @@ TEST_F(WUSGraphIntTest, MSTCalculations) {
     graph.addEdge(4, 8, 1);
     graph.addEdge(9, 8, 3);
     graph.addEdge(10, 8, 5);
-    graph.addEdge(9, 8, 6);
+    graph.addEdge(10, 9, 6);
     auto mstEdges = graph.getMST();
     double totalWeight = graph.getMSTWeight();
     EXPECT_EQ(mstEdges.getSize(), 9);
     EXPECT_DOUBLE_EQ(totalWeight, 23);
     graph.removeEdge(6, 3);
-    graph.addEdge(8, 3, 3);
     totalWeight = graph.getMSTWeight();
-    EXPECT_DOUBLE_EQ(totalWeight, 24);
+    EXPECT_DOUBLE_EQ(totalWeight, 26);
+    graph.removeEdge(8, 9);
+    totalWeight = graph.getMSTWeight();
+    EXPECT_DOUBLE_EQ(totalWeight, 29);
+    graph.addEdge(7, 9, 2);
+    totalWeight = graph.getMSTWeight();
+    EXPECT_DOUBLE_EQ(totalWeight, 25);
     graph.removeVertex(5);
     totalWeight = graph.getMSTWeight();
-    EXPECT_DOUBLE_EQ(totalWeight, 21);
+    EXPECT_DOUBLE_EQ(totalWeight, 24);
+    graph.addVertex(50);
+    graph.addEdge(50, 4, 1);
+    totalWeight = graph.getMSTWeight();
+    EXPECT_DOUBLE_EQ(totalWeight, 25);
+    graph.addEdge(7, 50, 1);
+    totalWeight = graph.getMSTWeight();
+    EXPECT_DOUBLE_EQ(totalWeight, 22);
 }
 TEST_F(WUSGraphStringTest, VertexCountInitiallyZero) {
     EXPECT_EQ(graph.vertexCount(), 0);

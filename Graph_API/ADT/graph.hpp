@@ -21,21 +21,23 @@ using std::string;
 namespace tcb {
 template <typename V, typename W>
 struct EdgeInfo{
-    V v1,v2;
+    VertexPair vertex;
     W weight;
-    bool operator==(const EdgeInfo& other) const {
-        bool sameVertex = (v1 == other.v1 && v2 == other.v2) || (v1 == other.v2 && v2 == other.v1);
-        bool sameWeight = weight == other.weight;
-        return sameVertex && sameWeight;
+    bool operator==(const EdgeInfo& rhs) const {
+        return (vertex == rhs.vertex) && (weight == rhs.weight);
     }
-    bool operator<(const EdgeInfo& other) const {
-        return weight < other.weight;
+    bool operator<(const EdgeInfo& rhs) const {
+        if (weight == rhs.weight)
+            return vertex < rhs.vertex;
+        return weight < rhs.weight;
     }
-    bool operator>(const EdgeInfo& other) const {
-        return weight > other.weight;
+    bool operator>(const EdgeInfo& rhs) const {
+        if (weight == rhs.weight)
+            return vertex > rhs.vertex;
+        return weight > rhs.weight;
     }
-    EdgeInfo() : v1(V()), v2(V()), weight(W()) {}
-    EdgeInfo(V v1, V v2, W w) : v1(v1), v2(v2), weight(w) {}
+    EdgeInfo() : vertex(VertexPair()), weight(W()) {}
+    EdgeInfo(VertexPair v, W w) : vertex(v), weight(w) {}
 };
 template <typename V = string, typename W = double>
 class WUSGraph{
@@ -84,7 +86,7 @@ public:
         graph[location1].insert(edge1);    graph[location2].insert(edge2);
         VertexPair vertices = std::make_pair(id1,id2);
         edgeTable.insert(vertices, edge1);
-        EdgeInfo edgeInfo(v1,v2,weight);
+        EdgeInfo edgeInfo(vertices,weight);
         MST.PushMessage(Message(Message::add,edgeInfo));
     }
     void removeEdge(V v1,V v2);
@@ -123,14 +125,15 @@ public:
         DisjSets ds(static_cast<int>(graph.vertexCount()));
         ProcessMessage();
         Queue<EdgeInfo> addedEdge;
+        addedEdge.clear();
         mstEdges.clear();
         totalWeight = 0;
         while (mstEdges.getSize() < graph.vertexCount() - 1) {
             EdgeInfo edge = edges.findMin();
             addedEdge.enqueue(edge);
             edges.remove(edge);
-            int uset = ds.find(static_cast<int>(graph.locateMap[edge.v1]));
-            int vset = ds.find(static_cast<int>(graph.locateMap[edge.v2]));
+            int uset = ds.find(static_cast<int>(graph.locateMap[edge.vertex.first]));
+            int vset = ds.find(static_cast<int>(graph.locateMap[edge.vertex.second]));
             if (uset != vset) {
                 mstEdges.push_back(edge);
                 totalWeight += edge.weight;

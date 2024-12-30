@@ -78,14 +78,16 @@ void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
         W weight;
         if (edgeTable.containKey(verticesForward)){
             weight = edgeTable[verticesForward]->data.weight;
+            EdgeInfo edgeInfo(verticesForward,weight);
+            MST.PushMessage(Message(Message::remove,edgeInfo));
             edgeTable.remove(verticesForward);
         }
         if (edgeTable.containKey(verticesBackward)){
             weight = edgeTable[verticesBackward]->data.weight;
+            EdgeInfo edgeInfo(verticesBackward,weight);
+            MST.PushMessage(Message(Message::remove,edgeInfo));
             edgeTable.remove(verticesBackward);
         }
-        EdgeInfo edgeInfo(orientEdge->data.orient,delList.vertex,weight);
-        MST.PushMessage(Message(Message::remove,edgeInfo));
         AdjList& oriList = graph[locateMap[orientID]];
             oriList.pop();
         if (friendEdge != nullptr){ //why some destryed friendEdge will remain as empty?
@@ -157,14 +159,16 @@ void WUSGraph<V,W>::removeEdge(V v1,V v2){
     W weight;
     if (edgeTable.containKey(verticesForward)){
         weight = edgeTable[verticesForward]->data.weight;
+        EdgeInfo edgeInfo(verticesForward,weight);
+        MST.PushMessage(Message(Message::remove,edgeInfo));
         edgeTable.removeNode(verticesForward,true);
     }
     if (edgeTable.containKey(verticesBackward)){
         weight = edgeTable[verticesBackward]->data.weight;
+        EdgeInfo edgeInfo(verticesBackward,weight);
+        MST.PushMessage(Message(Message::remove,edgeInfo));
         edgeTable.removeNode(verticesBackward,false);
     }
-    EdgeInfo edgeInfo(v1,v2,weight);
-    MST.PushMessage(Message(Message::remove,edgeInfo));
 }
 template <typename V, typename W>
 bool WUSGraph<V,W>::hasEdge(V v1,V v2) const{
