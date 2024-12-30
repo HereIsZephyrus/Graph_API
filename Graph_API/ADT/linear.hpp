@@ -89,6 +89,19 @@ public:
     }
     bool isEmpty() const{return size == 0;}
     size_t getSize() const {return size;}
+    void reverse(){
+        Node *current = head;
+        Node *temp = nullptr;
+        while (current != nullptr){
+            temp = current->prev;
+            current->prev = current->next;
+            current->next = temp;
+            current = current->prev;
+        }
+        temp = head;
+        head = tail;
+        tail = temp;
+    }
     
     class iterator;
     //class const_iterator;

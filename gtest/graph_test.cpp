@@ -168,7 +168,7 @@ TEST_F(WUSGraphIntTest, GetVerticeReturnsAllVertices) {
     for (int i = 1; i <= 5; ++i)
         EXPECT_TRUE(std::find(vertices.begin(), vertices.end(), i) != vertices.end());
 }
-/*
+
 TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
     srand((unsigned int)time(0));
     const int numVertices = 1000;
@@ -211,8 +211,9 @@ TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
             graph.removeVertex(v);
         }
     }
+    graph.debug();
 }
-*/
+
 TEST_F(WUSGraphIntTest, MSTCalculations) {
     for (int i = 1; i <= 10; ++i)
         graph.addVertex(i);
@@ -252,6 +253,10 @@ TEST_F(WUSGraphIntTest, MSTCalculations) {
     graph.addEdge(7, 50, 1);
     totalWeight = graph.getMSTWeight();
     EXPECT_DOUBLE_EQ(totalWeight, 22);
+    graph.removeVertex(50);
+    graph.removeVertex(10);
+    totalWeight = graph.getMSTWeight();
+    EXPECT_DOUBLE_EQ(totalWeight, 19);
 }
 TEST_F(WUSGraphStringTest, VertexCountInitiallyZero) {
     EXPECT_EQ(graph.vertexCount(), 0);

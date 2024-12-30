@@ -16,9 +16,6 @@ struct WUSGraph<V,W>::Edge{
     Edge(const Edge& rhs) : orient(rhs.orient), weight(rhs.weight){
         if (rhs.friendEdge == nullptr)
             return;
-        //if (friendEdge == nullptr)
-//            friendEdge = new Node(rhs.friendEdge->data,rhs.friendEdge->prev,rhs.friendEdge->next);
-        //else
             friendEdge = rhs.friendEdge;
     }
 };
@@ -64,6 +61,7 @@ public:
     AdjList(V v = V(),int ID = -1):vertex(v),vertexID(ID){}
     size_t& refSize() {return this->size;}
 };
+/*
 template <typename V, typename W>
 void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
     AdjList& delList = graph[location];
@@ -89,7 +87,7 @@ void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
             edgeTable.remove(verticesBackward);
         }
         AdjList& oriList = graph[locateMap[orientID]];
-            oriList.pop();
+        oriList.pop();
         if (friendEdge != nullptr){ //why some destryed friendEdge will remain as empty?
             friendEdge->prev->next = friendEdge->next;
             friendEdge->next->prev = friendEdge->prev;
@@ -99,15 +97,15 @@ void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
     }
     delList.clear();
 }
+*/
 template <typename V, typename W>
 void WUSGraph<V,W>::addVertex(V newVertex){
     if (alias.containKey(newVertex))
         return;
     alias.insert(newVertex,vertexCounter);
+    locateMap.insert(vertexCounter, graph.getSize());
     graph.push_back(AdjList(newVertex,vertexCounter));
-    locateMap.insert(vertexCounter, vertexNum);
     ++vertexCounter;
-    ++vertexNum;
 }
 template <typename V, typename W>
 void WUSGraph<V,W>::removeVertex(V delVertex){
@@ -118,9 +116,9 @@ void WUSGraph<V,W>::removeVertex(V delVertex){
     int backVertexID = graph.back().vertexID;
     remove(location,edgeTable);
     graph[location] = graph.back();
+    graph[location].reverse();
     graph.pop_back();
     locateMap[backVertexID] = location;
-    --vertexNum;
 }
 template <typename V, typename W>
 int WUSGraph<V,W>::getDegree(V checkVertex) const {

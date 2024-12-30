@@ -62,13 +62,55 @@ class WUSGraph{
     Vector<AdjList> graph;
     int vertexSize;
     int vertexCounter;
-    size_t vertexNum;
     MinSpanForest MST;
-    void remove(size_t location,EdgeTable& edgeTable);
+    void remove(size_t location,EdgeTable& edgeTable){
+        AdjList& delList = graph[location];
+        for (typename AdjList::iterator orientEdge = delList.begin(); orientEdge!= delList.end(); orientEdge++){
+            //pEdge orientEdge = it->data;
+            if (!alias.containKey(orientEdge->data.orient))
+                continue;
+            pEdge friendEdge = orientEdge->data.friendEdge;
+            int orientID = alias[orientEdge->data.orient];
+            VertexPair verticesForward = std::make_pair(delList.vertexID,orientID); //I can't use it->weight since weight is not the member of Node but the menber of data,how to overload?
+            VertexPair verticesBackward = std::make_pair(orientID,delList.vertexID);
+            W weight;
+            if (edgeTable.containKey(verticesForward)){
+                weight = edgeTable[verticesForward]->data.weight;
+                EdgeInfo edgeInfo(verticesForward,weight);
+                MST.PushMessage(Message(Message::remove,edgeInfo));
+                edgeTable.remove(verticesForward);
+            }
+            if (edgeTable.containKey(verticesBackward)){
+                weight = edgeTable[verticesBackward]->data.weight;
+                EdgeInfo edgeInfo(verticesBackward,weight);
+                MST.PushMessage(Message(Message::remove,edgeInfo));
+                edgeTable.remove(verticesBackward);
+            }
+            AdjList& oriList = graph[locateMap[orientID]];
+            int count = 0;
+            for (typename AdjList::iterator it = oriList.begin(); it != oriList.end(); it++)
+                ++count;
+            if (oriList.getSize() != count)
+                std::cout<<oriList.getSize()<<' '<<count<<std::endl;
+            oriList.pop();
+            if (friendEdge != nullptr){ //why some destryed friendEdge will remain as empty?
+                friendEdge->prev->next = friendEdge->next;
+                friendEdge->next->prev = friendEdge->prev;
+                count = 0;
+                for (typename AdjList::iterator it = oriList.begin(); it != oriList.end(); it++)
+                    ++count;
+                if (oriList.getSize() != count)
+                    std::cout<<oriList.getSize()<<' '<<count<<std::endl;
+                delete friendEdge;
+                friendEdge = nullptr;
+            }
+        }
+        delList.clear();
+    }
 public:
-    explicit WUSGraph(int v): vertexSize(v),vertexNum(0),vertexCounter(0),MST(*this){graph.reserve(v);}
+    explicit WUSGraph(int v): vertexSize(v),vertexCounter(0),MST(*this){graph.reserve(v);}
     //required
-    size_t vertexCount() const {return vertexNum;}
+    size_t vertexCount() const {return graph.getSize();}
     size_t edgeCount() const {return edgeTable.getSize();}
     const std::set<V>& getVertice() const{return alias.getKeySet();}
     bool isVertex(V checkVertex) const {return alias.containKey(checkVertex);}
@@ -98,6 +140,17 @@ public:
         return MST.getMSTEdges();
     }
     W getMSTWeight() {return MST.getTotalWeight();}
+    void debug(){
+        for (int i = 0; i < graph.getSize(); i++){
+            AdjList& list = graph[i];
+            int count = 0;
+            for (typename AdjList::iterator it = list.begin(); it != list.end(); it++){
+                ++count;
+            }
+            if (list.getSize() != count)
+                std::cout<<i<<' '<<list.getSize() <<' ' << count<<std::endl;
+        }
+    }
 };
 template <typename V, typename W>
 class WUSGraph<V,W>::MinSpanForest{

@@ -3,4 +3,262 @@
    uuid = "8FA52423-4E8D-41B1-882B-B073EE7EB9A6"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "53A6EBC3-A392-4C3F-98FA-25A8B948E36C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "gtest/graph_test.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "215"
+            endingLineNumber = "215"
+            landmarkName = "TEST_F()"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "53A6EBC3-A392-4C3F-98FA-25A8B948E36C - fa11b32b3a74140"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "WUSGraphIntTest_LargeScaleGraphOperations_Test::TestBody()"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/gtest/graph_test.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "215"
+                  endingLineNumber = "215">
+               </Location>
+               <Location
+                  uuid = "53A6EBC3-A392-4C3F-98FA-25A8B948E36C - fa11b32b3a74140"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "WUSGraphIntTest_LargeScaleGraphOperations_Test::TestBody()"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/gtest/graph_test.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "215"
+                  endingLineNumber = "215">
+               </Location>
+               <Location
+                  uuid = "53A6EBC3-A392-4C3F-98FA-25A8B948E36C - fa11b32b3a74140"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "WUSGraphIntTest_LargeScaleGraphOperations_Test::TestBody()"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/gtest/graph_test.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "215"
+                  endingLineNumber = "215">
+               </Location>
+               <Location
+                  uuid = "53A6EBC3-A392-4C3F-98FA-25A8B948E36C - fa11b32b3a74140"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "WUSGraphIntTest_LargeScaleGraphOperations_Test::TestBody()"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/gtest/graph_test.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "215"
+                  endingLineNumber = "215">
+               </Location>
+               <Location
+                  uuid = "53A6EBC3-A392-4C3F-98FA-25A8B948E36C - fa11b32b3a74140"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "WUSGraphIntTest_LargeScaleGraphOperations_Test::TestBody()"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/gtest/graph_test.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "215"
+                  endingLineNumber = "215">
+               </Location>
+               <Location
+                  uuid = "53A6EBC3-A392-4C3F-98FA-25A8B948E36C - fa11b32b3a74140"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "WUSGraphIntTest_LargeScaleGraphOperations_Test::TestBody()"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/gtest/graph_test.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "215"
+                  endingLineNumber = "215">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "11BE92E9-774F-4016-AC7E-CBA0FF05B896"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Graph_API/ADT/graph.hpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
+            landmarkName = "debug()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9DC235DD-4929-4EC8-9684-27C60972B81E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Graph_API/ADT/graph.hpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
+            landmarkName = "remove(location, edgeTable)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9DC235DD-4929-4EC8-9684-27C60972B81E - 386ec445950e5455"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "tcb::WUSGraph&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, double&gt;::remove(unsigned long, tcb::WUSGraph&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, double&gt;::EdgeTable&amp;)"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/Graph_API/ADT/graph.hpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "94"
+                  endingLineNumber = "94">
+               </Location>
+               <Location
+                  uuid = "9DC235DD-4929-4EC8-9684-27C60972B81E - 876048bf1331ca86"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "tcb::WUSGraph&lt;int, double&gt;::remove(unsigned long, tcb::WUSGraph&lt;int, double&gt;::EdgeTable&amp;)"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/Graph_API/ADT/graph.hpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "94"
+                  endingLineNumber = "94">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "55DC2C77-5696-411D-AAD3-1445C1098FF4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Graph_API/ADT/graph.hpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "remove(location, edgeTable)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "55DC2C77-5696-411D-AAD3-1445C1098FF4 - 386ec445950e557c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "tcb::WUSGraph&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, double&gt;::remove(unsigned long, tcb::WUSGraph&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, double&gt;::EdgeTable&amp;)"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/Graph_API/ADT/graph.hpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "103"
+                  endingLineNumber = "103">
+               </Location>
+               <Location
+                  uuid = "55DC2C77-5696-411D-AAD3-1445C1098FF4 - 876048bf1331cbaf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "tcb::WUSGraph&lt;int, double&gt;::remove(unsigned long, tcb::WUSGraph&lt;int, double&gt;::EdgeTable&amp;)"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/Graph_API/ADT/graph.hpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "103"
+                  endingLineNumber = "103">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A5BF340C-1D26-4653-A4E4-0070DFFEA99A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Graph_API/ADT/graph.hpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "129"
+            endingLineNumber = "129"
+            landmarkName = "addEdge(v1, v2, weight)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A5BF340C-1D26-4653-A4E4-0070DFFEA99A - a08706f75a198dbd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "tcb::WUSGraph&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, double&gt;::addEdge(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, double)"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/Graph_API/ADT/graph.hpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "129"
+                  endingLineNumber = "129">
+               </Location>
+               <Location
+                  uuid = "A5BF340C-1D26-4653-A4E4-0070DFFEA99A - d00862e47c59ea1a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "tcb::WUSGraph&lt;int, double&gt;::addEdge(int, int, double)"
+                  moduleName = "Graph_API"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/channingtong/Program/Graph_API/Graph_API/ADT/graph.hpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "129"
+                  endingLineNumber = "129">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
