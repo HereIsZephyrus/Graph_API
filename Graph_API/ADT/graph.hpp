@@ -87,23 +87,12 @@ class WUSGraph{
                 edgeTable.remove(verticesBackward);
             }
             AdjList& oriList = graph[locateMap[orientID]];
-            int count = 0;
-            for (typename AdjList::iterator it = oriList.begin(); it != oriList.end(); it++)
-                ++count;
-            if (oriList.getSize() != count)
-                std::cout<<oriList.getSize()<<' '<<count<<std::endl;
-            oriList.pop();
-            if (friendEdge != nullptr){ //why some destryed friendEdge will remain as empty?
-                friendEdge->prev->next = friendEdge->next;
-                friendEdge->next->prev = friendEdge->prev;
-                count = 0;
-                for (typename AdjList::iterator it = oriList.begin(); it != oriList.end(); it++)
-                    ++count;
-                if (oriList.getSize() != count)
-                    std::cout<<oriList.getSize()<<' '<<count<<std::endl;
-                delete friendEdge;
-                friendEdge = nullptr;
-            }
+            friendEdge->prev->next = friendEdge->next;
+            friendEdge->next->prev = friendEdge->prev;
+            if (!oriList.isEmpty())
+                oriList.pop();
+            delete friendEdge;
+            friendEdge = nullptr;
         }
         delList.clear();
     }
@@ -147,8 +136,7 @@ public:
             for (typename AdjList::iterator it = list.begin(); it != list.end(); it++){
                 ++count;
             }
-            if (list.getSize() != count)
-                std::cout<<i<<' '<<list.getSize() <<' ' << count<<std::endl;
+            //std::cout<<i<<' '<<list.getSize() <<' ' << count<<std::endl;
         }
     }
 };

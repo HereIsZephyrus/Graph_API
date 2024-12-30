@@ -263,7 +263,7 @@ List<Object>::iterator List<Object>::insert(iterator it, const Object& x){
 }
 template <class Object>
 List<Object>::iterator List<Object>::remove(iterator it){
-    if (isEmpty())
+    if (isEmpty() || head == nullptr)
         throw std::runtime_error("List is empty");
     Node *p = it._ptr();
     //if (p->next != nullptr){//[WIP]memory is leaking!!

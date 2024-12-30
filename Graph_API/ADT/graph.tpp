@@ -60,6 +60,25 @@ public:
     void pop() {--this->size;}
     AdjList(V v = V(),int ID = -1):vertex(v),vertexID(ID){}
     size_t& refSize() {return this->size;}
+    void clone(AdjList& rhs){
+        this->clear();
+        this->vertex = rhs.vertex;
+        this->vertexID = rhs.vertexID;
+        this->size = rhs.size;
+        pEdge p = this->head->next;
+        pEdge rhs_p = rhs.head->next;
+        this->head->next = rhs.head->next;
+        this->tail->prev = rhs.tail->prev;
+        while (rhs_p != rhs.tail){
+            p = rhs_p;
+            rhs_p = rhs_p->next;
+        }
+        rhs.head->next = rhs.tail;
+        rhs.tail->prev = rhs.head;
+        rhs.size = 0;
+        this->head->next->prev = this->head;
+        this->tail->prev->next = this->tail;
+    }
 };
 /*
 template <typename V, typename W>
@@ -115,8 +134,7 @@ void WUSGraph<V,W>::removeVertex(V delVertex){
     alias.remove(delVertex);
     int backVertexID = graph.back().vertexID;
     remove(location,edgeTable);
-    graph[location] = graph.back();
-    graph[location].reverse();
+    graph[location].clone(graph[graph.getSize()-1]);
     graph.pop_back();
     locateMap[backVertexID] = location;
 }
