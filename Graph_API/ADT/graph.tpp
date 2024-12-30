@@ -7,6 +7,14 @@
 
 using namespace tcb;
 template <typename V, typename W>
+struct WUSGraph<V,W>::Message{
+    enum {add = true,remove = false} type;
+    EdgeInfo edge;
+    bool operator==(const Message& other) const {
+        return type == other.type && edge == other.edge;
+    }
+};
+template <typename V, typename W>
 struct WUSGraph<V,W>::Edge{
     V orient;
     W weight;
@@ -80,12 +88,10 @@ public:
         this->tail->prev->next = this->tail;
     }
 };
-/*
 template <typename V, typename W>
 void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
     AdjList& delList = graph[location];
     for (typename AdjList::iterator orientEdge = delList.begin(); orientEdge!= delList.end(); orientEdge++){
-        //pEdge orientEdge = it->data;
         if (!alias.containKey(orientEdge->data.orient))
             continue;
         pEdge friendEdge = orientEdge->data.friendEdge;
@@ -106,17 +112,35 @@ void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
             edgeTable.remove(verticesBackward);
         }
         AdjList& oriList = graph[locateMap[orientID]];
-        oriList.pop();
-        if (friendEdge != nullptr){ //why some destryed friendEdge will remain as empty?
-            friendEdge->prev->next = friendEdge->next;
-            friendEdge->next->prev = friendEdge->prev;
-            delete friendEdge;
-            friendEdge = nullptr;
-        }
+        friendEdge->prev->next = friendEdge->next;
+        friendEdge->next->prev = friendEdge->prev;
+        if (!oriList.isEmpty())
+            oriList.pop();
+        delete friendEdge;
+        friendEdge = nullptr;
     }
     delList.clear();
 }
-*/
+template <typename V, typename W>
+void WUSGraph<V,W>::addEdge(V v1,V v2,W weight){
+    if (!alias.containKey(v1) || !alias.containKey(v2))
+        return;
+    int id1 = alias[v1], id2 = alias[v2];
+    size_t location1 = locateMap[id1],location2 = locateMap[id2];
+    pEdge edge1 = new Node(Edge(v2,weight));
+    pEdge edge2 = new Node(Edge(v1,weight));
+    edge1->data.friendEdge = edge2;   edge2->data.friendEdge = edge1;
+    graph[location1].insert(edge1);    graph[location2].insert(edge2);
+    VertexPair vertices = std::make_pair(id1,id2);
+    edgeTable.insert(vertices, edge1);
+    EdgeInfo edgeInfo(vertices,weight);
+    MST.PushMessage(Message(Message::add,edgeInfo));
+}
+template <typename V, typename W>
+const Vector<EdgeInfo<V,W>>& WUSGraph<V,W>::getMST(){
+    MST.calcMST();
+    return MST.getMSTEdges();
+}
 template <typename V, typename W>
 void WUSGraph<V,W>::addVertex(V newVertex){
     if (alias.containKey(newVertex))
@@ -216,3 +240,55 @@ WUSGraph<V,W>::Neighbor WUSGraph<V,W>::getNeighbor(V checkNode){
         neighbors.push_back(std::make_pair(it->data.orient, it->data.weight));
     return neighbors;
 }
+template <typename V, typename W>
+class WUSGraph<V,W>::MinSpanForest{
+    Queue<Message> MsgQue;
+    Vector<EdgeInfo> mstEdges;
+    W totalWeight;
+    AVLSearchTree<EdgeInfo> edges;
+    WUSGraph& graph;
+    void ProcessMessage(){
+        while (!MsgQue.isEmpty()) {
+            Message msg = MsgQue.front();
+            MsgQue.dequeue();
+            if (msg.type == Message::add)
+                edges.insert(msg.edge);
+            else
+                edges.remove(msg.edge);
+        }
+    }
+public:
+    MinSpanForest(WUSGraph& graph) : totalWeight(0),graph(graph) {}
+    void PushMessage(const Message& Message) {MsgQue.enqueue(Message);}
+    void calcMST() {
+        if (MsgQue.isEmpty())
+            return;
+        DisjSets ds(static_cast<int>(graph.vertexCount()));
+        ProcessMessage();
+        Queue<EdgeInfo> addedEdge;
+        addedEdge.clear();
+        mstEdges.clear();
+        totalWeight = 0;
+        while (mstEdges.getSize() < graph.vertexCount() - 1) {
+            EdgeInfo edge = edges.findMin();
+            addedEdge.enqueue(edge);
+            edges.remove(edge);
+            int uset = ds.find(static_cast<int>(graph.locateMap[edge.vertex.first]));
+            int vset = ds.find(static_cast<int>(graph.locateMap[edge.vertex.second]));
+            if (uset != vset) {
+                mstEdges.push_back(edge);
+                totalWeight += edge.weight;
+                ds.unionSets(uset, vset);
+            }
+        }
+        while (!addedEdge.isEmpty()){
+            edges.insert(addedEdge.front());
+            addedEdge.dequeue();
+        }
+    }
+    const Vector<EdgeInfo>& getMSTEdges() const {return mstEdges;}
+    W getTotalWeight() {
+        calcMST();
+        return totalWeight;
+    }
+};

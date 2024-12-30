@@ -307,3 +307,43 @@ List<Object>::iterator List<Object>::find(const Object& val) const{// the first 
             return it;
     return it;
 }
+template <class Object>
+struct List<Object>::Node{
+    Object data;
+    Node *prev, *next;
+    Node(const Object& d = Object(), Node* p = nullptr, Node* n = nullptr):data(d),prev(p),next(n){}
+    ~Node(){prev = nullptr; next = nullptr;}
+    Node(const Node& rhs) : data(rhs.data), prev(rhs.prev), next(rhs.next) {}
+    Node& operator=(const Node& rhs) {
+        if (this == &rhs)
+        return *this;
+        data = rhs.data;
+        prev = rhs.prev;
+        next = rhs.next;
+        return *this;
+    }
+};
+template <class Object>
+const List<Object>& List<Object>::operator=(const List& rhs){
+    if (this == &rhs)
+        return *this;
+    clear();
+    iterator current = begin();
+    for(iterator it = rhs.begin(); it != rhs.end(); it++)
+        current = insert(current,*it);
+    return *this;
+}
+template <class Object>
+void List<Object>::reverse(){
+    Node *current = head;
+    Node *temp = nullptr;
+    while (current != nullptr){
+        temp = current->prev;
+        current->prev = current->next;
+        current->next = temp;
+        current = current->prev;
+    }
+    temp = head;
+    head = tail;
+    tail = temp;
+}

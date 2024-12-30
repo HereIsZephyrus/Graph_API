@@ -55,21 +55,7 @@ public:
 template <class Object>
 class List {
 public:
-    struct Node{
-        Object data;
-        Node *prev, *next;
-        Node(const Object& d = Object(), Node* p = nullptr, Node* n = nullptr):data(d),prev(p),next(n){}
-        ~Node(){prev = nullptr; next = nullptr;}
-        Node(const Node& rhs) : data(rhs.data), prev(rhs.prev), next(rhs.next) {}
-        Node& operator=(const Node& rhs) {
-            if (this == &rhs)
-            return *this;
-            data = rhs.data;
-            prev = rhs.prev;
-            next = rhs.next;
-            return *this;
-        }
-    };
+    struct Node;
 protected:
     size_t size;
     Node *head, *tail;
@@ -78,30 +64,10 @@ public:
     ~List();
     List(const List& rhs);
     List(List && rhs);
-    const List& operator=(const List& rhs){
-        if (this == &rhs)
-            return *this;
-        clear();
-        iterator current = begin();
-        for(iterator it = rhs.begin(); it != rhs.end(); it++)
-            current = insert(current,*it);
-        return *this;
-    }
+    const List& operator=(const List& rhs);
     bool isEmpty() const{return size == 0;}
     size_t getSize() const {return size;}
-    void reverse(){
-        Node *current = head;
-        Node *temp = nullptr;
-        while (current != nullptr){
-            temp = current->prev;
-            current->prev = current->next;
-            current->next = temp;
-            current = current->prev;
-        }
-        temp = head;
-        head = tail;
-        tail = temp;
-    }
+    void reverse();
     
     class iterator;
     //class const_iterator;

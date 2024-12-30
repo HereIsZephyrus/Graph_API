@@ -205,13 +205,12 @@ TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
             graph.removeEdge(v1, v2);
         }
     }
-    for (int i = 1; i <= 100; ++i) {
+    for (int i = 1; i <= 400; ++i) {
         int v = rand() % numVertices + 1;
         if (graph.isVertex(v)) {
             graph.removeVertex(v);
         }
     }
-    graph.debug();
 }
 
 TEST_F(WUSGraphIntTest, MSTCalculations) {
