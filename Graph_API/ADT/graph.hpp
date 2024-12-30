@@ -54,7 +54,6 @@ class WUSGraph{
     class MinSpanForest;
     using Node = typename List<Edge>::Node;
     using pEdge = Node*;
-    using pList = AdjList*;
     EdgeTable edgeTable;
     HashMap<V, int> alias;
     HashMap<int, size_t> locateMap;
@@ -74,7 +73,20 @@ public:
     void addVertex(V newVertex);
     void removeVertex(V delVertex);
     int getDegree(V checkVertex) const;
-    void addEdge(V v1,V v2,W weight);
+    void addEdge(V v1,V v2,W weight){
+        if (!alias.containKey(v1) || !alias.containKey(v2))
+            return;
+        int id1 = alias[v1], id2 = alias[v2];
+        size_t location1 = locateMap[id1],location2 = locateMap[id2];
+        pEdge edge1 = new Node(Edge(v2,weight));
+        pEdge edge2 = new Node(Edge(v1,weight));
+        edge1->data.friendEdge = edge2;   edge2->data.friendEdge = edge1;
+        graph[location1].insert(edge1);    graph[location2].insert(edge2);
+        VertexPair vertices = std::make_pair(id1,id2);
+        edgeTable.insert(vertices, edge1);
+        EdgeInfo edgeInfo(v1,v2,weight);
+        MST.PushMessage(Message(Message::add,edgeInfo));
+    }
     void removeEdge(V v1,V v2);
     bool hasEdge(V v1,V v2) const;
     W getWeight(V v1,V v2) const;

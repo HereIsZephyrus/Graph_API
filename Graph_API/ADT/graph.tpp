@@ -11,7 +11,7 @@ struct WUSGraph<V,W>::Edge{
     V orient;
     W weight;
     pEdge friendEdge;
-    Edge(V to = V(),W w = W(),pList friendList = nullptr):orient(to),weight(w),friendEdge(nullptr){}
+    Edge(V to = V(),W w = W()):orient(to),weight(w),friendEdge(nullptr){}
     bool operator==(const Edge& other) const {return orient == other.orient && weight == other.weight;}
     Edge(const Edge& other) : orient(other.orient), weight(other.weight), friendEdge(other.friendEdge) {}
 };
@@ -79,7 +79,7 @@ void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
         }
         EdgeInfo edgeInfo(orientEdge->data.orient,delList.vertex,weight);
         MST.PushMessage(Message(Message::remove,edgeInfo));
-        if (friendEdge != nullptr && friendEdge->prev != nullptr && friendEdge->next != nullptr){ //why some destryed friendEdge will remain as empty?
+        if (friendEdge != nullptr){ //why some destryed friendEdge will remain as empty?
             size_t loc = locateMap[orientID];
             graph[loc].pop();
             friendEdge->prev->next = friendEdge->next;
@@ -120,14 +120,15 @@ int WUSGraph<V,W>::getDegree(V checkVertex) const {
     size_t location = locateMap[alias[checkVertex]];
     return static_cast<int>(graph[location].getSize());
 }
+/*
 template <typename V, typename W>
 void WUSGraph<V,W>::addEdge(V v1,V v2,W weight){
     if (!alias.containKey(v1) || !alias.containKey(v2))
         return;
     int id1 = alias[v1], id2 = alias[v2];
     size_t location1 = locateMap[id1],location2 = locateMap[id2];
-    pEdge edge1 = new Node(Edge(v2,weight,&graph[id2]));
-    pEdge edge2 = new Node(Edge(v1,weight,&graph[id1]));
+    pEdge edge1 = new Node(Edge(v2,weight));
+    pEdge edge2 = new Node(Edge(v1,weight));
     edge1->data.friendEdge = edge2;   edge2->data.friendEdge = edge1;
     graph[location1].insert(edge1);    graph[location2].insert(edge2);
     VertexPair vertices = std::make_pair(id1,id2);
@@ -135,6 +136,7 @@ void WUSGraph<V,W>::addEdge(V v1,V v2,W weight){
     EdgeInfo edgeInfo(v1,v2,weight);
     MST.PushMessage(Message(Message::add,edgeInfo));
 }
+*/
 template <typename V, typename W>
 void WUSGraph<V,W>::removeEdge(V v1,V v2){
     if (!alias.containKey(v1) || !alias.containKey(v2))

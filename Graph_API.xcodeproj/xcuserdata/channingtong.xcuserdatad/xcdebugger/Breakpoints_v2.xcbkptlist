@@ -14,8 +14,8 @@
             filePath = "Graph_API/ADT/graph.hpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "117"
-            endingLineNumber = "117"
+            startingLineNumber = "129"
+            endingLineNumber = "129"
             landmarkName = "calcMST()"
             landmarkType = "9">
          </BreakpointContent>
@@ -32,22 +32,6 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "238"
             endingLineNumber = "238"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "4A28654F-8BDC-42BB-87A5-59092689474C"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "gtest/graph_test.cpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "207"
-            endingLineNumber = "207"
             landmarkName = "TEST_F()"
             landmarkType = "9">
          </BreakpointContent>
@@ -62,8 +46,8 @@
             filePath = "gtest/graph_test.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
             landmarkName = "TEST_F()"
             landmarkType = "9">
          </BreakpointContent>
