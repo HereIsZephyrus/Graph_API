@@ -11,11 +11,9 @@ struct WUSGraph<V,W>::Edge{
     V orient;
     W weight;
     pEdge friendEdge;
-    pList friendBucket;
-    Edge(V to = V(),W w = W(),pList friendList = nullptr):orient(to),weight(w),friendEdge(nullptr),friendBucket(friendList){}
-    bool operator==(const Edge& other) const {
-        return orient == other.orient && weight == other.weight;
-    }
+    Edge(V to = V(),W w = W(),pList friendList = nullptr):orient(to),weight(w),friendEdge(nullptr){}
+    bool operator==(const Edge& other) const {return orient == other.orient && weight == other.weight;}
+    Edge(const Edge& other) : orient(other.orient), weight(other.weight), friendEdge(other.friendEdge) {}
 };
 template <typename V, typename W>
 class  WUSGraph<V,W>::EdgeTable : public HashMap<VertexPair, pEdge>{
@@ -27,14 +25,12 @@ public:
         orientEdge->prev->next = orientEdge->next;
         orientEdge->next->prev = orientEdge->prev;
         pEdge friendEdge = orientEdge->data.friendEdge;
-        pList friendBucket = orientEdge->data.friendBucket;
         if (!oneway)
             ret_p = friendEdge->next;
         if (friendEdge != nullptr){
             friendEdge->prev->next = friendEdge->next;
             friendEdge->next->prev = friendEdge->prev;
             delete friendEdge;
-            friendBucket = nullptr;
         }
         delete orientEdge;
         this->remove(vertices);
@@ -66,16 +62,10 @@ void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
     AdjList& delList = graph[location];
     for (typename AdjList::iterator orientEdge = delList.begin(); orientEdge!= delList.end(); orientEdge++){
         //pEdge orientEdge = it->data;
+        if (!alias.containKey(orientEdge->data.orient))
+            continue;
         pEdge friendEdge = orientEdge->data.friendEdge;
-        pList friendBucket = orientEdge->data.friendBucket;
         int orientID = alias[orientEdge->data.orient];
-        graph[orientID].pop();
-        if (friendEdge != nullptr){
-            friendEdge->prev->next = friendEdge->next;
-            friendEdge->next->prev = friendEdge->prev;
-            delete friendEdge;
-            friendBucket = nullptr;
-        }
         VertexPair verticesForward = std::make_pair(delList.vertexID,orientID); //I can't use it->weight since weight is not the member of Node but the menber of data,how to overload?
         VertexPair verticesBackward = std::make_pair(orientID,delList.vertexID);
         W weight;
@@ -89,6 +79,14 @@ void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
         }
         EdgeInfo edgeInfo(orientEdge->data.orient,delList.vertex,weight);
         MST.PushMessage(Message(Message::remove,edgeInfo));
+        if (friendEdge != nullptr && friendEdge->prev != nullptr && friendEdge->next != nullptr){ //why some destryed friendEdge will remain as empty?
+            size_t loc = locateMap[orientID];
+            graph[loc].pop();
+            friendEdge->prev->next = friendEdge->next;
+            friendEdge->next->prev = friendEdge->prev;
+            delete friendEdge;
+            friendEdge = nullptr;
+        }
     }
     delList.clear();
 }
@@ -111,6 +109,7 @@ void WUSGraph<V,W>::removeVertex(V delVertex){
     int backVertexID = graph.back().vertexID;
     remove(location,edgeTable);
     graph[location] = graph.back();
+    graph.pop_back();
     locateMap[backVertexID] = location;
     --vertexNum;
 }

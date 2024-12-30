@@ -60,6 +60,15 @@ public:
         Node *prev, *next;
         Node(const Object& d = Object(), Node* p = nullptr, Node* n = nullptr):data(d),prev(p),next(n){}
         ~Node(){prev = nullptr; next = nullptr;}
+        Node(const Node& rhs) : data(rhs.data), prev(rhs.prev), next(rhs.next) {}
+        Node& operator=(const Node& rhs) {
+            if (this == &rhs)
+            return *this;
+            data = rhs.data;
+            prev = rhs.prev;
+            next = rhs.next;
+            return *this;
+        }
     };
 protected:
     size_t size;
