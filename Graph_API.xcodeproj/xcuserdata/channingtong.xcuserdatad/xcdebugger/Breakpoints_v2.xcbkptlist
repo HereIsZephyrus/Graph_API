@@ -30,8 +30,8 @@
             filePath = "gtest/graph_test.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
+            startingLineNumber = "243"
+            endingLineNumber = "243"
             landmarkName = "TEST_F()"
             landmarkType = "9">
          </BreakpointContent>
@@ -46,8 +46,24 @@
             filePath = "gtest/graph_test.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "210"
-            endingLineNumber = "210"
+            startingLineNumber = "215"
+            endingLineNumber = "215"
+            landmarkName = "TEST_F()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A8D666E6-1BE7-4D67-A299-2E6CC0FAF97E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "gtest/graph_test.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
             landmarkName = "TEST_F()"
             landmarkType = "9">
          </BreakpointContent>

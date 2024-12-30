@@ -13,7 +13,11 @@ struct WUSGraph<V,W>::Edge{
     pEdge friendEdge;
     Edge(V to = V(),W w = W()):orient(to),weight(w),friendEdge(nullptr){}
     bool operator==(const Edge& other) const {return orient == other.orient && weight == other.weight;}
-    Edge(const Edge& other) : orient(other.orient), weight(other.weight), friendEdge(other.friendEdge) {}
+    Edge(const Edge& rhs) : orient(rhs.orient), weight(rhs.weight){
+        if (rhs.friendEdge == nullptr)
+            return;
+        friendEdge = new Node(rhs.friendEdge->data,rhs.friendEdge->prev,rhs.friendEdge->next);
+    }
 };
 template <typename V, typename W>
 class  WUSGraph<V,W>::EdgeTable : public HashMap<VertexPair, pEdge>{

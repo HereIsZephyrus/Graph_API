@@ -169,10 +169,15 @@ TEST_F(WUSGraphIntTest, GetVerticeReturnsAllVertices) {
         EXPECT_TRUE(std::find(vertices.begin(), vertices.end(), i) != vertices.end());
 }
 TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
+    srand((unsigned int)time(0));
     const int numVertices = 1000;
     const int numEdges = 5000;
-    for (int i = 1; i <= numVertices; ++i)
+    for (int i = 1; i <= numVertices; ++i){
+        if (i == 193){
+            ;
+        }
         graph.addVertex(i);
+    }
     EXPECT_EQ(graph.vertexCount(), numVertices);
     for (int i = 1; i <= numEdges; ++i) {
         int v1 = rand() % numVertices + 1;
