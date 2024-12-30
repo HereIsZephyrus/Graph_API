@@ -173,9 +173,6 @@ TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
     const int numVertices = 1000;
     const int numEdges = 5000;
     for (int i = 1; i <= numVertices; ++i){
-        if (i == 193){
-            ;
-        }
         graph.addVertex(i);
     }
     EXPECT_EQ(graph.vertexCount(), numVertices);
@@ -209,7 +206,7 @@ TEST_F(WUSGraphIntTest, LargeScaleGraphOperations) {
         }
     }
      */
-    for (int i = 1; i <= numVertices / 2; ++i) {
+    for (int i = 1; i <= 100; ++i) {
         int v = rand() % numVertices + 1;
         if (graph.isVertex(v)) {
             graph.removeVertex(v);

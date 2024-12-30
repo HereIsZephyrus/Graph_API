@@ -266,12 +266,17 @@ List<Object>::iterator List<Object>::remove(iterator it){
     if (isEmpty())
         throw std::runtime_error("List is empty");
     Node *p = it._ptr();
-    iterator ret_p(p->next);
-    p->prev->next = p->next;
-    p->next->prev = p->prev;
-    delete p;
-    size --;
-    return ret_p;
+    if (p->next != nullptr){//[WIP]memory is leaking!!
+        iterator ret_p(p->next);
+        p->prev->next = p->next;
+        p->next->prev = p->prev;
+        delete p;
+        --size;
+        return ret_p;
+    }else{
+        --size;
+        return iterator(p);
+    }
 }
 template <class Object>
 List<Object>::iterator List<Object>::remove(iterator start,iterator end){

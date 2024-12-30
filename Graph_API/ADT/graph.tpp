@@ -16,7 +16,10 @@ struct WUSGraph<V,W>::Edge{
     Edge(const Edge& rhs) : orient(rhs.orient), weight(rhs.weight){
         if (rhs.friendEdge == nullptr)
             return;
-        friendEdge = new Node(rhs.friendEdge->data,rhs.friendEdge->prev,rhs.friendEdge->next);
+        //if (friendEdge == nullptr)
+//            friendEdge = new Node(rhs.friendEdge->data,rhs.friendEdge->prev,rhs.friendEdge->next);
+        //else
+            friendEdge = rhs.friendEdge;
     }
 };
 template <typename V, typename W>
@@ -83,9 +86,9 @@ void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
         }
         EdgeInfo edgeInfo(orientEdge->data.orient,delList.vertex,weight);
         MST.PushMessage(Message(Message::remove,edgeInfo));
+        AdjList& oriList = graph[locateMap[orientID]];
+            oriList.pop();
         if (friendEdge != nullptr){ //why some destryed friendEdge will remain as empty?
-            size_t loc = locateMap[orientID];
-            graph[loc].pop();
             friendEdge->prev->next = friendEdge->next;
             friendEdge->next->prev = friendEdge->prev;
             delete friendEdge;
