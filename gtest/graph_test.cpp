@@ -258,10 +258,6 @@ TEST_F(WUSGraphIntTest, MSTCalculations) {
     EXPECT_DOUBLE_EQ(totalWeight, 19);
     EXPECT_DOUBLE_EQ(graph.calcDistace(1, 1), 0);
     EXPECT_DOUBLE_EQ(graph.calcDistace(4, 2), 5);
-    auto visit = [](int node, std::stringstream* res){(*res) << node << "->";};
-    std::stringstream res;
-    graph.WalkThrough(1, WalkMethod::DFS, visit, &res);
-    std::cout<<res.str()<<std::endl;
     Vector<int> vertices;
     vertices.push_back(2);
     vertices.push_back(3);

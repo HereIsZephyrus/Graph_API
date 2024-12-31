@@ -33,3 +33,10 @@ void DisjSets::unionSets(int root1,int root2){
         s[root2] = root1;
     }
 }
+int DisjSets::countSets() const{
+    int count = 0;
+    for (size_t i = 0; i < s.getSize(); i++)
+        if (s[i] < 0)
+            ++count;
+    return count;
+}

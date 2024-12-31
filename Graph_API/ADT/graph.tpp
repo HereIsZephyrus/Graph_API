@@ -92,7 +92,7 @@ template <typename V, typename W>
 void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
     AdjList& delList = graph[location];
     for (typename AdjList::iterator orientEdge = delList.begin(); orientEdge!= delList.end(); orientEdge++){
-        if (!alias.containKey(orientEdge->data.orient))
+        if (orientEdge._ptr() == nullptr || !alias.containKey(orientEdge->data.orient))
             continue;
         pEdge friendEdge = orientEdge->data.friendEdge;
         int orientID = alias[orientEdge->data.orient];
@@ -298,26 +298,10 @@ template <typename V, typename W>
 W WUSGraph<V,W>::calcDistace(V startNode,V endNode){
     if (!isVertex(startNode) || !isVertex(endNode))
         throw std::out_of_range("The start or end node is not in the graph");
-    if (startNode == endNode)
-        return W();
     size_t vertexSize = vertexCount();
     Vector<W> distance(vertexSize,std::numeric_limits<W>::max());
-    distance[alias[startNode]] = 0;
-    Heap<std::pair<W,V>> heap;
-    heap.insert(std::make_pair(0,startNode));
-    while (!heap.isEmpty()){
-        V current = heap.findMin().second;
-        heap.deleteMin();
-        size_t currentLocation = locateMap[alias[current]];
-        for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
-            size_t nextLocation = locateMap[alias[it->data.orient]];
-            W weight = it->data.weight;
-            if (distance[nextLocation] > distance[currentLocation] + weight){
-                distance[nextLocation] = distance[currentLocation] + weight;
-                heap.insert(std::make_pair(distance[nextLocation],it->data.orient));
-            }
-        }
-    }
+    Vector<V> parent(vertexSize,-1);
+    Dijkstra(startNode,distance,parent);
     return distance[alias[endNode]];
 }
 template <typename V, typename W>
@@ -364,6 +348,19 @@ W WUSGraph<V,W>::steinerTree(const Vector<V>& keyVertices){
     }
     return dp[keyVertices[0]][(1<<keySize)-1];
 }
+/*
+template <typename V, typename W>
+int WUSGraph<V,W>::countConnectedComponents(){
+    DisjSets ds(vertexCount());
+    for (size_t i = 0; i < graph.getSize(); i++){
+        for (typename AdjList::iterator it = graph[i].begin(); it != graph[i].end(); it++){
+            size_t nextLocation = locateMap[alias[it->data.orient]];
+            ds.unionSets(i, nextLocation);
+        }
+    }
+    return ds.countSets();
+}
+*/
 template <typename V, typename W>
 std::stringstream WUSGraph<V,W>::getLongestPath(V startNode){ //[WIP] Need to be fixed and work out the conception
     if (!isVertex(startNode))
@@ -374,21 +371,20 @@ std::stringstream WUSGraph<V,W>::getLongestPath(V startNode){ //[WIP] Need to be
     distance[alias[startNode]] = 0;
     Heap<std::pair<W,V>> heap;
     heap.insert(std::make_pair(0,startNode));
-    Vector<V> parent(vertexSize,-1);
+    Vector<int> parent(vertexSize,-1);
     while (!heap.isEmpty()){
         V current = heap.findMin().second;
         heap.deleteMin();
         size_t currentLocation = locateMap[alias[current]];
         for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
-            V temp = current;
-            std::cout<<current<<"->"<<it->data.orient<<std::endl;
+            //std::cout<<current<<"->"<<it->data.orient<<std::endl;
             size_t nextLocation = locateMap[alias[it->data.orient]];
             W weight = it->data.weight;
             if (distance[nextLocation] <= distance[currentLocation] + weight){
                 distance[nextLocation] = distance[currentLocation] + weight;
                 std::cout<<current<<"->"<<it->data.orient<<'('<<nextLocation<<')'<<" - "<<distance[nextLocation]<<std::endl;
                 heap.insert(std::make_pair(-distance[nextLocation],it->data.orient));
-                parent[nextLocation] = current;
+                parent[nextLocation] = alias[current];
             }
         }
     }
@@ -400,7 +396,7 @@ std::stringstream WUSGraph<V,W>::getLongestPath(V startNode){ //[WIP] Need to be
     }
     while (maxLocation != 0){
         res << graph[maxLocation].vertex << "->";
-        maxLocation = locateMap[alias[parent[maxLocation]]];
+        maxLocation = locateMap[parent[maxLocation]];
     }
     res << "end";
     return res;
@@ -434,7 +430,8 @@ public:
         addedEdge.clear();
         mstEdges.clear();
         totalWeight = 0;
-        while (mstEdges.getSize() < graph.vertexCount() - 1) {
+        int componentNum = graph.countConnectedComponents();
+        while (mstEdges.getSize() < graph.vertexCount() - componentNum){
             EdgeInfo edge = edges.findMin();
             addedEdge.enqueue(edge);
             edges.remove(edge);
