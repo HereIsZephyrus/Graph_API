@@ -60,7 +60,6 @@ class WUSGraph{
     HashMap<V, int> alias;
     HashMap<int, size_t> locateMap;
     Vector<AdjList> graph;
-    int vertexSize;
     int vertexCounter;
     MinSpanForest MST;
     void remove(size_t location,EdgeTable& edgeTable);
@@ -106,7 +105,7 @@ class WUSGraph{
         return res;
     }
 public:
-    explicit WUSGraph(int v): vertexSize(v),vertexCounter(0),MST(*this){graph.reserve(v);}
+    explicit WUSGraph(int v): vertexCounter(0),MST(*this){graph.reserve(v);}
     //required
     size_t vertexCount() const {return graph.getSize();}
     size_t edgeCount() const {return edgeTable.getSize();}
@@ -134,6 +133,7 @@ public:
             throw std::out_of_range("The start or end node is not in the graph");
         if (startNode == endNode)
             return W();
+        size_t vertexSize = vertexCount();
         Vector<W> distance(vertexSize,std::numeric_limits<W>::max());
         distance[alias[startNode]] = 0;
         Heap<std::pair<W,V>> heap;
@@ -152,6 +152,46 @@ public:
             }
         }
         return distance[alias[endNode]];
+    }
+    std::stringstream getLongestPath(V startNode){
+        if (!isVertex(startNode))
+            throw std::out_of_range("The start node is not in the graph");
+        std::stringstream res;
+        size_t vertexSize = vertexCount();
+        Vector<W> distance(vertexSize,-std::numeric_limits<W>::max());
+        distance[alias[startNode]] = 0;
+        Heap<std::pair<W,V>> heap;
+        heap.insert(std::make_pair(0,startNode));
+        Vector<V> parent(vertexSize,-1);
+        while (!heap.isEmpty()){
+            V current = heap.findMin().second;
+            heap.deleteMin();
+            size_t currentLocation = locateMap[alias[current]];
+            for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
+                V temp = current;
+                std::cout<<current<<"->"<<it->data.orient<<std::endl;
+                size_t nextLocation = locateMap[alias[it->data.orient]];
+                W weight = it->data.weight;
+                if (distance[nextLocation] <= distance[currentLocation] + weight){
+                    distance[nextLocation] = distance[currentLocation] + weight;
+                    std::cout<<current<<"->"<<it->data.orient<<'('<<nextLocation<<')'<<" - "<<distance[nextLocation]<<std::endl;
+                    heap.insert(std::make_pair(-distance[nextLocation],it->data.orient));
+                    parent[nextLocation] = current;
+                }
+            }
+        }
+        size_t maxLocation = 0;
+        for (size_t i = 1; i < vertexSize; i++){
+            std::cout<<graph[i].vertex<<":"<< distance[maxLocation]<<std::endl;
+            if (distance[i] < distance[maxLocation] && distance[i] > -std::numeric_limits<W>::max())
+                maxLocation = i;
+        }
+        while (maxLocation != 0){
+            res << graph[maxLocation].vertex << "->";
+            maxLocation = locateMap[alias[parent[maxLocation]]];
+        }
+        res << "end";
+        return res;
     }
 };
 }

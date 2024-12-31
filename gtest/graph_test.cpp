@@ -258,6 +258,8 @@ TEST_F(WUSGraphIntTest, MSTCalculations) {
     EXPECT_DOUBLE_EQ(totalWeight, 19);
     std::cout<<graph.WalkThrough(1, WalkMethod::BFS).str()<<std::endl;
     std::cout<<graph.WalkThrough(1, WalkMethod::DFS).str()<<std::endl;
+    std::cout<<graph.getLongestPath(1).str()<<std::endl;
+    std::cout<<graph.getLongestPath(6).str()<<std::endl;
     EXPECT_DOUBLE_EQ(graph.calcDistace(1, 1), 0);
     EXPECT_DOUBLE_EQ(graph.calcDistace(4, 2), 5);
 }
