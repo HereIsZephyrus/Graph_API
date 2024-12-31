@@ -93,76 +93,11 @@ public:
     W calcDistace(V startNode,V endNode);
     std::stringstream getLongestPath(V startNode);
     W steinerTree(const Vector<V>& keyVertices) const;
-    int countConnectedComponents(){
-        Vector<bool> visited(vertexCount(),false);
-        int count = 0;
-        auto visit = [this](V vertex,Vector<bool>* visited){
-            (*visited)[locateMap[alias[vertex]]] = true;
-        };
-        for (size_t i = 0; i < graph.getSize(); i++){
-            if (!visited[i]){
-                DFS(graph[i].vertex,visit,&visited);
-                count++;
-            }
-        }
-        return count;
-    }
-    Vector<std::pair<V,V>> calcMST(){
-        V startNode = graph[0].vertex;
-        return calcMST(startNode);
-    }
-    Vector<std::pair<V,V>> calcMST(V startNode){
-        if (!isVertex(startNode))
-            throw std::out_of_range("The start or end node is not in the graph");
-        size_t vertexSize = vertexCount();
-        Vector<W> distance(vertexSize,std::numeric_limits<W>::max());
-        Vector<int> parent(vertexSize,-1);
-        Dijkstra(startNode,distance,parent);
-        Vector<std::pair<V,V>> res;
-        std::queue<V> q;
-        Vector<bool> visited(vertexSize,false);
-        size_t startLocation = locateMap[alias[startNode]];
-        Queue<size_t> queue;
-        queue.enqueue(startLocation);
-        visited[startLocation] = true;
-        while (!queue.isEmpty()){
-            size_t currentLocation = queue.front();
-            if (parent[currentLocation] != -1){
-                size_t parentLoc = locateMap[parent[currentLocation]];
-                std::pair<V,V> vertex = std::make_pair(graph[parent[parentLoc]].vertex, graph[currentLocation].vertex);
-                res.push_back(vertex);
-            }
-            queue.dequeue();
-            for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
-                size_t nextLocation = locateMap[alias[it->data.orient]];
-                if (!visited[nextLocation]){
-                    queue.enqueue(nextLocation);
-                    visited[nextLocation] = true;
-                }
-            }
-        }
-        return res;
-    }
-    void Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent){
-        distance[alias[startNode]] = 0;
-        Heap<std::pair<W,V>> heap;
-        heap.insert(std::make_pair(0,startNode));
-        while (!heap.isEmpty()){
-            V current = heap.findMin().second;
-            heap.deleteMin();
-            size_t currentLocation = locateMap[alias[current]];
-            for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
-                size_t nextLocation = locateMap[alias[it->data.orient]];
-                W weight = it->data.weight;
-                if (distance[nextLocation] > distance[currentLocation] + weight){
-                    distance[nextLocation] = distance[currentLocation] + weight;
-                    parent[nextLocation] = alias[current];
-                    heap.insert(std::make_pair(distance[nextLocation],it->data.orient));
-                }
-            }
-        }
-    }
-    friend std::ostream& operator<<(std::ostream& os, const WUSGraph<V, W>& graph) {
+    int countConnectedComponents();
+    Vector<std::pair<V,V>> calcMST();
+    Vector<std::pair<V,V>> calcMST(V startNode);
+    void Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent);
+    friend std::ostream& operator<<(std::ostream& os, const WUSGraph<V, W>& graph){
         os << "Vertices: " << graph.vertexCount() << "\n";
         os << "Edges: " << graph.edgeCount() << "\n";
         for (const auto& vertex : graph.getVertice()) {

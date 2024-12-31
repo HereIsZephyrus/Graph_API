@@ -307,6 +307,79 @@ W WUSGraph<V,W>::calcDistace(V startNode,V endNode){
     return distance[alias[endNode]];
 }
 template <typename V, typename W>
+int WUSGraph<V,W>::countConnectedComponents(){
+    Vector<bool> visited(vertexCount(),false);
+    int count = 0;
+    auto visit = [this](V vertex,Vector<bool>* visited){
+        (*visited)[locateMap[alias[vertex]]] = true;
+    };
+    for (size_t i = 0; i < graph.getSize(); i++){
+        if (!visited[i]){
+            DFS(graph[i].vertex,visit,&visited);
+            count++;
+        }
+    }
+    return count;
+}
+template <typename V, typename W>
+Vector<std::pair<V,V>> WUSGraph<V,W>::calcMST(){
+    V startNode = graph[0].vertex;
+    return calcMST(startNode);
+}
+template <typename V, typename W>
+Vector<std::pair<V,V>> WUSGraph<V,W>::calcMST(V startNode){
+    if (!isVertex(startNode))
+        throw std::out_of_range("The start or end node is not in the graph");
+    size_t vertexSize = vertexCount();
+    Vector<W> distance(vertexSize,std::numeric_limits<W>::max());
+    Vector<int> parent(vertexSize,-1);
+    Dijkstra(startNode,distance,parent);
+    Vector<std::pair<V,V>> res;
+    std::queue<V> q;
+    Vector<bool> visited(vertexSize,false);
+    size_t startLocation = locateMap[alias[startNode]];
+    Queue<size_t> queue;
+    queue.enqueue(startLocation);
+    visited[startLocation] = true;
+    while (!queue.isEmpty()){
+        size_t currentLocation = queue.front();
+        if (parent[currentLocation] != -1){
+            size_t parentLoc = locateMap[parent[currentLocation]];
+            std::pair<V,V> vertex = std::make_pair(graph[parent[parentLoc]].vertex, graph[currentLocation].vertex);
+            res.push_back(vertex);
+        }
+        queue.dequeue();
+        for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
+            size_t nextLocation = locateMap[alias[it->data.orient]];
+            if (!visited[nextLocation]){
+                queue.enqueue(nextLocation);
+                visited[nextLocation] = true;
+            }
+        }
+    }
+    return res;
+}
+template <typename V, typename W>
+void WUSGraph<V,W>::Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent){
+    distance[alias[startNode]] = 0;
+    Heap<std::pair<W,V>> heap;
+    heap.insert(std::make_pair(0,startNode));
+    while (!heap.isEmpty()){
+        V current = heap.findMin().second;
+        heap.deleteMin();
+        size_t currentLocation = locateMap[alias[current]];
+        for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
+            size_t nextLocation = locateMap[alias[it->data.orient]];
+            W weight = it->data.weight;
+            if (distance[nextLocation] > distance[currentLocation] + weight){
+                distance[nextLocation] = distance[currentLocation] + weight;
+                parent[nextLocation] = alias[current];
+                heap.insert(std::make_pair(distance[nextLocation],it->data.orient));
+            }
+        }
+    }
+}
+template <typename V, typename W>
 W WUSGraph<V,W>::steinerTree(const Vector<V>& keyVertices) const{
     using item = std::pair<W,size_t>;
     size_t vertexSize = vertexCount();
