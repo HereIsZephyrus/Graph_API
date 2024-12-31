@@ -16,7 +16,7 @@ class Heap {
     Vector<Object> array;
     void percolateDown(int hole);
 public:
-    explicit Heap(int capacity = 100){array.reserve(capacity);};
+    explicit Heap(int capacity = 10):size(0){array.reserve(capacity);};
     ~Heap(){array.clear();}//why I should clear manually?
     bool isEmpty() const{return size == 0;}
     const Object& findMin() const;

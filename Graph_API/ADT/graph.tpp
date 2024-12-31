@@ -92,6 +92,8 @@ template <typename V, typename W>
 void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
     AdjList& delList = graph[location];
     for (typename AdjList::iterator orientEdge = delList.begin(); orientEdge!= delList.end(); orientEdge++){
+        if (orientEdge._ptr() == nullptr)
+            break;
         if (!alias.containKey(orientEdge->data.orient))
             continue;
         pEdge friendEdge = orientEdge->data.friendEdge;
@@ -233,12 +235,246 @@ W WUSGraph<V,W>::getWeight(V v1,V v2) const{
     return W();
 }
 template <typename V, typename W>
-WUSGraph<V,W>::Neighbor WUSGraph<V,W>::getNeighbor(V checkNode){
+WUSGraph<V,W>::Neighbor WUSGraph<V,W>::getNeighbor(V checkNode) const{
     Neighbor neighbors;
     const AdjList& list = graph[alias[checkNode]];
     for (typename AdjList::iterator it = list.begin(); it != list.end(); it++)
         neighbors.push_back(std::make_pair(it->data.orient, it->data.weight));
     return neighbors;
+}
+template <typename V, typename W>
+template <typename Func, typename ...Args>
+void WUSGraph<V,W>::WalkThrough(V startNode,WalkMethod method, Func visit, Args... args){
+    if (!isVertex(startNode))
+        throw std::out_of_range("The start node is not in the graph");
+    if (method == WalkMethod::DFS)
+        DFS(startNode,visit,args...);
+    else
+        BFS(startNode,visit,args...);
+}
+template <typename V, typename W>
+template <typename Func, typename ...Args>
+void WUSGraph<V,W>::DFS(V startNode,Func visit,Args... args){
+    size_t vertexNum = graph.getSize();
+    Vector<bool> visited(vertexNum,false);
+    size_t startLocation = locateMap[alias[startNode]];
+    DFSUtil(startLocation,visited,visit,args...);
+    return;
+}
+template <typename V, typename W>
+template <typename Func, typename ...Args>
+void WUSGraph<V,W>::DFSUtil(size_t startLocation,Vector<bool>& visited,Func visit,Args... args){
+    visited[startLocation] = true;
+    visit(graph[startLocation].vertex,args...);
+    for (typename AdjList::iterator it = graph[startLocation].begin(); it != graph[startLocation].end(); it++){
+        size_t nextLocation = locateMap[alias[it->data.orient]];
+        if (!visited[nextLocation])
+            DFSUtil(nextLocation,visited,visit,args...);
+    }
+}
+template <typename V, typename W>
+template <typename Func, typename ...Args>
+void WUSGraph<V,W>::BFS(V startNode,Func visit,Args... args){
+    std::stringstream res;
+    size_t vertexNum = graph.getSize();
+    Vector<bool> visited(vertexNum,false);
+    size_t startLocation = locateMap[alias[startNode]];
+    Queue<size_t> queue;
+    queue.enqueue(startLocation);
+    visited[startLocation] = true;
+    while (!queue.isEmpty()){
+        size_t currentLocation = queue.front();
+        queue.dequeue();
+        visit(graph[currentLocation].vertex,args...);
+        for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
+            size_t nextLocation = locateMap[alias[it->data.orient]];
+            if (!visited[nextLocation]){
+                queue.enqueue(nextLocation);
+                visited[nextLocation] = true;
+            }
+        }
+    }
+    return;
+}
+template <typename V, typename W>
+W WUSGraph<V,W>::calcDistace(V startNode,V endNode){
+    if (!isVertex(startNode) || !isVertex(endNode))
+        throw std::out_of_range("The start or end node is not in the graph");
+    size_t vertexSize = vertexCount();
+    Vector<W> distance(vertexSize,std::numeric_limits<W>::max());
+    Vector<V> parent(vertexSize,-1);
+    Dijkstra(startNode,distance,parent);
+    return distance[alias[endNode]];
+}
+template <typename V, typename W>
+int WUSGraph<V,W>::countConnectedComponents(){
+    Vector<bool> visited(vertexCount(),false);
+    int count = 0;
+    auto visit = [this](V vertex,Vector<bool>* visited){
+        (*visited)[locateMap[alias[vertex]]] = true;
+    };
+    for (size_t i = 0; i < graph.getSize(); i++){
+        if (!visited[i]){
+            DFS(graph[i].vertex,visit,&visited);
+            count++;
+        }
+    }
+    return count;
+}
+template <typename V, typename W>
+Vector<std::pair<V,V>> WUSGraph<V,W>::calcMST(){
+    V startNode = graph[0].vertex;
+    return calcMST(startNode);
+}
+template <typename V, typename W>
+Vector<std::pair<V,V>> WUSGraph<V,W>::calcMST(V startNode){
+    if (!isVertex(startNode))
+        throw std::out_of_range("The start or end node is not in the graph");
+    size_t vertexSize = vertexCount();
+    Vector<W> distance(vertexSize,std::numeric_limits<W>::max());
+    Vector<int> parent(vertexSize,-1);
+    Dijkstra(startNode,distance,parent);
+    Vector<std::pair<V,V>> res;
+    std::queue<V> q;
+    Vector<bool> visited(vertexSize,false);
+    size_t startLocation = locateMap[alias[startNode]];
+    Queue<size_t> queue;
+    queue.enqueue(startLocation);
+    visited[startLocation] = true;
+    while (!queue.isEmpty()){
+        size_t currentLocation = queue.front();
+        if (parent[currentLocation] != -1){
+            size_t parentLoc = locateMap[parent[currentLocation]];
+            std::pair<V,V> vertex = std::make_pair(graph[parent[parentLoc]].vertex, graph[currentLocation].vertex);
+            res.push_back(vertex);
+        }
+        queue.dequeue();
+        for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
+            size_t nextLocation = locateMap[alias[it->data.orient]];
+            if (!visited[nextLocation]){
+                queue.enqueue(nextLocation);
+                visited[nextLocation] = true;
+            }
+        }
+    }
+    return res;
+}
+template <typename V, typename W>
+void WUSGraph<V,W>::Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent){
+    distance[alias[startNode]] = 0;
+    Heap<std::pair<W,V>> heap;
+    heap.insert(std::make_pair(0,startNode));
+    while (!heap.isEmpty()){
+        V current = heap.findMin().second;
+        heap.deleteMin();
+        size_t currentLocation = locateMap[alias[current]];
+        for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
+            size_t nextLocation = locateMap[alias[it->data.orient]];
+            W weight = it->data.weight;
+            if (distance[nextLocation] > distance[currentLocation] + weight){
+                distance[nextLocation] = distance[currentLocation] + weight;
+                parent[nextLocation] = alias[current];
+                heap.insert(std::make_pair(distance[nextLocation],it->data.orient));
+            }
+        }
+    }
+}
+template <typename V, typename W>
+W WUSGraph<V,W>::steinerTree(const Vector<V>& keyVertices) const{
+    using item = std::pair<W,size_t>;
+    size_t vertexSize = vertexCount();
+    size_t keySize = keyVertices.getSize();
+    if (keySize == 0 || keySize == 1)
+        return W();
+    if (keySize > 20){
+        std::cerr<<"The number of key vertices is too large"<<std::endl;
+        return W();
+    }
+    Vector<Vector<W>> dp(vertexSize,Vector<W>(1<<(keySize+1),std::numeric_limits<W>::max()));
+    for (int i  = 0; i < keySize; i++){
+        if (!isVertex(keyVertices[i]))
+            throw std::out_of_range("The key vertex is not in the graph");
+        dp[locateMap[alias[keyVertices[i]]]][1<<i] = 0;
+    }
+    Heap<item> subtree;
+    for (int s = 1; s < (1 << keySize); s ++){
+        for (int i = 0; i < vertexSize; i++){
+            for (int subs = s & (s - 1); subs; subs = s & (subs - 1))
+                dp[i][s] = std::min(dp[i][s],dp[i][subs] + dp[i][s ^ subs]);
+            if (dp[i][s] != std::numeric_limits<W>::max())
+                subtree.insert(std::make_pair(dp[i][s],i));
+        }
+        Vector<bool> visited(vertexSize,false);
+        while (!subtree.isEmpty()){
+            size_t current = subtree.findMin().second;
+            subtree.deleteMin();
+            if (visited[current])
+                continue;
+            visited[current] = true;
+            for (typename AdjList::iterator it = graph[current].begin(); it != graph[current].end(); it++){
+                size_t next = locateMap[alias[it->data.orient]];
+                W weight = it->data.weight;
+                if (dp[next][s] > dp[current][s] + weight){
+                    dp[next][s] = dp[current][s] + weight;
+                    subtree.insert(std::make_pair(dp[next][s],next));
+                }
+            }
+        }
+    }
+    return dp[alias[keyVertices[0]]][(1<<keySize)-1];
+}
+/*
+template <typename V, typename W>
+int WUSGraph<V,W>::countConnectedComponents(){
+    DisjSets ds(vertexCount());
+    for (size_t i = 0; i < graph.getSize(); i++){
+        for (typename AdjList::iterator it = graph[i].begin(); it != graph[i].end(); it++){
+            size_t nextLocation = locateMap[alias[it->data.orient]];
+            ds.unionSets(i, nextLocation);
+        }
+    }
+    return ds.countSets();
+}
+*/
+template <typename V, typename W>
+std::stringstream WUSGraph<V,W>::getLongestPath(V startNode){ //[WIP] Need to be fixed and work out the conception
+    if (!isVertex(startNode))
+        throw std::out_of_range("The start node is not in the graph");
+    std::stringstream res;
+    size_t vertexSize = vertexCount();
+    Vector<W> distance(vertexSize,-std::numeric_limits<W>::max());
+    distance[alias[startNode]] = 0;
+    Heap<std::pair<W,V>> heap;
+    heap.insert(std::make_pair(0,startNode));
+    Vector<int> parent(vertexSize,-1);
+    while (!heap.isEmpty()){
+        V current = heap.findMin().second;
+        heap.deleteMin();
+        size_t currentLocation = locateMap[alias[current]];
+        for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
+            //std::cout<<current<<"->"<<it->data.orient<<std::endl;
+            size_t nextLocation = locateMap[alias[it->data.orient]];
+            W weight = it->data.weight;
+            if (distance[nextLocation] <= distance[currentLocation] + weight){
+                distance[nextLocation] = distance[currentLocation] + weight;
+                std::cout<<current<<"->"<<it->data.orient<<'('<<nextLocation<<')'<<" - "<<distance[nextLocation]<<std::endl;
+                heap.insert(std::make_pair(-distance[nextLocation],it->data.orient));
+                parent[nextLocation] = alias[current];
+            }
+        }
+    }
+    size_t maxLocation = 0;
+    for (size_t i = 1; i < vertexSize; i++){
+        std::cout<<graph[i].vertex<<":"<< distance[maxLocation]<<std::endl;
+        if (distance[i] < distance[maxLocation] && distance[i] > -std::numeric_limits<W>::max())
+            maxLocation = i;
+    }
+    while (maxLocation != 0){
+        res << graph[maxLocation].vertex << "->";
+        maxLocation = locateMap[parent[maxLocation]];
+    }
+    res << "end";
+    return res;
 }
 template <typename V, typename W>
 class WUSGraph<V,W>::MinSpanForest{
@@ -269,7 +505,8 @@ public:
         addedEdge.clear();
         mstEdges.clear();
         totalWeight = 0;
-        while (mstEdges.getSize() < graph.vertexCount() - 1) {
+        int componentNum = graph.countConnectedComponents();
+        while (mstEdges.getSize() < graph.vertexCount() - componentNum){
             EdgeInfo edge = edges.findMin();
             addedEdge.enqueue(edge);
             edges.remove(edge);

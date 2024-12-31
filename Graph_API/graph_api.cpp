@@ -47,4 +47,13 @@ int MaxDegree(const WUSGraph<std::string, double>& graph){
         }
     return maxDegree;
 }
+double Steiner(const WUSGraph<std::string, double>& graph,const Vector<std::string>& keyVertices){
+    return graph.steinerTree(keyVertices);
+}
+Vector<std::pair<std::string,std::string>> Prim(WUSGraph<std::string, double>& graph){
+    return graph.calcMST();
+}
+void Print(const WUSGraph<std::string, double>& graph,ostream& os){
+    os<<graph;
+}
 }

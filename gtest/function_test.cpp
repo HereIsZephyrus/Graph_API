@@ -60,3 +60,16 @@ TEST_F(GraphAPITest, CreateGraphFromFile) {
     EXPECT_FALSE(graph.hasEdge("A", "D"));
     EXPECT_FALSE(graph.hasEdge("F", "D"));
 }
+TEST_F(GraphAPITest, WalkThrough){
+    WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/gtest/test_basic_input.txt", graph);
+    auto visit = [](const std::string& node, std::stringstream* res){
+        (*res) << node << "->";
+    };
+    std::stringstream res1;
+    WUSG::DFS(graph, "A", visit, &res1);
+    EXPECT_STREQ(res1.str().c_str(), "A->E->D->B->C->");
+    std::stringstream res2;
+    WUSG::BFS(graph, "A", visit, &res2);
+    EXPECT_STREQ(res2.str().c_str(), "A->E->C->B->D->");
+    WUSG::Print(graph, std::cout);
+}

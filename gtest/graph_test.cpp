@@ -256,6 +256,17 @@ TEST_F(WUSGraphIntTest, MSTCalculations) {
     graph.removeVertex(10);
     totalWeight = graph.getMSTWeight();
     EXPECT_DOUBLE_EQ(totalWeight, 19);
+    EXPECT_DOUBLE_EQ(graph.calcDistace(1, 1), 0);
+    EXPECT_DOUBLE_EQ(graph.calcDistace(4, 2), 5);
+    Vector<int> vertices;
+    vertices.push_back(2);
+    vertices.push_back(3);
+    EXPECT_DOUBLE_EQ(graph.steinerTree(vertices), 7);
+    vertices.clear();
+    vertices.push_back(1);
+    vertices.push_back(9);
+    vertices.push_back(3);
+    EXPECT_DOUBLE_EQ(graph.steinerTree(vertices), 16);
 }
 TEST_F(WUSGraphStringTest, VertexCountInitiallyZero) {
     EXPECT_EQ(graph.vertexCount(), 0);

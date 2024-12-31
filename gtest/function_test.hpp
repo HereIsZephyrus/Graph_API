@@ -8,6 +8,9 @@
 #ifndef function_test_hpp
 #define function_test_hpp
 #include <gtest/gtest.h>
+#include <cstring>
+#include <string>
+#include <sstream>
 #include "../Graph_API/graph_api.hpp"
 #include "../Graph_API/ADT/graph.hpp"
 
