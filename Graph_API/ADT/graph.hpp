@@ -193,6 +193,49 @@ public:
         res << "end";
         return res;
     }
+    W steinerTree(const Vector<V>& keyVertices){
+        using item = std::pair<W,size_t>;
+        size_t vertexSize = vertexCount();
+        size_t keySize = keyVertices.getSize();
+        if (keySize == 0 || keySize == 1)
+            return W();
+        if (keySize > 20){
+            std::cerr<<"The number of key vertices is too large"<<std::endl;
+            return W();
+        }
+        Vector<Vector<W>> dp(vertexSize,Vector<W>(1<<(keySize+1),std::numeric_limits<W>::max()));
+        for (int i  = 0; i < keySize; i++){
+            if (!isVertex(keyVertices[i]))
+                throw std::out_of_range("The key vertex is not in the graph");
+            dp[locateMap[alias[keyVertices[i]]]][1<<i] = 0;
+        }
+        Heap<item> subtree;
+        for (int s = 1; s < (1 << keySize); s ++){
+            for (int i = 0; i < vertexSize; i++){
+                for (int subs = s & (s - 1); subs; subs = s & (subs - 1))
+                    dp[i][s] = std::min(dp[i][s],dp[i][subs] + dp[i][s ^ subs]);
+                if (dp[i][s] != std::numeric_limits<W>::max())
+                    subtree.insert(std::make_pair(dp[i][s],i));
+            }
+            Vector<bool> visited(vertexSize,false);
+            while (!subtree.isEmpty()){
+                size_t current = subtree.findMin().second;
+                subtree.deleteMin();
+                if (visited[current])
+                    continue;
+                visited[current] = true;
+                for (typename AdjList::iterator it = graph[current].begin(); it != graph[current].end(); it++){
+                    size_t next = locateMap[alias[it->data.orient]];
+                    W weight = it->data.weight;
+                    if (dp[next][s] > dp[current][s] + weight){
+                        dp[next][s] = dp[current][s] + weight;
+                        subtree.insert(std::make_pair(dp[next][s],next));
+                    }
+                }
+            }
+        }
+        return dp[keyVertices[0]][(1<<keySize)-1];
+    }
 };
 }
 #include "graph.tpp"
