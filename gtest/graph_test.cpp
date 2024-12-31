@@ -256,12 +256,12 @@ TEST_F(WUSGraphIntTest, MSTCalculations) {
     graph.removeVertex(10);
     totalWeight = graph.getMSTWeight();
     EXPECT_DOUBLE_EQ(totalWeight, 19);
-    std::cout<<graph.WalkThrough(1, WalkMethod::BFS).str()<<std::endl;
-    std::cout<<graph.WalkThrough(1, WalkMethod::DFS).str()<<std::endl;
-    //std::cout<<graph.getLongestPath(1).str()<<std::endl;
-    //std::cout<<graph.getLongestPath(6).str()<<std::endl;
     EXPECT_DOUBLE_EQ(graph.calcDistace(1, 1), 0);
     EXPECT_DOUBLE_EQ(graph.calcDistace(4, 2), 5);
+    auto visit = [](int node, std::stringstream* res){(*res) << node << "->";};
+    std::stringstream res;
+    graph.WalkThrough(1, WalkMethod::DFS, visit, &res);
+    std::cout<<res.str()<<std::endl;
     Vector<int> vertices;
     vertices.push_back(2);
     vertices.push_back(3);

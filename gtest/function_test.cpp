@@ -59,4 +59,11 @@ TEST_F(GraphAPITest, CreateGraphFromFile) {
     EXPECT_FALSE(graph.isVertex("D"));
     EXPECT_FALSE(graph.hasEdge("A", "D"));
     EXPECT_FALSE(graph.hasEdge("F", "D"));
+
+    auto visit = [](const std::string& node, std::stringstream* res){
+        (*res) << node << "->";
+    };
+    std::stringstream res;
+    graph.WalkThrough("A", WUSG::WalkMethod::DFS, visit, &res);
+    std::cout<<res.str()<<std::endl;
 }

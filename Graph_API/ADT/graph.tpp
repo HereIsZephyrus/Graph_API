@@ -241,35 +241,38 @@ WUSGraph<V,W>::Neighbor WUSGraph<V,W>::getNeighbor(V checkNode){
     return neighbors;
 }
 template <typename V, typename W>
-std::stringstream WUSGraph<V,W>::WalkThrough(V startNode,WalkMethod method){
+template <typename Func, typename ...Args>
+void WUSGraph<V,W>::WalkThrough(V startNode,WalkMethod method, Func visit, Args... args){
     if (!isVertex(startNode))
         throw std::out_of_range("The start node is not in the graph");
     if (method == WalkMethod::DFS)
-        return DFS(startNode);
-    return BFS(startNode);
+        DFS(startNode,visit,args...);
+    else
+        BFS(startNode,visit,args...);
 }
 template <typename V, typename W>
-std::stringstream WUSGraph<V,W>::DFS(V startNode){
-    std::stringstream res;
+template <typename Func, typename ...Args>
+void WUSGraph<V,W>::DFS(V startNode,Func visit,Args... args){
     size_t vertexNum = graph.getSize();
     Vector<bool> visited(vertexNum,false);
     size_t startLocation = locateMap[alias[startNode]];
-    DFSUtil(startLocation,visited,res);
-    res << "end";
-    return res;
+    DFSUtil(startLocation,visited,visit,args...);
+    return;
 }
 template <typename V, typename W>
-void WUSGraph<V,W>::DFSUtil(size_t startLocation,Vector<bool>& visited,std::stringstream& res){
+template <typename Func, typename ...Args>
+void WUSGraph<V,W>::DFSUtil(size_t startLocation,Vector<bool>& visited,Func visit,Args... args){
     visited[startLocation] = true;
-    res << graph[startLocation].vertex << "->";
+    visit(graph[startLocation].vertex,args...);
     for (typename AdjList::iterator it = graph[startLocation].begin(); it != graph[startLocation].end(); it++){
         size_t nextLocation = locateMap[alias[it->data.orient]];
         if (!visited[nextLocation])
-            DFSUtil(nextLocation,visited,res);
+            DFSUtil(nextLocation,visited,visit,args...);
     }
 }
 template <typename V, typename W>
-std::stringstream WUSGraph<V,W>::BFS(V startNode){
+template <typename Func, typename ...Args>
+void WUSGraph<V,W>::BFS(V startNode,Func visit,Args... args){
     std::stringstream res;
     size_t vertexNum = graph.getSize();
     Vector<bool> visited(vertexNum,false);
@@ -280,7 +283,7 @@ std::stringstream WUSGraph<V,W>::BFS(V startNode){
     while (!queue.isEmpty()){
         size_t currentLocation = queue.front();
         queue.dequeue();
-        res << graph[currentLocation].vertex << "->";
+        visit(graph[currentLocation].vertex,args...);
         for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
             size_t nextLocation = locateMap[alias[it->data.orient]];
             if (!visited[nextLocation]){
@@ -289,8 +292,7 @@ std::stringstream WUSGraph<V,W>::BFS(V startNode){
             }
         }
     }
-    res << "end";
-    return res;
+    return;
 }
 template <typename V, typename W>
 W WUSGraph<V,W>::calcDistace(V startNode,V endNode){
