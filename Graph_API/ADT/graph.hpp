@@ -92,14 +92,18 @@ public:
     std::stringstream getLongestPath(V startNode);
     W steinerTree(const Vector<V>& keyVertices);
     int countConnectedComponents(){
-        DisjSets ds(vertexCount());
+        Vector<bool> visited(vertexCount(),false);
+        int count = 0;
+        auto visit = [this](V vertex,Vector<bool>* visited){
+            (*visited)[locateMap[alias[vertex]]] = true;
+        };
         for (size_t i = 0; i < graph.getSize(); i++){
-            for (typename AdjList::iterator it = graph[i].begin(); it != graph[i].end(); it++){
-                size_t nextLocation = locateMap[alias[it->data.orient]];
-                ds.unionSets(i, nextLocation);
+            if (!visited[i]){
+                DFS(graph[i].vertex,visit,&visited);
+                count++;
             }
         }
-        return ds.countSets();
+        return count;
     }
     Vector<EdgeInfo> calcMST(V startNode){
         if (!isVertex(startNode))

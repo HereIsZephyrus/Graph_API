@@ -92,7 +92,9 @@ template <typename V, typename W>
 void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
     AdjList& delList = graph[location];
     for (typename AdjList::iterator orientEdge = delList.begin(); orientEdge!= delList.end(); orientEdge++){
-        if (orientEdge._ptr() == nullptr || !alias.containKey(orientEdge->data.orient))
+        if (orientEdge._ptr() == nullptr)
+            break;
+        if (!alias.containKey(orientEdge->data.orient))
             continue;
         pEdge friendEdge = orientEdge->data.friendEdge;
         int orientID = alias[orientEdge->data.orient];
