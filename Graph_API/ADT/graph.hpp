@@ -63,47 +63,9 @@ class WUSGraph{
     int vertexCounter;
     MinSpanForest MST;
     void remove(size_t location,EdgeTable& edgeTable);
-    std::stringstream DFS(V startNode){
-        std::stringstream res;
-        size_t vertexNum = graph.getSize();
-        Vector<bool> visited(vertexNum,false);
-        size_t startLocation = locateMap[alias[startNode]];
-        DFSUtil(startLocation,visited,res);
-        res << "end";
-        return res;
-    }
-    void DFSUtil(size_t startLocation,Vector<bool>& visited,std::stringstream& res){
-        visited[startLocation] = true;
-        res << graph[startLocation].vertex << "->";
-        for (typename AdjList::iterator it = graph[startLocation].begin(); it != graph[startLocation].end(); it++){
-            size_t nextLocation = locateMap[alias[it->data.orient]];
-            if (!visited[nextLocation])
-                DFSUtil(nextLocation,visited,res);
-        }
-    }
-    std::stringstream BFS(V startNode){
-        std::stringstream res;
-        size_t vertexNum = graph.getSize();
-        Vector<bool> visited(vertexNum,false);
-        size_t startLocation = locateMap[alias[startNode]];
-        Queue<size_t> queue;
-        queue.enqueue(startLocation);
-        visited[startLocation] = true;
-        while (!queue.isEmpty()){
-            size_t currentLocation = queue.front();
-            queue.dequeue();
-            res << graph[currentLocation].vertex << "->";
-            for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
-                size_t nextLocation = locateMap[alias[it->data.orient]];
-                if (!visited[nextLocation]){
-                    queue.enqueue(nextLocation);
-                    visited[nextLocation] = true;
-                }
-            }
-        }
-        res << "end";
-        return res;
-    }
+    std::stringstream DFS(V startNode);
+    void DFSUtil(size_t startLocation,Vector<bool>& visited,std::stringstream& res);
+    std::stringstream BFS(V startNode);
 public:
     explicit WUSGraph(int v): vertexCounter(0),MST(*this){graph.reserve(v);}
     //required
@@ -121,121 +83,10 @@ public:
     Neighbor getNeighbor(V checkNode);
     const Vector<EdgeInfo>& getMST();
     W getMSTWeight() {return MST.getTotalWeight();}
-    std::stringstream WalkThrough(V startNode,WalkMethod method){
-        if (!isVertex(startNode))
-            throw std::out_of_range("The start node is not in the graph");
-        if (method == WalkMethod::DFS)
-            return DFS(startNode);
-        return BFS(startNode);
-    }
-    W calcDistace(V startNode,V endNode){
-        if (!isVertex(startNode) || !isVertex(endNode))
-            throw std::out_of_range("The start or end node is not in the graph");
-        if (startNode == endNode)
-            return W();
-        size_t vertexSize = vertexCount();
-        Vector<W> distance(vertexSize,std::numeric_limits<W>::max());
-        distance[alias[startNode]] = 0;
-        Heap<std::pair<W,V>> heap;
-        heap.insert(std::make_pair(0,startNode));
-        while (!heap.isEmpty()){
-            V current = heap.findMin().second;
-            heap.deleteMin();
-            size_t currentLocation = locateMap[alias[current]];
-            for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
-                size_t nextLocation = locateMap[alias[it->data.orient]];
-                W weight = it->data.weight;
-                if (distance[nextLocation] > distance[currentLocation] + weight){
-                    distance[nextLocation] = distance[currentLocation] + weight;
-                    heap.insert(std::make_pair(distance[nextLocation],it->data.orient));
-                }
-            }
-        }
-        return distance[alias[endNode]];
-    }
-    std::stringstream getLongestPath(V startNode){
-        if (!isVertex(startNode))
-            throw std::out_of_range("The start node is not in the graph");
-        std::stringstream res;
-        size_t vertexSize = vertexCount();
-        Vector<W> distance(vertexSize,-std::numeric_limits<W>::max());
-        distance[alias[startNode]] = 0;
-        Heap<std::pair<W,V>> heap;
-        heap.insert(std::make_pair(0,startNode));
-        Vector<V> parent(vertexSize,-1);
-        while (!heap.isEmpty()){
-            V current = heap.findMin().second;
-            heap.deleteMin();
-            size_t currentLocation = locateMap[alias[current]];
-            for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
-                V temp = current;
-                std::cout<<current<<"->"<<it->data.orient<<std::endl;
-                size_t nextLocation = locateMap[alias[it->data.orient]];
-                W weight = it->data.weight;
-                if (distance[nextLocation] <= distance[currentLocation] + weight){
-                    distance[nextLocation] = distance[currentLocation] + weight;
-                    std::cout<<current<<"->"<<it->data.orient<<'('<<nextLocation<<')'<<" - "<<distance[nextLocation]<<std::endl;
-                    heap.insert(std::make_pair(-distance[nextLocation],it->data.orient));
-                    parent[nextLocation] = current;
-                }
-            }
-        }
-        size_t maxLocation = 0;
-        for (size_t i = 1; i < vertexSize; i++){
-            std::cout<<graph[i].vertex<<":"<< distance[maxLocation]<<std::endl;
-            if (distance[i] < distance[maxLocation] && distance[i] > -std::numeric_limits<W>::max())
-                maxLocation = i;
-        }
-        while (maxLocation != 0){
-            res << graph[maxLocation].vertex << "->";
-            maxLocation = locateMap[alias[parent[maxLocation]]];
-        }
-        res << "end";
-        return res;
-    }
-    W steinerTree(const Vector<V>& keyVertices){
-        using item = std::pair<W,size_t>;
-        size_t vertexSize = vertexCount();
-        size_t keySize = keyVertices.getSize();
-        if (keySize == 0 || keySize == 1)
-            return W();
-        if (keySize > 20){
-            std::cerr<<"The number of key vertices is too large"<<std::endl;
-            return W();
-        }
-        Vector<Vector<W>> dp(vertexSize,Vector<W>(1<<(keySize+1),std::numeric_limits<W>::max()));
-        for (int i  = 0; i < keySize; i++){
-            if (!isVertex(keyVertices[i]))
-                throw std::out_of_range("The key vertex is not in the graph");
-            dp[locateMap[alias[keyVertices[i]]]][1<<i] = 0;
-        }
-        Heap<item> subtree;
-        for (int s = 1; s < (1 << keySize); s ++){
-            for (int i = 0; i < vertexSize; i++){
-                for (int subs = s & (s - 1); subs; subs = s & (subs - 1))
-                    dp[i][s] = std::min(dp[i][s],dp[i][subs] + dp[i][s ^ subs]);
-                if (dp[i][s] != std::numeric_limits<W>::max())
-                    subtree.insert(std::make_pair(dp[i][s],i));
-            }
-            Vector<bool> visited(vertexSize,false);
-            while (!subtree.isEmpty()){
-                size_t current = subtree.findMin().second;
-                subtree.deleteMin();
-                if (visited[current])
-                    continue;
-                visited[current] = true;
-                for (typename AdjList::iterator it = graph[current].begin(); it != graph[current].end(); it++){
-                    size_t next = locateMap[alias[it->data.orient]];
-                    W weight = it->data.weight;
-                    if (dp[next][s] > dp[current][s] + weight){
-                        dp[next][s] = dp[current][s] + weight;
-                        subtree.insert(std::make_pair(dp[next][s],next));
-                    }
-                }
-            }
-        }
-        return dp[keyVertices[0]][(1<<keySize)-1];
-    }
+    std::stringstream WalkThrough(V startNode,WalkMethod method);
+    W calcDistace(V startNode,V endNode);
+    std::stringstream getLongestPath(V startNode);
+    W steinerTree(const Vector<V>& keyVertices);
 };
 }
 #include "graph.tpp"
