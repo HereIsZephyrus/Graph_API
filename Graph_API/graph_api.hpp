@@ -27,5 +27,8 @@ template <typename Func, typename... Args>
 void BFS(WUSGraph<std::string, double>& graph, const std::string& startNode, Func func, Args... args){
     graph.WalkThrough(startNode, WalkMethod::BFS, func, args...);
 }
+double Steiner(const WUSGraph<std::string, double>& graph,const Vector<std::string>& keyVertices);
+Vector<std::pair<std::string,std::string>> Prim(WUSGraph<std::string, double>& graph);
+void Print(const WUSGraph<std::string, double>& graph,ostream& os);
 }
 #endif /* graph_api_hpp */

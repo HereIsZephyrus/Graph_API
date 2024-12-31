@@ -71,4 +71,5 @@ TEST_F(GraphAPITest, WalkThrough){
     std::stringstream res2;
     WUSG::BFS(graph, "A", visit, &res2);
     EXPECT_STREQ(res2.str().c_str(), "A->E->C->B->D->");
+    WUSG::Print(graph, std::cout);
 }

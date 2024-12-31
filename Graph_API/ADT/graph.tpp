@@ -235,7 +235,7 @@ W WUSGraph<V,W>::getWeight(V v1,V v2) const{
     return W();
 }
 template <typename V, typename W>
-WUSGraph<V,W>::Neighbor WUSGraph<V,W>::getNeighbor(V checkNode){
+WUSGraph<V,W>::Neighbor WUSGraph<V,W>::getNeighbor(V checkNode) const{
     Neighbor neighbors;
     const AdjList& list = graph[alias[checkNode]];
     for (typename AdjList::iterator it = list.begin(); it != list.end(); it++)
@@ -307,7 +307,7 @@ W WUSGraph<V,W>::calcDistace(V startNode,V endNode){
     return distance[alias[endNode]];
 }
 template <typename V, typename W>
-W WUSGraph<V,W>::steinerTree(const Vector<V>& keyVertices){
+W WUSGraph<V,W>::steinerTree(const Vector<V>& keyVertices) const{
     using item = std::pair<W,size_t>;
     size_t vertexSize = vertexCount();
     size_t keySize = keyVertices.getSize();
@@ -348,7 +348,7 @@ W WUSGraph<V,W>::steinerTree(const Vector<V>& keyVertices){
             }
         }
     }
-    return dp[keyVertices[0]][(1<<keySize)-1];
+    return dp[alias[keyVertices[0]]][(1<<keySize)-1];
 }
 /*
 template <typename V, typename W>

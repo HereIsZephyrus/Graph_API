@@ -8,6 +8,8 @@
 #ifndef graph_hpp
 #define graph_hpp
 
+#include <iostream>
+#include <fstream>
 #include <cstring>
 #include <string>
 #include <memory>
@@ -83,14 +85,14 @@ public:
     void removeEdge(V v1,V v2);
     bool hasEdge(V v1,V v2) const;
     W getWeight(V v1,V v2) const;
-    Neighbor getNeighbor(V checkNode);
+    Neighbor getNeighbor(V checkNode) const;
     const Vector<EdgeInfo>& getMST();
     W getMSTWeight() {return MST.getTotalWeight();}
     template <typename Func, typename ...Args>
     void WalkThrough(V startNode,WalkMethod method,Func func,Args... args);
     W calcDistace(V startNode,V endNode);
     std::stringstream getLongestPath(V startNode);
-    W steinerTree(const Vector<V>& keyVertices);
+    W steinerTree(const Vector<V>& keyVertices) const;
     int countConnectedComponents(){
         Vector<bool> visited(vertexCount(),false);
         int count = 0;
@@ -105,12 +107,16 @@ public:
         }
         return count;
     }
-    Vector<EdgeInfo> calcMST(V startNode){
+    Vector<std::pair<V,V>> calcMST(){
+        V startNode = graph[0].vertex;
+        return calcMST(startNode);
+    }
+    Vector<std::pair<V,V>> calcMST(V startNode){
         if (!isVertex(startNode))
             throw std::out_of_range("The start or end node is not in the graph");
         size_t vertexSize = vertexCount();
         Vector<W> distance(vertexSize,std::numeric_limits<W>::max());
-        Vector<V> parent(vertexSize,-1);
+        Vector<int> parent(vertexSize,-1);
         Dijkstra(startNode,distance,parent);
         Vector<std::pair<V,V>> res;
         std::queue<V> q;
@@ -121,8 +127,11 @@ public:
         visited[startLocation] = true;
         while (!queue.isEmpty()){
             size_t currentLocation = queue.front();
-            if (parent[currentLocation] != -1)
-                res.push_back(std::make_pair(parent[locateMap[parent[currentLocation]]].vertex,graph[currentLocation].vertex));
+            if (parent[currentLocation] != -1){
+                size_t parentLoc = locateMap[parent[currentLocation]];
+                std::pair<V,V> vertex = std::make_pair(graph[parent[parentLoc]].vertex, graph[currentLocation].vertex);
+                res.push_back(vertex);
+            }
             queue.dequeue();
             for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
                 size_t nextLocation = locateMap[alias[it->data.orient]];
@@ -134,7 +143,7 @@ public:
         }
         return res;
     }
-    void Dijkstra(V startNode,Vector<W>& distance,Vector<V>& parent){
+    void Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent){
         distance[alias[startNode]] = 0;
         Heap<std::pair<W,V>> heap;
         heap.insert(std::make_pair(0,startNode));
@@ -152,6 +161,19 @@ public:
                 }
             }
         }
+    }
+    friend std::ostream& operator<<(std::ostream& os, const WUSGraph<V, W>& graph) {
+        os << "Vertices: " << graph.vertexCount() << "\n";
+        os << "Edges: " << graph.edgeCount() << "\n";
+        for (const auto& vertex : graph.getVertice()) {
+            os << vertex << " -> ";
+            auto neighbors = graph.getNeighbor(vertex);
+            for (const auto& neighbor : neighbors) {
+                os << "(" << neighbor.first << ", " << neighbor.second << ") ";
+            }
+            os << "\n";
+        }
+        return os;
     }
 };
 }
