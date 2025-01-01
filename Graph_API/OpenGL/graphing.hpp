@@ -17,11 +17,9 @@
 #include <array>
 #include <glm/glm.hpp>
 #include "camera.hpp"
+#include "../base.hpp"
 
-struct Vertex {
-    glm::vec3 position;
-    glm::vec3 color;
-};
+using base::Point;
 GLchar* filePath(const char* fileName);
 class Shader{
 public:
@@ -42,8 +40,8 @@ private:
 };
 class Primitive{
 public:
-    Primitive(const std::vector<Vertex>& inputVertex,GLenum shp,Shader* shader);
-    Primitive(const Vertex& inputVertex,GLenum shp,Shader* shader);
+    Primitive(const std::vector<Point>& inputVertex,GLenum shp,Shader* shader);
+    Primitive(const Point& inputVertex,GLenum shp,Shader* shader);
     Primitive(const Primitive&) = delete;
     void operator=(const Primitive&) = delete;
     ~Primitive(){

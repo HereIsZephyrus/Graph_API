@@ -97,6 +97,7 @@
 				ADT/linear.tpp,
 				ADT/tree.tpp,
 				graph_api.inl,
+				graph_engine.tpp,
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */

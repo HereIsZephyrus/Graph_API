@@ -25,13 +25,15 @@ int main(int argc, char **argv) {
     Initialization(window);
     Camera2D& camera = Camera2D::getView();
     WUSG::Graph<double> graph(87575);
-    //WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/usa.txt", graph,true);
+    WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/usa.txt", graph,true);
+    std::shared_ptr<CityPoints> citys = BuildVisualPoints(graph);
+    camera.setExtent(citys->getExtent());
     //std::cout<<graph.vertexCount()<<' '<<graph.edgeCount()<<std::endl;
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+        citys->draw();
         glfwSwapBuffers(window);
     }
     glfwDestroyWindow(window);

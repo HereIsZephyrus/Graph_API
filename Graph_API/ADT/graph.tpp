@@ -89,6 +89,14 @@ public:
     }
 };
 template <typename V, typename W>
+V WUSGraph<V,W>::getVertex(V temp) const{
+    const std::set<V>& keySet = alias.getKeySet();
+    typename std::set<V>::const_iterator loc = keySet.find(temp);
+    if (loc == keySet.end())
+        return temp;
+    return *loc;
+}
+template <typename V, typename W>
 void WUSGraph<V,W>::remove(size_t location,EdgeTable& edgeTable){
     AdjList& delList = graph[location];
     for (typename AdjList::iterator orientEdge = delList.begin(); orientEdge!= delList.end(); orientEdge++){

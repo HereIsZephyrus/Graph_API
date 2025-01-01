@@ -10,6 +10,9 @@
 
 #include <cstring>
 #include <string>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 namespace base {
 template <typename W>
 struct Vertex{
@@ -40,6 +43,10 @@ struct Vertex{
     }
     Vertex(const Vertex& rhs):id(rhs.id),alias(rhs.alias),x(rhs.x),y(rhs.y){}
     explicit Vertex(int id):id(id),alias(""),x(W()),y(W()){}
+};
+struct Point {
+    glm::vec3 position;
+    glm::vec3 color;
 };
 }
 #endif /* base_hpp */

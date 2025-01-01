@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <cmath>
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -20,7 +21,7 @@
 
 struct Extent{
     GLfloat left,right,top,botton;
-    Extent():left(-1),right(1),top(1),botton(-1){}
+    Extent():left(std::numeric_limits<GLfloat>::max()),right(-std::numeric_limits<GLfloat>::max()),top(-std::numeric_limits<GLfloat>::max()),botton(std::numeric_limits<GLfloat>::max()){}
 };
 class Camera2D {
 public:

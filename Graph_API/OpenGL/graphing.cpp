@@ -96,14 +96,14 @@ std::vector<glm::vec3> Primitive::getVertices(){
         vertexArray.push_back(glm::vec3(vertices[i * stride],vertices[i * stride + 1],vertices[i * stride + 2]));
     return vertexArray;
 }
-Primitive::Primitive(const std::vector<Vertex>& inputVertex,GLenum shp,Shader* inputshader){
+Primitive::Primitive(const std::vector<Point>& inputVertex,GLenum shp,Shader* inputshader){
     vertexNum = inputVertex.size();
     vertices = new GLfloat[vertexNum * stride];
     for (size_t i = 0; i < vertexNum; i++){
         vertices[i * stride] = inputVertex[i].position[0];        vertices[i * stride + 1] = inputVertex[i].position[1];        vertices[i * stride + 2] = inputVertex[i].position[2];
         vertices[i * stride + 3] = inputVertex[i].color[0];        vertices[i * stride + 4] = inputVertex[i].color[1];        vertices[i * stride + 5] = inputVertex[i].color[2];
     }
-    std::vector<Vertex>::const_iterator vertex = inputVertex.begin();
+    std::vector<Point>::const_iterator vertex = inputVertex.begin();
     extent.left = vertex->position.x;   extent.right = vertex->position.x;
     extent.botton = vertex->position.y;   extent.top = vertex->position.y;
     for (; vertex != inputVertex.end(); vertex++){
@@ -114,7 +114,7 @@ Primitive::Primitive(const std::vector<Vertex>& inputVertex,GLenum shp,Shader* i
     }
     initResource(shp,inputshader);
 }
-Primitive::Primitive(const Vertex& inputVertex,GLenum shp,Shader* inputshader){
+Primitive::Primitive(const Point& inputVertex,GLenum shp,Shader* inputshader){
     vertexNum = 1;
     vertices = new GLfloat[vertexNum * stride];
     vertices[0] = inputVertex.position[0];        vertices[1] = inputVertex.position[1];        vertices[2] = inputVertex.position[2];
