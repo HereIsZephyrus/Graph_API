@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
     WUSG::Graph<double> graph(87575);
     WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/usa.txt", graph,true);
     std::shared_ptr<CityPoints> citys = BuildVisualPoints(graph);
+    std::shared_ptr<Roads> roads = BuildVisualRoads(graph);
     camera.setExtent(citys->getExtent());
     std::cout<<graph.vertexCount()<<' '<<graph.edgeCount()<<std::endl;
     camera.setExtent(citys->getExtent());
@@ -32,6 +33,7 @@ int main(int argc, char **argv) {
         glfwPollEvents();
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        roads->draw();
         citys->draw();
         gui::DrawBasic();
         camera.processKeyboard(window);
@@ -48,7 +50,7 @@ int main(int argc, char **argv) {
 }
 
 void Initialization(GLFWwindow *& window){
-    if (!HAS_INIT_OPENGL_CONTEXT && initOpenGL(window,"2025Autumn数字图像处理") != 0){
+    if (!HAS_INIT_OPENGL_CONTEXT && initOpenGL(window,"2025Autumn数据结构课设-交通管理系统") != 0){
         std::cout<<"init OpenGL failed"<<std::endl;
         return;
     }

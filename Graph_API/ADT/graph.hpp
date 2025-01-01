@@ -78,6 +78,7 @@ public:
     size_t edgeCount() const {return edgeTable.getSize();}
     const std::set<V>& getVertice() const{return alias.getKeySet();}
     bool isVertex(V checkVertex) const {return alias.containKey(checkVertex);}
+    const std::set<VertexPair>& getVertexpairs(){return edgeTable.getKeySet();}
     void addVertex(V newVertex);
     void removeVertex(V delVertex);
     int getDegree(V checkVertex) const;

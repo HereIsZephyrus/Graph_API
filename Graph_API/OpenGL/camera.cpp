@@ -10,7 +10,7 @@
 #include "commander.hpp"
 void Camera2D::processKeyboard(GLFWwindow* window) {
     BufferRecorder& buffer = BufferRecorder::getBuffer();
-    const GLfloat cameraSpeed = getCameraSpeed(40.0f);
+    const GLfloat cameraSpeed = getCameraSpeed(100.0f);
     if (buffer.pressAlt || buffer.pressCtrl|| buffer.pressShift)//ignore function input
         return;
     if (buffer.keyRecord[GLFW_KEY_W])
@@ -24,7 +24,7 @@ void Camera2D::processKeyboard(GLFWwindow* window) {
     updateViewMatrix();
 }
 void Camera2D::processScroll(GLFWwindow* window, double xoffset, double yoffset, bool pressCtrl, bool pressAlt){
-    const GLfloat cameraSpeed = getCameraSpeed(40.0f);
+    const GLfloat cameraSpeed = getCameraSpeed(20.0f);
     double xpos,ypos;
     glfwGetCursorPos(window,&xpos,&ypos);
     WindowParas& windowPara = WindowParas::getInstance();
@@ -43,8 +43,8 @@ void Camera2D::zoomInOut(float yOffset) {
     zoom -= yOffset * 0.1f;
     if (zoom < 0.01f)
         zoom = 0.01f;
-    if (zoom > 1000.0f)
-        zoom = 1000.0f;
+    if (zoom > 10.0f)
+        zoom = 10.0f;
 }
 Camera2D::Camera2D() : position(0.0f, 0.0f), zoom(1.0f){
     projectionMatrix = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, -1000.0f, 100.0f);
