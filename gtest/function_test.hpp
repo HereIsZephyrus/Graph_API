@@ -12,7 +12,6 @@
 #include <string>
 #include <sstream>
 #include "../Graph_API/graph_api.hpp"
-#include "../Graph_API/ADT/graph.hpp"
 
 class GraphAPITest : public ::testing::Test {
 protected:
@@ -20,5 +19,12 @@ protected:
     void SetUp() override {}
     void TearDown() override {}
     GraphAPITest():graph(10){};
+};
+class APIDataTest : public ::testing::Test {
+protected:
+    WUSG::Graph<double> graph;
+    void SetUp() override {}
+    void TearDown() override {}
+    APIDataTest():graph(10){};
 };
 #endif /* function_test_hpp */

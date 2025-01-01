@@ -17,11 +17,15 @@
 #include <map>
 #include <set>
 #include "linear.hpp"
+#include "../base.hpp"
 using std::string;
 typedef std::pair<int,int> VertexPair;
 namespace tcb{
 template <typename T>
-inline int calcHash(const T& key);
+int calcHash(const T& key){
+    std::logic_error("specify the hash calc function!");
+    return 0;
+}
 template <typename Key,typename Element>
 class HashTable {
 protected:

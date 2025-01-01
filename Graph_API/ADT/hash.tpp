@@ -28,7 +28,6 @@ inline int calcHash(const size_t& key) {
     size_t hashVal = key * VALUE_HASH;
     return static_cast<int>(hashVal);
 }
-
 template <>
 inline int calcHash(const long long& key) {
     uint64_t hashVal = static_cast<uint64_t>(key);
@@ -39,7 +38,6 @@ inline int calcHash(const long long& key) {
     hashVal ^= (hashVal >> 33);
     return static_cast<int>(hashVal);
 }
-
 template <>
 inline int calcHash(const float& key) {
     if (key == 0.0f) return 0;
@@ -48,7 +46,6 @@ inline int calcHash(const float& key) {
     std::memcpy(&bits, &key, sizeof(key));
     return static_cast<int>(bits * VALUE_HASH);
 }
-
 template <>
 inline int calcHash(const double& key) {
     if (key == 0.0) return 0;
@@ -63,7 +60,12 @@ inline int calcHash(const double& key) {
     bits ^= (bits >> 33);
     return static_cast<int>(bits);
 }
+template <typename W>
+inline int calcHash(const base::Vertex<W>& key) {
+    return key.id;
 }
+}
+
 using namespace tcb;
 template <typename Key,typename Element>
 size_t HashTable<Key,Element>::hash(const Key&key) const{

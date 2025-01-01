@@ -16,19 +16,24 @@
 #include "./ADT/graph.hpp"
 namespace WUSG{
 using namespace tcb;
-void CreateGraphFromFile(const std::string& filename, WUSGraph<std::string, double>& graph);
-int MaxDegree(const WUSGraph<std::string, double>& graph);
-//void Print(const WUSGraph<std::string, double>& graph, std::ostream& os){os<<graph;}
-template <typename Func, typename... Args>
-void DFS(WUSGraph<std::string, double>& graph, const std::string& startNode, Func func, Args... args){
-    graph.WalkThrough(startNode, WalkMethod::DFS, func, args...);
+using namespace base;
+using std::string;
+template <typename W>
+using Graph = WUSGraph<Vertex<W>, W>;
+template <typename V, typename W>
+void CreateGraphFromFile(const string& filename, WUSGraph<V,W>& graph,bool BatchRead);
+template <typename V, typename W>
+int MaxDegree(const WUSGraph<V,W>& graph);
+template <typename V, typename W, typename Func>
+void DFS(WUSGraph<V,W>& graph, const V& startNode, Func func);
+template <typename V, typename W, typename Func>
+void BFS(WUSGraph<V,W>& graph, const V& startNode, Func func);
+template <typename V, typename W>
+double Steiner(const WUSGraph<V,W>& graph,const Vector<V>& keyVertices);
+template <typename V, typename W>
+Vector<std::pair<V,V>> Prim(WUSGraph<V,W>& graph);
+template <typename V, typename W>
+void Print(const WUSGraph<V,W>& graph,ostream& os);
 }
-template <typename Func, typename... Args>
-void BFS(WUSGraph<std::string, double>& graph, const std::string& startNode, Func func, Args... args){
-    graph.WalkThrough(startNode, WalkMethod::BFS, func, args...);
-}
-double Steiner(const WUSGraph<std::string, double>& graph,const Vector<std::string>& keyVertices);
-Vector<std::pair<std::string,std::string>> Prim(WUSGraph<std::string, double>& graph);
-void Print(const WUSGraph<std::string, double>& graph,ostream& os);
-}
+#include "graph_api.inl"
 #endif /* graph_api_hpp */

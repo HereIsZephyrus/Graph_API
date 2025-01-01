@@ -65,12 +65,12 @@ class WUSGraph{
     int vertexCounter;
     MinSpanForest MST;
     void remove(size_t location,EdgeTable& edgeTable);
-    template <typename Func, typename ...Args>
-    void DFS(V startNode,Func visit,Args... args);
-    template <typename Func, typename ...Args>
-    void DFSUtil(size_t startLocation,Vector<bool>& visited,Func visit,Args... args);
-    template <typename Func, typename ...Args>
-    void BFS(V startNode,Func visit,Args... args);
+    template <typename Func>
+    void DFS(V startNode,Func visit);
+    template <typename Func>
+    void DFSUtil(size_t startLocation,Vector<bool>& visited,Func visit);
+    template <typename Func>
+    void BFS(V startNode,Func visit);
 public:
     explicit WUSGraph(int v): vertexCounter(0),MST(*this){graph.reserve(v);}
     //required
@@ -85,11 +85,18 @@ public:
     void removeEdge(V v1,V v2);
     bool hasEdge(V v1,V v2) const;
     W getWeight(V v1,V v2) const;
+    V getVertex(V temp) const{
+        const std::set<V>& keySet = alias.getKeySet();
+        typename std::set<V>::const_iterator loc = keySet.find(temp);
+        if (loc == keySet.end())
+            return temp;
+        return *loc;
+    }
     Neighbor getNeighbor(V checkNode) const;
     const Vector<EdgeInfo>& getMST();
     W getMSTWeight() {return MST.getTotalWeight();}
-    template <typename Func, typename ...Args>
-    void WalkThrough(V startNode,WalkMethod method,Func func,Args... args);
+    template <typename Func>
+    void WalkThrough(V startNode,WalkMethod method,Func func);
     W calcDistace(V startNode,V endNode);
     std::stringstream getLongestPath(V startNode);
     W steinerTree(const Vector<V>& keyVertices) const;
