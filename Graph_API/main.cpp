@@ -8,6 +8,9 @@
 #include <iostream>
 #include <gtest/gtest.h>
 #include <benchmark/benchmark.h>
+#define GLEW_STATIC
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include "graph_api.hpp"
 
 int main(int argc, char **argv) {
