@@ -29,6 +29,9 @@
         "*.tpp": "cpp",
         "istream": "cpp",
         "array": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "ios": "cpp",
+        "queue": "cpp",
+        "stack": "cpp"
     }
 }
