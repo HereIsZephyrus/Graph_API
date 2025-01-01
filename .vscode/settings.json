@@ -1,14 +1,6 @@
 {
     "files.associations": {
-        "*.tpp": "cpp",
-        "__split_buffer": "cpp",
-        "deque": "cpp",
-        "string": "cpp",
-        "vector": "cpp",
-        "map": "cpp",
-        "set": "cpp",
-        "unordered_map": "cpp",
-        "__locale": "cpp",
+        "stdexcept": "cpp",
         "__verbose_abort": "cpp",
         "cmath": "cpp",
         "cstddef": "cpp",
@@ -24,7 +16,7 @@
         "iosfwd": "cpp",
         "limits": "cpp",
         "new": "cpp",
-        "stdexcept": "cpp",
+        "string": "cpp",
         "string_view": "cpp",
         "tuple": "cpp",
         "typeinfo": "cpp",
@@ -34,17 +26,6 @@
         "ratio": "cpp",
         "variant": "cpp",
         "algorithm": "cpp",
-        "__hash_table": "cpp",
-        "__tree": "cpp",
-        "__assertion_handler": "cpp",
-        "__config": "cpp",
-        "filesystem": "cpp",
-        "print": "cpp",
-        "queue": "cpp",
-        "stack": "cpp",
-        "array": "cpp",
-        "ios": "cpp",
-        "__bit_reference": "cpp",
-        "bitset": "cpp"
+        "*.tpp": "cpp"
     }
 }

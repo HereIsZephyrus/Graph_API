@@ -33,6 +33,7 @@
 		32CAC0042D1D7EEF003AF1AC /* libbenchmark_main.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbenchmark_main.a; path = ../../../../usr/local/lib/libbenchmark_main.a; sourceTree = "<group>"; };
 		32CAC0272D1D99BF003AF1AC /* libclang-cpp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libclang-cpp.dylib"; path = "../../../../opt/homebrew/Cellar/llvm/19.1.6/lib/libclang-cpp.dylib"; sourceTree = "<group>"; };
 		32CAC02B2D1D99CF003AF1AC /* libclang.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libclang.dylib; path = ../../../../opt/homebrew/Cellar/llvm/19.1.6/lib/libclang.dylib; sourceTree = "<group>"; };
+		32F8A69B2D2516030028CFA2 /* usa.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = usa.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -84,6 +85,7 @@
 		32CABFB02D1D7C4D003AF1AC = {
 			isa = PBXGroup;
 			children = (
+				32F8A69B2D2516030028CFA2 /* usa.txt */,
 				32CAC01F2D1D8341003AF1AC /* gtest */,
 				32CABFBB2D1D7C4D003AF1AC /* Graph_API */,
 				32CABFFD2D1D7EBC003AF1AC /* Frameworks */,
@@ -149,6 +151,7 @@
 				TargetAttributes = {
 					32CABFB82D1D7C4D003AF1AC = {
 						CreatedOnToolsVersion = 16.2;
+						LastSwiftMigration = 1620;
 					};
 				};
 			};
@@ -306,22 +309,27 @@
 		32CABFC12D1D7C4D003AF1AC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Graph_API/Graph_API.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 379P4X5DA9;
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
 		32CABFC22D1D7C4D003AF1AC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Graph_API/Graph_API.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 379P4X5DA9;
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};

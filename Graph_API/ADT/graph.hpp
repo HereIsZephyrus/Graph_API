@@ -85,6 +85,7 @@ public:
     void removeEdge(V v1,V v2);
     bool hasEdge(V v1,V v2) const;
     W getWeight(V v1,V v2) const;
+    V getVertex(int id) const{return alias.getValue(id);}
     Neighbor getNeighbor(V checkNode) const;
     const Vector<EdgeInfo>& getMST();
     W getMSTWeight() {return MST.getTotalWeight();}

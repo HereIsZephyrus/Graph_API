@@ -16,8 +16,8 @@
 #include "./ADT/graph.hpp"
 namespace WUSG{
 using namespace tcb;
+using namespace base;
 using std::string;
-template <typename W> struct Vertex;
 template <typename W>
 using Graph = WUSGraph<Vertex<W>, W>;
 template <typename V, typename W>

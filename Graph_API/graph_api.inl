@@ -9,23 +9,6 @@
 #define graph_api_inl
 namespace WUSG{
 template <typename W>
-struct Vertex{
-    int id;
-    std::string alias;
-    W x,y;
-    Vertex(int id,W a,W b, std::string name = ""):id(id),x(a),y(b){
-        if (name != "")
-            alias = name;
-        else
-            alias = std::to_string(id);
-    }
-    Vertex():alias(""),x(W()),y(W()),id(-1){}
-    bool operator==(const Vertex& rhs) const {return id == rhs.id;}
-    bool operator<(const Vertex& rhs) const {return id < rhs.id;}
-    bool operator>(const Vertex& rhs) const {return id > rhs.id;}
-    operator std::string() const {return alias;}
-};
-template <typename W>
 void CreateGraphFromFile(const string& filename, WUSGraph<string,W>& graph) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -50,6 +33,33 @@ void CreateGraphFromFile(const string& filename, WUSGraph<string,W>& graph) {
         graph.addEdge(vertex1, vertex2, weight);
     }
     file.close();
+}
+template <typename W>
+void CreateGraphFromFile(const string& filename, Graph<W>& graph){
+    using V = Vertex<W>;
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        throw std::runtime_error("Unable to open file");
+    }
+    string line;
+    int numVertices, numEdges;
+    std::getline(file, line);
+    std::istringstream(line) >> numVertices >> numEdges;
+    for (int i = 0; i < numVertices; ++i) {
+        std::getline(file, line);
+        int id;
+        W x,y;
+        std::istringstream(line) >> id >> x >> y; 
+        graph.addVertex(Vertex<W>(id,x,y));
+    }
+    for (int i = 0; i < numEdges; ++i) {
+        std::getline(file, line);
+        int vertex1, vertex2;
+        std::istringstream(line) >> vertex1 >> vertex2;
+        V v1 = graph.getVertex(vertex1), v2 = graph.getVertex(vertex2);
+        W weight = sqrt(pow(v1.x - v2.x,2) + pow(v1.y - v2.y,2));
+        graph.addEdge(v1,v2,weight);
+    }
 }
 template <typename V, typename W>
 int MaxDegree(const WUSGraph<V,W>& graph){
