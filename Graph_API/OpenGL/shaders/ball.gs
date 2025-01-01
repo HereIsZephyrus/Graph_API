@@ -13,13 +13,13 @@ void main() {
     vec4 center =  gl_in[0].gl_Position;
     gl_Position = center;
     EmitVertex();
-    vec2 offset = vec2(1.0,0.0) * radius ;
+    vec2 offset = vec2(1.0,0.0) * radius;
     float dangle = - 2 * PI / resolution;
     mat2 angleMat = mat2(
                     cos(dangle), -sin(dangle),
                     sin(dangle),  cos(dangle));
     for (int i = 0; i < resolution; i++){
-        gl_Position = center + vec4(offset.x * 0.75,offset.y, 0.0, 0.0);
+        gl_Position = center + vec4(offset.x,offset.y, 0.0, 0.0);
         EmitVertex();
         if (i%2==1){
             gl_Position = center;
@@ -27,7 +27,7 @@ void main() {
         }
         offset = angleMat * offset;
     }
-    gl_Position = center + vec4(offset.x * 0.75,offset.y, 0.0, 0.0);
+    gl_Position = center + vec4(offset.x,offset.y, 0.0, 0.0);
     EmitVertex();
     EndPrimitive();
 }

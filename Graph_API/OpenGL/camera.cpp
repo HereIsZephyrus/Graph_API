@@ -10,7 +10,7 @@
 #include "commander.hpp"
 void Camera2D::processKeyboard(GLFWwindow* window) {
     BufferRecorder& buffer = BufferRecorder::getBuffer();
-    const GLfloat cameraSpeed = getCameraSpeed(4.0f);
+    const GLfloat cameraSpeed = getCameraSpeed(40.0f);
     if (buffer.pressAlt || buffer.pressCtrl|| buffer.pressShift)//ignore function input
         return;
     if (buffer.keyRecord[GLFW_KEY_W])
@@ -24,7 +24,7 @@ void Camera2D::processKeyboard(GLFWwindow* window) {
     updateViewMatrix();
 }
 void Camera2D::processScroll(GLFWwindow* window, double xoffset, double yoffset, bool pressCtrl, bool pressAlt){
-    const GLfloat cameraSpeed = getCameraSpeed(4.0f);
+    const GLfloat cameraSpeed = getCameraSpeed(40.0f);
     double xpos,ypos;
     glfwGetCursorPos(window,&xpos,&ypos);
     WindowParas& windowPara = WindowParas::getInstance();
@@ -47,14 +47,14 @@ void Camera2D::zoomInOut(float yOffset) {
         zoom = 1000.0f;
 }
 Camera2D::Camera2D() : position(0.0f, 0.0f), zoom(1.0f){
-    projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -1000.0f, 100.0f);
+    projectionMatrix = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, -1000.0f, 100.0f);
     viewMatrix = glm::mat4(1.0f);
 }
 void Camera2D::setExtent(Extent extent){
     position.x = (extent.left + extent.right) / 2;
     position.y = (extent.botton + extent.top) / 2;
     GLfloat width = (extent.right - extent.left) * marginRate, height =  (extent.top - extent.botton) * marginRate;
-    float zoomX = 20  / width,zoomY = 20/ height;
+    float zoomX = 200  / width,zoomY = 200/ height;
     zoom = std::min(zoomX,zoomY);
     updateProjectionMatrix(width,height);
     updateViewMatrix();

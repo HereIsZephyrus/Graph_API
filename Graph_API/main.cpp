@@ -20,22 +20,28 @@ int main(int argc, char **argv) {
         }
     }
     GLFWwindow *& window = WindowParas::getInstance().window;
-    if (!HAS_INIT_OPENGL_CONTEXT && initOpenGL(window,"2025Autumn数据结构课设-交通路线规划系统") != 0)
-        return -1;
     Initialization(window);
     Camera2D& camera = Camera2D::getView();
     WUSG::Graph<double> graph(87575);
     WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/usa.txt", graph,true);
     std::shared_ptr<CityPoints> citys = BuildVisualPoints(graph);
     camera.setExtent(citys->getExtent());
-    //std::cout<<graph.vertexCount()<<' '<<graph.edgeCount()<<std::endl;
+    std::cout<<graph.vertexCount()<<' '<<graph.edgeCount()<<std::endl;
+    camera.setExtent(citys->getExtent());
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         citys->draw();
+        gui::DrawBasic();
+        camera.processKeyboard(window);
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
     }
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;

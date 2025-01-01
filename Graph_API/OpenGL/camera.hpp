@@ -22,6 +22,7 @@
 struct Extent{
     GLfloat left,right,top,botton;
     Extent():left(std::numeric_limits<GLfloat>::max()),right(-std::numeric_limits<GLfloat>::max()),top(-std::numeric_limits<GLfloat>::max()),botton(std::numeric_limits<GLfloat>::max()){}
+    Extent(GLfloat l,GLfloat r,GLfloat t,GLfloat b):left(l),right(r),botton(b),top(t){}
 };
 class Camera2D {
 public:
