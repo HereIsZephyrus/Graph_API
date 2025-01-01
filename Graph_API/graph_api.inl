@@ -8,8 +8,25 @@
 #ifndef graph_api_inl
 #define graph_api_inl
 namespace WUSG{
-template <typename V, typename W>
-void CreateGraphFromFile(const string& filename, WUSGraph<V,W>& graph) {
+template <typename W>
+struct Vertex{
+    int id;
+    std::string alias;
+    W x,y;
+    Vertex(int id,W a,W b, std::string name = ""):id(id),x(a),y(b){
+        if (name != "")
+            alias = name;
+        else
+            alias = std::to_string(id);
+    }
+    Vertex():alias(""),x(W()),y(W()),id(-1){}
+    bool operator==(const Vertex& rhs) const {return id == rhs.id;}
+    bool operator<(const Vertex& rhs) const {return id < rhs.id;}
+    bool operator>(const Vertex& rhs) const {return id > rhs.id;}
+    operator std::string() const {return alias;}
+};
+template <typename W>
+void CreateGraphFromFile(const string& filename, WUSGraph<string,W>& graph) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Unable to open file");
