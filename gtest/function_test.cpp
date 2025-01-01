@@ -66,10 +66,10 @@ TEST_F(GraphAPITest, WalkThrough){
         (*res) << node << "->";
     };
     std::stringstream res1;
-    WUSG::DFS(graph, "A", std::bind(visit, std::placeholders::_1, &res1));
+    WUSG::DFS(graph,string( "A"), std::bind(visit, std::placeholders::_1, &res1));
     EXPECT_STREQ(res1.str().c_str(), "A->E->D->B->C->");
     std::stringstream res2;
-    WUSG::BFS(graph, "A", std::bind(visit, std::placeholders::_1, &res2));
+    WUSG::BFS(graph, string("A"), std::bind(visit, std::placeholders::_1, &res2));
     EXPECT_STREQ(res2.str().c_str(), "A->E->C->B->D->");
     WUSG::Print(graph, std::cout);
 }

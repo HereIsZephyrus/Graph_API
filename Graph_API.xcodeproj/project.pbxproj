@@ -45,6 +45,7 @@
 				ADT/heap.tpp,
 				ADT/linear.tpp,
 				ADT/tree.tpp,
+				graph_api.inl,
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
