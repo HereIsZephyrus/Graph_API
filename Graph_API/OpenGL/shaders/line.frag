@@ -2,8 +2,7 @@
 
 in vec3 fragColor;
 out vec4 color;
-uniform float transparent;
 
 void main() {
-    color = vec4(fragColor.xyz * transparent, 1.0f);
+    color = vec4(fragColor.xyz, 1.0f);
 }
