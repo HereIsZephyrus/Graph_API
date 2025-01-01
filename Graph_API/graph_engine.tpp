@@ -19,7 +19,7 @@ std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<W>& graph){
         if (y > extent->top)         extent->top = y;
         verticesArray->push_back(Point(glm::vec3(x,y,0.0),cityColor));
     };
-    auto binded = std::bind(visit, std::placeholders::_1, &vertices, std::placeholders::_2, &extent);
+    auto binded = std::bind(visit, std::placeholders::_1, &vertices, &extent);
     WUSG::BFS(graph, graph.getStartVertex(), binded);
-    return std::make_shared<CityPoints>(vertices);
+    return std::make_shared<CityPoints>(vertices,0.2,cityColor);
 }

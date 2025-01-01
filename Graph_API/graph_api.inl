@@ -36,7 +36,7 @@ void CreateGraphFromFile(const string& filename, WUSGraph<string,W>& graph,bool 
 }
 template <typename W>
 void CreateGraphFromFile(const string& filename, Graph<W>& graph,bool BatchRead = false) {
-    using V = WUSG::Vertex<W>;
+    using V = Vertex<W>;
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Unable to open file");
@@ -93,7 +93,7 @@ void CreateGraphFromFile(const string& filename, Graph<W>& graph,bool BatchRead 
             int id;
             W x,y;
             std::istringstream(line) >> id >> x >> y; 
-            graph.addVertex(WUSG::Vertex<W>(id,x,y));
+            graph.addVertex(Vertex<W>(id,x,y));
         }
         std::getline(file, line);
         for (int i = 0; i < numEdges; ++i) {
