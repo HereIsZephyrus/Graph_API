@@ -12,8 +12,9 @@
 
 int main(int argc, char **argv) {
     //::testing::InitGoogleTest(&argc, argv);
-    WUSG::Graph<double> graph(10000);
-    WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/usa.txt", graph);
+    WUSG::Graph<double> graph(87575);
+    WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/usa.txt", graph,true);
+    std::cout<<graph.vertexCount()<<' '<<graph.edgeCount()<<std::endl;
     //return RUN_ALL_TESTS();
     return 0;
 }

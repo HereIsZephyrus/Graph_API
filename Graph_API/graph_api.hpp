@@ -21,7 +21,7 @@ using std::string;
 template <typename W>
 using Graph = WUSGraph<Vertex<W>, W>;
 template <typename V, typename W>
-void CreateGraphFromFile(const string& filename, WUSGraph<V,W>& graph);
+void CreateGraphFromFile(const string& filename, WUSGraph<V,W>& graph,bool BatchRead);
 template <typename V, typename W>
 int MaxDegree(const WUSGraph<V,W>& graph);
 template <typename V, typename W, typename Func>

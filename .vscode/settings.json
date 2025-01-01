@@ -26,6 +26,9 @@
         "ratio": "cpp",
         "variant": "cpp",
         "algorithm": "cpp",
-        "*.tpp": "cpp"
+        "*.tpp": "cpp",
+        "istream": "cpp",
+        "array": "cpp",
+        "vector": "cpp"
     }
 }

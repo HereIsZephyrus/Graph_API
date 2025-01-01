@@ -34,7 +34,7 @@ const Object& BinarySearchTree<Object,TreeNode>::findMax() const{
     return findMax(this->root)->element;
 }
 template <class Object,class TreeNode>
-static ostream& BinarySearchTree<Object,TreeNode>::print(ostream& os, TreeNode* p){
+ostream& BinarySearchTree<Object,TreeNode>::print(ostream& os, TreeNode* p){
     if (p == nullptr)
         return os;
     switch (outputFlag) {

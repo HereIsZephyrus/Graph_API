@@ -9,7 +9,7 @@
 #define graph_api_inl
 namespace WUSG{
 template <typename W>
-void CreateGraphFromFile(const string& filename, WUSGraph<string,W>& graph) {
+void CreateGraphFromFile(const string& filename, WUSGraph<string,W>& graph,bool BatchRead = false) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Unable to open file");
@@ -35,32 +35,76 @@ void CreateGraphFromFile(const string& filename, WUSGraph<string,W>& graph) {
     file.close();
 }
 template <typename W>
-void CreateGraphFromFile(const string& filename, Graph<W>& graph){
+void CreateGraphFromFile(const string& filename, Graph<W>& graph,bool BatchRead = false) {
     using V = Vertex<W>;
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Unable to open file");
     }
-    string line;
     int numVertices, numEdges;
-    std::getline(file, line);
-    std::istringstream(line) >> numVertices >> numEdges;
-    for (int i = 0; i < numVertices; ++i) {
-        std::getline(file, line);
-        int id;
-        W x,y;
-        std::istringstream(line) >> id >> x >> y; 
-        graph.addVertex(Vertex<W>(id,x,y));
+    if (BatchRead){
+        static constexpr int bufferSize = 2048;\
+        int currentVertex = 0, currentEdge = 0;
+        bool gap = false;
+        std::streampos filePos = file.tellg();
+        std::vector<char> buffer(bufferSize);
+        file.read(buffer.data(), bufferSize);
+        std::istringstream iss(buffer.data());
+        iss >> numVertices >> numEdges;
+        while (iss.str().size() >= 50){
+            std::streampos pos;
+            while (iss){
+                pos = iss.tellg();
+                if (pos > bufferSize - 50)
+                    break;
+                if (currentVertex < numVertices) {
+                    int id;
+                    W x, y;
+                    iss >> id >> x >> y;
+                    graph.addVertex(V(id, x, y));
+                    ++currentVertex;
+                }else if (!gap){
+                    string line;
+                    std::getline(file, line);
+                    gap = true;
+                }else if (currentEdge < numEdges){
+                    int vertex1, vertex2;
+                    iss >> vertex1 >> vertex2;
+                    V temp1 = V(vertex1), temp2 = V(vertex2);
+                    V v1 = graph.getVertex(temp1), v2 = graph.getVertex(temp2);
+                    W weight = sqrt(pow(v1.x - v2.x, 2) + pow(v1.y - v2.y, 2));
+                    graph.addEdge(v1, v2, weight);
+                    ++currentEdge;
+                }else
+                    return;
+            }
+            filePos += pos;
+            file.seekg(filePos);
+            file.read(buffer.data(), bufferSize);
+            iss = std::istringstream(buffer.data());
+        }
     }
-    std::getline(file, line);
-    for (int i = 0; i < numEdges; ++i) {
+    else{
+        string line;
         std::getline(file, line);
-        int vertex1, vertex2;
-        std::istringstream(line) >> vertex1 >> vertex2;
-        V temp1 = V(vertex1), temp2 = V(vertex2);
-        V v1 = graph.getVertex(temp1), v2 = graph.getVertex(temp2);
-        W weight = sqrt(pow(v1.x - v2.x,2) + pow(v1.y - v2.y,2));
-        graph.addEdge(v1,v2,weight);
+        std::istringstream(line) >> numVertices >> numEdges;
+        for (int i = 0; i < numVertices; ++i) {
+            std::getline(file, line);
+            int id;
+            W x,y;
+            std::istringstream(line) >> id >> x >> y; 
+            graph.addVertex(Vertex<W>(id,x,y));
+        }
+        std::getline(file, line);
+        for (int i = 0; i < numEdges; ++i) {
+            std::getline(file, line);
+            int vertex1, vertex2;
+            std::istringstream(line) >> vertex1 >> vertex2;
+            V temp1 = V(vertex1), temp2 = V(vertex2);
+            V v1 = graph.getVertex(temp1), v2 = graph.getVertex(temp2);
+            W weight = sqrt(pow(v1.x - v2.x,2) + pow(v1.y - v2.y,2));
+            graph.addEdge(v1,v2,weight);
+        }
     }
 }
 template <typename V, typename W>
