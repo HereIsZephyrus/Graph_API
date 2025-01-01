@@ -85,7 +85,13 @@ public:
     void removeEdge(V v1,V v2);
     bool hasEdge(V v1,V v2) const;
     W getWeight(V v1,V v2) const;
-    V getVertex(int id) const{return alias.getValue(id);}
+    V getVertex(V temp) const{
+        const std::set<V>& keySet = alias.getKeySet();
+        typename std::set<V>::const_iterator loc = keySet.find(temp);
+        if (loc == keySet.end())
+            return temp;
+        return *loc;
+    }
     Neighbor getNeighbor(V checkNode) const;
     const Vector<EdgeInfo>& getMST();
     W getMSTWeight() {return MST.getTotalWeight();}

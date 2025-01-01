@@ -52,11 +52,13 @@ void CreateGraphFromFile(const string& filename, Graph<W>& graph){
         std::istringstream(line) >> id >> x >> y; 
         graph.addVertex(Vertex<W>(id,x,y));
     }
+    std::getline(file, line);
     for (int i = 0; i < numEdges; ++i) {
         std::getline(file, line);
         int vertex1, vertex2;
         std::istringstream(line) >> vertex1 >> vertex2;
-        V v1 = graph.getVertex(vertex1), v2 = graph.getVertex(vertex2);
+        V temp1 = V(vertex1), temp2 = V(vertex2);
+        V v1 = graph.getVertex(temp1), v2 = graph.getVertex(temp2);
         W weight = sqrt(pow(v1.x - v2.x,2) + pow(v1.y - v2.y,2));
         graph.addEdge(v1,v2,weight);
     }

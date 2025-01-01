@@ -39,6 +39,7 @@ struct Vertex{
         return *this;
     }
     Vertex(const Vertex& rhs):id(rhs.id),alias(rhs.alias),x(rhs.x),y(rhs.y){}
+    explicit Vertex(int id):id(id),alias(""),x(W()),y(W()){}
 };
 }
 #endif /* base_hpp */
