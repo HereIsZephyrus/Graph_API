@@ -64,12 +64,8 @@ template <typename W>
 inline int calcHash(const base::Vertex<W>& key) {
     return key.id;
 }
-template <>
-inline int calcHash(const base::Vertex<double>& key) {
-    return key.id;
 }
 
-}
 using namespace tcb;
 template <typename Key,typename Element>
 size_t HashTable<Key,Element>::hash(const Key&key) const{
