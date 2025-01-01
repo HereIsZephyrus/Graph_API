@@ -176,19 +176,20 @@ void InitResource(GLFWwindow *window){
         line->attchShader(filePath("line.frag"),GL_FRAGMENT_SHADER);
         line->linkProgram();
         ShaderBucket["line"] = std::move(line);
+    }{
+        pShader ball (new Shader());
+        ball->attchShader(filePath("vertices.vs"),GL_VERTEX_SHADER);
+        ball->attchShader(filePath("ball.gs"),GL_GEOMETRY_SHADER);
+        ball->attchShader(filePath("line.frag"),GL_FRAGMENT_SHADER);
+        ball->linkProgram();
+        ShaderBucket["ball"] = std::move(ball);
     }
     {
-        pShader image (new Shader());
-        image->attchShader(filePath("texture_vertices.vs"),GL_VERTEX_SHADER);
-        image->attchShader(filePath("texture_RGB.frag"),GL_FRAGMENT_SHADER);
-        image->linkProgram();
-        ShaderBucket["RGB"] = std::move(image);
-    }
-    {
-        pShader image (new Shader());
-        image->attchShader(filePath("texture_vertices.vs"),GL_VERTEX_SHADER);
-        image->attchShader(filePath("texture_Gray.frag"),GL_FRAGMENT_SHADER);
-        image->linkProgram();
-        ShaderBucket["Gray"] = std::move(image);
+        pShader arrow (new Shader());
+        arrow->attchShader(filePath("vertices.vs"),GL_VERTEX_SHADER);
+        arrow->attchShader(filePath("arrow.gs"),GL_GEOMETRY_SHADER);
+        arrow->attchShader(filePath("line.frag"),GL_FRAGMENT_SHADER);
+        arrow->linkProgram();
+        ShaderBucket["arrow"] = std::move(arrow);
     }
 }
