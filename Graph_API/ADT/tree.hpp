@@ -269,7 +269,7 @@ public:
     }
     ~QuadTree(){clear();}
     void clear(){destroy(this->root);}
-    node* insert(GLfloat x,GLfloat y,const Object& obj){return insert(x,y,obj,this->root).second;};
+    node* insert(float x,float y,const Object& obj){return insert(x,y,obj,this->root).second;};
     Vector<Object> queryRange(const SpatialRange& orientRange){return queryRange(orientRange,this->root);}
 private:
     void destroy(node* p){
@@ -294,7 +294,7 @@ private:
         p->southwest = new node(SpatialRange(range.minx, range.miny + range.height / 2, range.width / 2, range.height / 2), p->capacity);
         p->isLeaf = false;
     }
-    insertRes insert(GLfloat x,GLfloat y,const Object& obj,node *p){
+    insertRes insert(float x,float y,const Object& obj,node *p){
         const SpatialRange& range = p->range;
         bool contain = (x >= range.minx && x < range.minx + range.width && y >= range.miny && y < range.miny + range.height);
         if (!contain) return std::make_pair(false, nullptr);
@@ -320,7 +320,7 @@ private:
         if (!intersect) return foundPoints;
 
         for (size_t i = 0; i < p->points.size(); i++) {
-            const GLfloat px = p->points[i].x, py = p->points[i].y;
+            const float px = p->points[i].x, py = p->points[i].y;
             if (px >= orientRange.minx && px < orientRange.minx + orientRange.width && py >= orientRange.miny && py < orientRange.miny + orientRange.height) {
                 foundPoints.push_back(p->points[i].element);
             }

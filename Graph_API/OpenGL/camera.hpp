@@ -44,6 +44,7 @@ public:
         updateViewMatrix();
     }
     void setExtent(Extent extent);
+    Extent getExtent() const {return extent;}
     void updateProjectionMatrix(GLfloat width,GLfloat height);
     void updateViewMatrix() ;
     double normal2worldX(GLdouble normalX);
