@@ -113,7 +113,7 @@ void RenderInfoPanel(){
     float normalX = windowPara.screen2normalX(cursorX), normalY = windowPara.screen2normalY(cursorY);
     Camera2D& camera = Camera2D::getView();
     double worldX = camera.normal2worldX(normalX), worldY = camera.normal2worldY(normalY);
-    ImGui::Text("normal Position:\n <%.1f, %.1f> \n World Position:\n <%.1f, %.1f>",normalX, normalY, worldX, worldY);
+    ImGui::Text("World Position:\n <%.1f, %.1f>", worldX, worldY);
     ImGui::EndChild();
 }
 void RenderWorkspace(){

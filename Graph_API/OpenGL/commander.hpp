@@ -22,6 +22,8 @@
 #include "graphing.hpp"
 #include "camera.hpp"
 
+using valueType = double;
+namespace transport{template <typename W> class Node;}
 class BufferRecorder{
 public:
     static BufferRecorder& getBuffer(){
@@ -33,6 +35,7 @@ public:
     GLboolean keyRecord[GLFW_KEY_LAST+1],pressLeft,pressRight,pressCtrl,pressShift,pressAlt,doubleCliked;
     void initIO(GLFWwindow* window);
     glm::vec2 checkPos;
+    std::shared_ptr<transport::Node<valueType>> currentNode;
 private:
     BufferRecorder(){}
 };

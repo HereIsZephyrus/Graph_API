@@ -122,9 +122,8 @@ class Node{
         CityNode vertex1, vertex2;
         W weight;
     }road;
-    enum : short{isEmpty = -1, isCity = 0, isRoad = 1} state;
+    enum : bool{isCity = false, isRoad = true} state;
 public:
-    Node():state(isEmpty){}
     Node(CityNode city):state(isCity){city = city;}
     Node(CityNode city1, CityNode city2, W distance):state(isRoad){road = RoadNode(city1,city2,distance);}
     short getState() const {return state;}
@@ -144,9 +143,9 @@ std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<W>& graph);
 template <typename W>
 std::shared_ptr<Roads> BuildVisualRoads(WUSG::Graph<W>& graph);
 template <typename W>
-void processOperator(GLFWwindow* window, const WUSG::Graph<W>& graph,Node<W>& currentNode);
+void processOperator(GLFWwindow* window, const WUSG::Graph<W>& graph);
 template <typename W>
-void processMouse(const WUSG::Graph<W>& graph,Node<W>& currentNode);
+void processMouse(const WUSG::Graph<W>& graph);
 
 extern std::shared_ptr<CityPoints> citys;
 extern std::shared_ptr<Roads> roads;

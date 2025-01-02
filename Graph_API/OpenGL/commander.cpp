@@ -16,6 +16,7 @@ void BufferRecorder::initIO(GLFWwindow* window){
     pressShift = GL_FALSE;
     pressCtrl = GL_FALSE;
     doubleCliked = GL_FALSE;
+    currentNode = nullptr;
     glfwSetKeyCallback(window, keyCallback);
     glfwSetScrollCallback(window, scrollCallback);
 }

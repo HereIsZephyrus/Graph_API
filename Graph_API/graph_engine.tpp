@@ -40,25 +40,26 @@ std::shared_ptr<Roads> BuildVisualRoads(WUSG::Graph<W>& graph){
     return std::make_shared<Roads>(vertices,0.08,pairArray);
 }
 template <typename W>
-void processOperator(GLFWwindow* window, const WUSG::Graph<W>& graph,Node<W>& currentNode){
+void processOperator(GLFWwindow* window, const WUSG::Graph<W>& graph){
     Camera2D& camera = Camera2D::getView();
     camera.processKeyboard(window);
-    processMouse(graph,currentNode);
+    processMouse(graph);
 }
 template <typename W>
-void processMouse(const WUSG::Graph<W>& graph,Node<W>& currentNode){
+void processMouse(const WUSG::Graph<W>& graph){
+    using Node = transport::Node<W>;
     using Vertex = WUSG::Vertex<W>;
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     if (buffer.pressLeft){
         glm::vec2 checkPos = buffer.checkPos;
         int ID = transport::citys->getClick(checkPos.x, checkPos.y);
         if (ID > 0){
-            currentNode = transport::Node(graph.getVertex(Vertex(ID)));
+            buffer.currentNode = std::make_shared<Node>(graph.getVertex(Vertex(ID)));
         }else{
             VertexPair pair = transport::roads->getClick(checkPos.x, checkPos.y);
             Vertex v1 = graph.getVertex(Vertex(pair.first)), v2 = graph.getVertex(Vertex(pair.second));
             if (pair.first > 0 && pair.second > 0)
-                currentNode = transport::Node(v1,v2,graph.getWeight(v1,v2));
+                buffer.currentNode = std::make_shared<Node>(v1,v2,graph.getWeight(v1,v2));
         }
         buffer.pressLeft = false;
     }
