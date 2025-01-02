@@ -45,6 +45,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     }
 }
 void mouseCallback(GLFWwindow* window, int button, int action, int mods){
+    ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS ){
         WindowParas& windowPara = WindowParas::getInstance();

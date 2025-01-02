@@ -22,23 +22,15 @@ int main(int argc, char **argv) {
     using namespace transport;
     GLFWwindow *& window = WindowParas::getInstance().window;
     Initialization(window);
-    
-    Camera2D& camera = Camera2D::getView();
+    RouteSystem& system = RouteSystem::getSystem();
     BufferRecorder& buffer = BufferRecorder::getBuffer();
-    WUSG::Graph<valueType> graph(87575);
-    WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/usa.txt", graph,true);
-    citys = BuildVisualPoints(graph);
-    roads = BuildVisualRoads(graph);
-    camera.setExtent(citys->getExtent());
-    std::cout<<graph.vertexCount()<<' '<<graph.edgeCount()<<std::endl;
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        roads->draw();
-        citys->draw();
+        system.Draw();
         gui::DrawBasic();
-        processOperator(window,graph);
+        processOperator(window);
         if (buffer.currentNode != nullptr)
             buffer.currentNode->draw();
         ImGui::Render();

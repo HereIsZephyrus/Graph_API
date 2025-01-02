@@ -89,17 +89,32 @@ public:
         else                                    return printRoad();
     }
 };
-extern std::shared_ptr<CityPoints> citys;
-extern std::shared_ptr<Roads> roads;
+class RouteSystem{
+public:
+    static RouteSystem& getSystem(){
+        static RouteSystem instance;
+        return instance;
+    }
+    std::shared_ptr<CityPoints> citys;
+    std::shared_ptr<Roads> roads;
+    std::shared_ptr<WUSG::Graph<valueType>> graph;
+    void ImportData(const std::string& filePath);
+    void Draw();
+private:
+    RouteSystem():citys(nullptr),roads(nullptr),graph(nullptr){}
+};
 
-template <typename W>
-std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<W>& graph);
-template <typename W>
-std::shared_ptr<Roads> BuildVisualRoads(WUSG::Graph<W>& graph);
-template <typename W>
-void processOperator(GLFWwindow* window, const WUSG::Graph<W>& graph);
-template <typename W>
-void processMouse(const WUSG::Graph<W>& graph);
+std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<valueType>& graph);
+std::shared_ptr<Roads> BuildVisualRoads(WUSG::Graph<valueType>& graph);
+void processOperator(GLFWwindow* window);
+void processMouse();
+}
+namespace gui{
+bool DrawPopup();
+void ImportData();
+void AddPoint();
+void PlanRoute();
+void CalcShortestPath();
 }
 #include "graph_engine.tpp"
 #endif /* graph_engine_h */

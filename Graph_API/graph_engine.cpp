@@ -26,6 +26,65 @@ Primitive(inputVertex,shp,shader){
     }
 }
 namespace transport{
+std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<valueType>& graph){
+    std::vector<Point> vertices;
+    std::vector<int> ID;
+    vertices.reserve(graph.vertexCount());
+    ID.reserve(graph.vertexCount());
+    static constexpr glm::vec3 cityColor = glm::vec3(1.0,0.63,0.48);
+    auto visit = [](const WUSG::Vertex<valueType>& node,std::vector<Point>* verticesArray,std::vector<int>* IDarray){
+        valueType x = node.x, y = node.y;
+        verticesArray->push_back(Point(glm::vec3(x,y,0.0),cityColor));
+        IDarray->push_back(node.id);
+    };
+    auto binded = std::bind(visit, std::placeholders::_1, &vertices,&ID);
+    WUSG::BFS(graph, graph.getStartVertex(), binded);
+    return std::make_shared<CityPoints>(vertices,0.015,ID);
+}
+std::shared_ptr<Roads> BuildVisualRoads(WUSG::Graph<valueType>& graph){
+    std::vector<Point> vertices;
+    std::vector<VertexPair> pairArray;
+    vertices.reserve(graph.edgeCount());
+    static constexpr glm::vec3 roadColor = glm::vec3(0.69,0.93,0.94);
+    const std::set<VertexPair>& pairs = graph.getVertexpairs();
+    for (std::set<VertexPair>::const_iterator vpair = pairs.begin(); vpair != pairs.end(); vpair++){
+        int id1 = vpair->first, id2 = vpair->second;
+        WUSG::Vertex<valueType> temp1(id1),temp2(id2);
+        WUSG::Vertex<valueType> v1(graph.getVertex(temp1)),v2(graph.getVertex(temp2));
+        vertices.push_back(Point(glm::vec3(v1.x,v1.y,0.0),roadColor));
+        vertices.push_back(Point(glm::vec3(v2.x,v2.y,0.0),roadColor));
+        pairArray.push_back(*vpair);
+    }
+    return std::make_shared<Roads>(vertices,0.08,pairArray);
+}
+void processOperator(GLFWwindow* window){
+    Camera2D& camera = Camera2D::getView();
+    if (!gui::DrawPopup())
+        camera.processKeyboard(window);
+    if (RouteSystem::getSystem().graph != nullptr)
+        processMouse();
+}
+void processMouse(){
+    using Node = transport::Node<valueType>;
+    using Vertex = WUSG::Vertex<valueType>;
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    if (buffer.pressLeft){
+        glm::vec2 checkPos = buffer.checkPos;
+        RouteSystem& system = RouteSystem::getSystem();
+        int ID = system.citys->getClick(checkPos.x, checkPos.y);
+        if (ID > 0){
+            buffer.currentNode = std::make_shared<Node>(system.graph->getVertex(Vertex(ID)));
+        }else{
+            VertexPair pair = system.roads->getClick(checkPos.x, checkPos.y);
+            Vertex v1 = system.graph->getVertex(Vertex(pair.first)), v2 = system.graph->getVertex(Vertex(pair.second));
+            if (pair.first > 0 && pair.second > 0)
+                buffer.currentNode = std::make_shared<Node>(v1,v2,system.graph->getWeight(v1,v2));
+            else
+                buffer.currentNode = nullptr;
+        }
+        buffer.pressLeft = false;
+    }
+}
 void CityPoints::draw() const{
     shader ->use();
     GLuint projectionLoc = glGetUniformLocation(shader->program, "projection");
@@ -111,6 +170,78 @@ VertexPair Roads::getClick(double x,double y){
     }
     return id;
 }
-std::shared_ptr<CityPoints> citys = nullptr;
-std::shared_ptr<Roads> roads = nullptr;
+void RouteSystem::ImportData(const std::string& filePath){
+    graph = std::make_shared<WUSG::Graph<valueType>>(40000);
+    WUSG::CreateGraphFromFile(filePath, *graph,true);
+    citys = BuildVisualPoints(*graph);
+    roads = BuildVisualRoads(*graph);
+    Camera2D& camera = Camera2D::getView();
+    camera.setExtent(citys->getExtent());
+}
+void RouteSystem::Draw(){
+    if (graph == nullptr || roads == nullptr || citys == nullptr)
+        return;
+    roads->draw();
+    citys->draw();
+}
+}
+namespace gui {
+bool DrawPopup(){
+    if (toImportData){
+        ImportData();
+        return true;
+    }
+    if (toAddPoint){
+        AddPoint();
+        return true;
+    }
+    if (toPlanRoute){
+        PlanRoute();
+        return true;
+    }
+    if (toCalcShortestPath){
+        CalcShortestPath();
+        return true;
+    }
+    return false;
+}
+void ImportData(){
+    transport::RouteSystem& system = transport::RouteSystem::getSystem();
+    static char inputBuffer[256] = "";
+    ImGui::PushFont(gui::chineseFont);
+    ImGui::OpenPopup("Import Data");
+    ImVec2 pos = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(pos);
+    if (ImGui::BeginPopup("Import Data")) {
+        ImGui::Text("输入路网数据文件路径");
+        ImGui::InputText("##input", inputBuffer, sizeof(inputBuffer));
+        if (ImGui::Button("确认")) {
+            system.ImportData(inputBuffer);
+            std::cout<<system.graph->vertexCount()<<' '<<system.graph->edgeCount()<<std::endl;
+            inputBuffer[0] = '\0';
+            toImportData = false;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("取消")) {
+            inputBuffer[0] = '\0';
+            toImportData = false;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+    ImGui::PopFont();
+}
+void AddPoint(){
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    toAddPoint = false;
+}
+void PlanRoute(){
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    toPlanRoute = false;
+}
+void CalcShortestPath(){
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    toCalcShortestPath = false;
+}
 }

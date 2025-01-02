@@ -13,6 +13,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+using valueType = double;
 namespace base {
 template <typename W>
 struct Vertex{
@@ -23,6 +25,7 @@ struct Vertex{
         if (name != "")
             alias = name;
         else
+            alias = std::to_string(id);
             alias = std::to_string(id);
     }
     Vertex():alias(""),x(W()),y(W()),id(-1){}

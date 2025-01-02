@@ -22,7 +22,6 @@
 #include "graphing.hpp"
 #include "camera.hpp"
 
-using valueType = double;
 namespace transport{template <typename W> class Node;}
 class BufferRecorder{
 public:
