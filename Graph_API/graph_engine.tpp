@@ -86,7 +86,7 @@ std::string Node<W>::printCity() const{
 }
 template <typename W>
 std::string Node<W>::printRoad() const{
-    std::string name = "From: " + road.vertex1.alias + " (" + std::to_string(road.vertex1.id) + ") \n to: " + road.vertex2.alias + " (" + std::to_string(road.vertex2.id) + ")";
+    std::string name = "From: " + road.vertex1.alias + " (" + std::to_string(road.vertex1.id) + ")" + '\n' + "To:   " + road.vertex2.alias + " (" + std::to_string(road.vertex2.id) + ")";
     std::string weight = "Distance: " + std::to_string(road.weight);
     return "Road: \n" + name + '\n' + weight;
 }

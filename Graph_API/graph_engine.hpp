@@ -79,17 +79,14 @@ public:
         this->city = city;
     }
     Node(CityNode city1, CityNode city2, W distance):state(isRoad){road = RoadNode(city1,city2,distance);}
+    bool isCityNode() const {return state == isCity;}
     void draw(){
-        if (state == isCity)
-            drawCity();
-        else
-            drawRoad();
+        if (state == isCity)     drawCity();
+        else                                    drawRoad();
     }
     std::string printInfo(){
-        if (state == isCity)
-            return printCity();
-        else
-            return printRoad();
+        if (state == isCity)     return printCity();
+        else                                    return printRoad();
     }
 };
 extern std::shared_ptr<CityPoints> citys;
