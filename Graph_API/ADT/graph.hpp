@@ -84,6 +84,7 @@ public:
     void addVertex(V newVertex);
     void removeVertex(V delVertex);
     int getDegree(V checkVertex) const;
+    int getDegree(size_t location) const {return static_cast<int>(graph[location].getSize());}
     void addEdge(V v1,V v2,W weight);
     void removeEdge(V v1,V v2);
     bool hasEdge(V v1,V v2) const;

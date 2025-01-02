@@ -24,6 +24,10 @@ template <typename V, typename W>
 void CreateGraphFromFile(const string& filename, WUSGraph<V,W>& graph,bool BatchRead);
 template <typename V, typename W>
 int MaxDegree(const WUSGraph<V,W>& graph);
+template <typename V, typename W>
+double Sparseness(const WUSGraph<V,W>& graph);
+template <typename V, typename W>
+int CalcConnectCompoent(const WUSGraph<V,W>& graph);
 template <typename V, typename W, typename Func>
 void DFS(WUSGraph<V,W>& graph, const V& startNode, Func func);
 template <typename V, typename W, typename Func>

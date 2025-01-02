@@ -20,6 +20,7 @@
 #include "graphing.hpp"
 
 inline bool HAS_INIT_OPENGL_CONTEXT = false;
+namespace transport {class RouteSystem;}
 int initOpenGL(GLFWwindow *&window,std::string windowName);
 class WindowParas{
 public:

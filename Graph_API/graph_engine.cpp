@@ -61,8 +61,10 @@ void processOperator(GLFWwindow* window){
     Camera2D& camera = Camera2D::getView();
     if (!gui::DrawPopup())
         camera.processKeyboard(window);
-    if (RouteSystem::getSystem().graph != nullptr)
+    if (RouteSystem::getSystem().graph != nullptr){
+        gui::processWorkspace();
         processMouse();
+    }
 }
 void processMouse(){
     using Node = transport::Node<valueType>;
@@ -186,6 +188,24 @@ void RouteSystem::Draw(){
 }
 }
 namespace gui {
+void processWorkspace(){
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    transport::RouteSystem& system = transport::RouteSystem::getSystem();
+    if (toCalcMaxDegree){
+        buffer.resInfo = "最大度为" + std::to_string(WUSG::MaxDegree(*system.graph));
+        toCalcMaxDegree = false;
+    }
+    if (toCalcSparse){
+        std::stringstream iss;
+        iss << "稀疏度为" << std::fixed << std::setprecision(3) << WUSG::Sparseness(*system.graph);
+        buffer.resInfo = iss.str();
+        toCalcSparse = false;
+    }
+    if (toCalcConeectCompoent){
+        buffer.resInfo = "联通块数量为" + std::to_string(WUSG::CalcConnectCompoent(*system.graph));
+        toCalcConeectCompoent = false;
+    }
+}
 bool DrawPopup(){
     if (toImportData){
         ImportData();

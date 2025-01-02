@@ -179,23 +179,6 @@ int WUSGraph<V,W>::getDegree(V checkVertex) const {
     size_t location = locateMap[alias[checkVertex]];
     return static_cast<int>(graph[location].getSize());
 }
-/*
-template <typename V, typename W>
-void WUSGraph<V,W>::addEdge(V v1,V v2,W weight){
-    if (!alias.containKey(v1) || !alias.containKey(v2))
-        return;
-    int id1 = alias[v1], id2 = alias[v2];
-    size_t location1 = locateMap[id1],location2 = locateMap[id2];
-    pEdge edge1 = new Node(Edge(v2,weight));
-    pEdge edge2 = new Node(Edge(v1,weight));
-    edge1->data.friendEdge = edge2;   edge2->data.friendEdge = edge1;
-    graph[location1].insert(edge1);    graph[location2].insert(edge2);
-    VertexPair vertices = std::make_pair(id1,id2);
-    edgeTable.insert(vertices, edge1);
-    EdgeInfo edgeInfo(v1,v2,weight);
-    MST.PushMessage(Message(Message::add,edgeInfo));
-}
-*/
 template <typename V, typename W>
 void WUSGraph<V,W>::removeEdge(V v1,V v2){
     if (!alias.containKey(v1) || !alias.containKey(v2))

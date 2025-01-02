@@ -110,6 +110,7 @@ void processOperator(GLFWwindow* window);
 void processMouse();
 }
 namespace gui{
+void processWorkspace();
 bool DrawPopup();
 void ImportData();
 void AddPoint();

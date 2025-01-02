@@ -109,14 +109,26 @@ void CreateGraphFromFile(const string& filename, Graph<W>& graph,bool BatchRead 
 }
 template <typename V, typename W>
 int MaxDegree(const WUSGraph<V,W>& graph){
-    std::set<string> vertices = graph.getVertice();
+    std::set<V> vertices = graph.getVertice();
     int maxDegree = 0;
-    for (std::set<string>::const_iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++){
+    for (typename std::set<V>::const_iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++){
         int degree = graph.getDegree(*vertex);
         if (degree > maxDegree)
             maxDegree = degree;
     }
     return maxDegree;
+}
+template <typename V, typename W>
+double Sparseness(const WUSGraph<V,W>& graph){
+    int totalDegree = 0;
+    int vertexNum = static_cast<int>(graph.vertexCount());
+    for (size_t i = 0; i < graph.vertexCount(); i++)
+        totalDegree += graph.getDegree(i);
+    return static_cast<double>(totalDegree) / ((vertexNum) * (vertexNum - 1));
+}
+template <typename V, typename W>
+int CalcConnectCompoent(WUSGraph<V,W>& graph){
+    return graph.countConnectedComponents();
 }
 template <typename V, typename W, typename Func>
 void DFS(WUSGraph<V,W>& graph, const V& startNode, Func func){
