@@ -14,6 +14,7 @@
 #include "window.hpp"
 #include "graphing.hpp"
 #include "commander.hpp"
+#include "../graph_engine.hpp"
 
 void WindowParas::InitParas(){
     glfwGetWindowContentScale(window, &xScale, &yScale);
@@ -74,8 +75,7 @@ int initOpenGL(GLFWwindow *&window,std::string windowName) {
 }
 namespace gui {
 ImFont *englishFont = nullptr,*chineseFont = nullptr;
-bool toImportImage = false,toImportROI = false,toCalcDifference = false;
-bool toShowStatistic = false,toShowManageBand = false,toShowStrechLevel = false,toShowSpaceFilter = false,toShowUnsupervised = false,toShowSupervised = false,toShowPrecision = false;
+bool toImportData = false,toAddPoint = false,toCalcMaxDegree = false,toCalcSparse = false,toCalcConeectCompoent = false,toSearchCity = false,toSearchRoad = false,toCalcShortestPath = false,toGetNeighbor = false,toGetBuffer = false,toPlanRoute = false,toCalcMST = false,toDeleteObject = false;
 int Initialization(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -98,8 +98,6 @@ void DrawBasic() {
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(windowPara.SIDEBAR_WIDTH, windowPara.WINDOW_HEIGHT));
     ImGui::Begin("Sidebar", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-    ImGui::BeginChild("Layers",ImVec2(0,windowPara.WINDOW_HEIGHT / 3));
-    ImGui::EndChild();
     RenderInfoPanel();
     RenderWorkspace();
     ImGui::End();
@@ -113,10 +111,64 @@ void RenderInfoPanel(){
     float normalX = windowPara.screen2normalX(cursorX), normalY = windowPara.screen2normalY(cursorY);
     Camera2D& camera = Camera2D::getView();
     double worldX = camera.normal2worldX(normalX), worldY = camera.normal2worldY(normalY);
-    ImGui::Text("normal Position:\n <%.1f, %.1f> \n World Position:\n <%.1f, %.1f>",normalX, normalY, worldX, worldY);
+    ImGui::Text("World Position:\n <%.1f, %.1f>", worldX, worldY);
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    if (buffer.resInfo != "")
+        ImGui::Text("%s", buffer.resInfo.c_str());
+    if (buffer.currentNode != nullptr)
+        ImGui::Text("%s", buffer.currentNode->printInfo().c_str());
     ImGui::EndChild();
 }
 void RenderWorkspace(){
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    WindowParas& windowPara = WindowParas::getInstance();
+    ImGuiStyle& style = ImGui::GetStyle();
+    const ImVec2 ButtonSize = ImVec2(windowPara.SIDEBAR_WIDTH * 3 / 7, 50);
+    style.FramePadding = ImVec2(6.0f, 4.0f);
+    style.ItemSpacing = ImVec2(12.0f, 8.0f);
+    ImGui::PushFont(gui::chineseFont);
+    if (ImGui::Button("导入数据集",ButtonSize))
+        toImportData = true;
+    ImGui::SameLine();
+    if (ImGui::Button("求最大度点",ButtonSize))
+        toCalcMaxDegree = true;
     
+    if (ImGui::Button("求稀疏度",ButtonSize))
+        toCalcSparse = true;
+    ImGui::SameLine();
+    if (ImGui::Button("求连通分量",ButtonSize))
+        toCalcConeectCompoent = true;
+    
+    if (ImGui::Button("查询城市",ButtonSize))
+        toSearchCity = true;
+    ImGui::SameLine();
+    if (ImGui::Button("查询道路",ButtonSize))
+        toSearchRoad = true;
+    
+    if (buffer.currentNode != nullptr){
+        if (ImGui::Button("最小生成树",ButtonSize))
+            toCalcMST = true;
+        ImGui::SameLine();
+        std::string deleteStr = "删除城市";
+        if (!buffer.currentNode->isCityNode())
+            std::string DeleteStr = "删除道路";
+        if (ImGui::Button(deleteStr.c_str(),ButtonSize))
+            toDeleteObject = true;
+        
+        if (ImGui::Button("求最短路径",ButtonSize))
+            toCalcShortestPath = true;
+        ImGui::SameLine();
+        if (ImGui::Button("求相邻城市",ButtonSize))
+            toGetNeighbor = true;
+        
+        if (ImGui::Button("求缓冲区",ButtonSize))
+            toGetBuffer = true;
+        ImGui::SameLine();
+        if (ImGui::Button("多点路线规划",ButtonSize))
+            toPlanRoute = true;
+    }
+    style.FramePadding = ImVec2(4.0f, 2.0f);
+    style.ItemSpacing = ImVec2(8.0f, 4.0f);
+    ImGui::PopFont();
 }
 }

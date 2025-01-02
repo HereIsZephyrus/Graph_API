@@ -141,8 +141,6 @@ void Primitive::draw() const {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
     
-    GLuint thicknessLoc = glGetUniformLocation(shader->program, "thickness");
-    glUniform1f(thicknessLoc,0.02f);
     glBindVertexArray(VAO);
     glDrawArrays(shape, 0, static_cast<GLsizei>(vertexNum));
     glBindVertexArray(0);
