@@ -74,13 +74,13 @@ void Camera2D::updateViewMatrix() {
 
 double Camera2D::normal2worldX(GLdouble normalX){
     GLfloat width = extent.right - extent.left;
-    GLfloat currentWidth = width / extentZoom * zoom;
+    GLfloat currentWidth = width * extentZoom / zoom;
     GLfloat currentLeft = position.x - currentWidth / 2;
-    return (normalX + 1.0f) / 2.0f * currentWidth + currentLeft;
+    return (normalX + 1.0f) * currentWidth + currentLeft;
 }
 double Camera2D::normal2worldY(GLdouble normalY){
     GLfloat height = extent.top - extent.botton;
-    GLfloat currentHeight = height / extentZoom * zoom;
-    GLfloat currentBotton = position.y - currentHeight / 2;
-    return (normalY + 1.0f) / 2.0f * currentHeight + currentBotton;
+    GLfloat currentHeight = height * extentZoom / zoom;
+    GLfloat currentBotton = extent.top + extent.botton -position.y - currentHeight / 2;
+    return (normalY + 1.0f) * currentHeight + currentBotton;
 }

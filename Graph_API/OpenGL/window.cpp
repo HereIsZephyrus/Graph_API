@@ -17,8 +17,8 @@
 
 void WindowParas::InitParas(){
     glfwGetWindowContentScale(window, &xScale, &yScale);
-    SCREEN_LEFT = SIDEBAR_WIDTH * xScale;   SCREEN_BOTTON = 0;
-    SCREEN_WIDTH = WINDOW_WIDTH * xScale - SCREEN_LEFT;   SCREEN_HEIGHT = WINDOW_HEIGHT * yScale - SCREEN_BOTTON;
+    SCREEN_LEFT = SIDEBAR_WIDTH ;   SCREEN_BOTTON = 0;
+    SCREEN_WIDTH = WINDOW_WIDTH * xScale - SCREEN_LEFT * xScale;   SCREEN_HEIGHT = WINDOW_HEIGHT * yScale - SCREEN_BOTTON * yScale;
 }
 GLfloat WindowParas::screen2normalX(GLdouble screenX){
     return  (2.0f * static_cast<GLfloat>((screenX - SCREEN_LEFT)/ SCREEN_WIDTH * xScale)) - 1.0f;
@@ -28,11 +28,11 @@ GLfloat WindowParas::screen2normalY(GLdouble screenY){
 }
 void windowPosChangeCallback(GLFWwindow* window, int xpos, int ypos){
     WindowParas& windowPara = WindowParas::getInstance();
-    glViewport(windowPara.SCREEN_LEFT, windowPara.SCREEN_BOTTON, windowPara.SCREEN_WIDTH, windowPara.SCREEN_HEIGHT);
+    glViewport(windowPara.SCREEN_LEFT * windowPara.xScale, windowPara.SCREEN_BOTTON * windowPara.yScale, windowPara.SCREEN_WIDTH, windowPara.SCREEN_HEIGHT);
 }
 void windowRefreshCallback(GLFWwindow* window){
     WindowParas& windowPara = WindowParas::getInstance();
-    glViewport(windowPara.SCREEN_LEFT, windowPara.SCREEN_BOTTON, windowPara.SCREEN_WIDTH, windowPara.SCREEN_HEIGHT);
+    glViewport(windowPara.SCREEN_LEFT * windowPara.xScale, windowPara.SCREEN_BOTTON * windowPara.yScale, windowPara.SCREEN_WIDTH, windowPara.SCREEN_HEIGHT);
 }
 int initOpenGL(GLFWwindow *&window,std::string windowName) {
     if (!glfwInit()) {
@@ -59,7 +59,7 @@ int initOpenGL(GLFWwindow *&window,std::string windowName) {
         return -2;
     }
     windowPara.InitParas();
-    glViewport(windowPara.SCREEN_LEFT, windowPara.SCREEN_BOTTON, windowPara.SCREEN_WIDTH, windowPara.SCREEN_HEIGHT);
+    glViewport(windowPara.SCREEN_LEFT * windowPara.xScale, windowPara.SCREEN_BOTTON * windowPara.yScale, windowPara.SCREEN_WIDTH, windowPara.SCREEN_HEIGHT);
     glEnable(GL_PROGRAM_POINT_SIZE);
     glEnable(GL_MULTISAMPLE);
     const GLubyte* version = glGetString(GL_VERSION);
@@ -113,7 +113,7 @@ void RenderInfoPanel(){
     float normalX = windowPara.screen2normalX(cursorX), normalY = windowPara.screen2normalY(cursorY);
     Camera2D& camera = Camera2D::getView();
     double worldX = camera.normal2worldX(normalX), worldY = camera.normal2worldY(normalY);
-    ImGui::Text("World Position: (%.1f, %.1f)", worldX, worldY);
+    ImGui::Text("normal Position:\n <%.1f, %.1f> \n World Position:\n <%.1f, %.1f>",normalX, normalY, worldX, worldY);
     ImGui::EndChild();
 }
 void RenderWorkspace(){
