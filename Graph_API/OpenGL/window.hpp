@@ -55,5 +55,7 @@ extern bool toImportImage,toImportROI,toCalcDifference;
 extern bool toShowStatistic,toShowManageBand,toShowStrechLevel,toShowSpaceFilter,toShowUnsupervised,toShowSupervised,toShowPrecision;
 int Initialization(GLFWwindow* window);
 void DrawBasic();
+void RenderInfoPanel();
+void RenderWorkspace();
 }
 #endif /* window_hpp */

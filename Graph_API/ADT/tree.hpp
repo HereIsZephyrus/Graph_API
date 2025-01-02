@@ -13,6 +13,7 @@
 #include <exception>
 #include <vector>
 #include <map>
+#include "linear.hpp"
 
 namespace tcb {
 using std::ostream;
@@ -52,7 +53,7 @@ public:
         return false;
     }
     virtual void clear() = 0;
-    virtual bool contains(const Object& x) const = 0;
+    //virtual bool contains(const Object& x) const = 0;
     //virtual void insert(const Object& x, NodeStructure* & node) = 0; node structure overload problem
     //virtual void remove(const Object& x, NodeStructure* & node) = 0;
 };
@@ -68,7 +69,7 @@ public:
     const BST & operator = (const BST & rhs);
     BinarySearchTree(const BST & rhs);
     friend ostream& operator<<(ostream& os, const BST& tree);
-    virtual bool contains(const Object& x) const override{return contains(x, this->root);}
+    virtual bool contains(const Object& x) const {return contains(x, this->root);}
     virtual void insert(const Object& x){insert(x, this->root);}
     virtual void remove(const Object& x){remove(x, this->root);}
     void clear() override{destroy(this->root);}
@@ -223,6 +224,47 @@ protected:
             this->root = leftRotate(this->root);
         }
     }
+};
+struct SpatialRange{
+    float minx,miny,width,height;
+    SpatialRange(float x, float y, float w, float h):minx(x),miny(y),width(w),height(h){}
+};
+template<class Object>
+struct QuadTreeNode{
+    struct Point{
+        float x,y;
+        Object element;
+        Point(float x, float y, const Object& obj):x(x),y(y),element(obj){}
+    };
+    std::vector<Point> points;
+    QuadTreeNode* northeast;
+    QuadTreeNode* northwest;
+    QuadTreeNode* southeast;
+    QuadTreeNode* southwest;
+    int capacity;
+    bool isLeaf;
+    SpatialRange range;
+    QuadTreeNode(SpatialRange r,int c,QuadTreeNode* ne = nullptr, QuadTreeNode* nw = nullptr,QuadTreeNode* se = nullptr, QuadTreeNode* sw = nullptr);
+};
+template <class Object>
+class QuadTree : protected Tree<Object, QuadTreeNode<Object>>{
+    using node = QuadTreeNode<Object>;
+    using insertRes = std::pair<bool,node*>;
+    using Point = node::Point;
+public:
+    QuadTree(){this->root = nullptr;}
+    QuadTree(const SpatialRange& r, int c){this->root = new node(r,c);}
+    const QuadTree & operator = (const QuadTree & rhs);
+    ~QuadTree(){clear();}
+    void clear(){destroy(this->root);}
+    node* insert(float x,float y,const Object& obj){return insert(x,y,obj,this->root).second;};
+    std::vector<Object> queryRange(const SpatialRange& orientRange){return queryRange(orientRange,this->root);}
+private:
+    void destroy(node* p);
+    node* clone(node* rhst) const;
+    void subdivide(node *p);
+    insertRes insert(float x,float y,const Object& obj,node *p);
+    std::vector<Object> queryRange(const SpatialRange& orientRange,node *p);
 };
 }
 #include "tree.tpp"

@@ -47,15 +47,25 @@ void Camera2D::zoomInOut(float yOffset) {
         zoom = 10.0f;
 }
 Camera2D::Camera2D() : position(0.0f, 0.0f), zoom(1.0f){
-    projectionMatrix = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, -1000.0f, 100.0f);
+    projectionMatrix = glm::ortho(-1.0f * worldRateFactor, 1.0f * worldRateFactor, -1.0f * worldRateFactor, 1.0f * worldRateFactor, -1000.0f, 100.0f);
     viewMatrix = glm::mat4(1.0f);
 }
-void Camera2D::setExtent(Extent extent){
+void Camera2D::setExtent(Extent inputExtent){
+    extent = inputExtent;
     position.x = (extent.left + extent.right) / 2;
     position.y = (extent.botton + extent.top) / 2;
-    GLfloat width = (extent.right - extent.left) * marginRate, height =  (extent.top - extent.botton) * marginRate;
-    float zoomX = 200  / width,zoomY = 200/ height;
-    zoom = std::min(zoomX,zoomY);
+    GLfloat width = extent.right - extent.left, height = extent.top - extent.botton;
+    float zoomX = 2 * worldRateFactor / width, zoomY = 2 * worldRateFactor / height;
+    if (zoomX < zoomY){
+        zoom = zoomX;
+        extent.top = position.y + width/2;
+        extent.botton = position.y - width/2;
+    }else{
+        zoom = zoomY;
+        extent.top = position.y + height/2;
+        extent.botton = position.y - height/2;
+    }
+    extentZoom = zoom;
     updateProjectionMatrix(width,height);
     updateViewMatrix();
 }
@@ -70,3 +80,15 @@ void Camera2D::updateViewMatrix() {
     viewMatrix = glm::translate(viewMatrix, glm::vec3(-position, 0.0f));
 }
 
+double Camera2D::normal2worldX(GLdouble normalX){
+    GLfloat width = extent.right - extent.left;
+    GLfloat currentWidth = width * extentZoom / zoom;
+    GLfloat currentLeft = position.x - currentWidth / 2;
+    return (normalX + 1.0f) * currentWidth / 2 + currentLeft;
+}
+double Camera2D::normal2worldY(GLdouble normalY){
+    GLfloat height = extent.top - extent.botton;
+    GLfloat currentHeight = height * extentZoom / zoom;
+    GLfloat currentTop = position.y + currentHeight / 2;
+    return currentTop - (1.0f - normalY) * currentHeight / 2;
+}
