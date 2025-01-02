@@ -20,10 +20,14 @@ int main(int argc, char **argv) {
         }
     }
     using namespace transport;
+    using valueType = double;
+    
     GLFWwindow *& window = WindowParas::getInstance().window;
     Initialization(window);
+    
     Camera2D& camera = Camera2D::getView();
-    WUSG::Graph<double> graph(87575);
+    WUSG::Graph<valueType> graph(87575);
+    Node<valueType> currentNode;
     WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/usa.txt", graph,true);
     citys = BuildVisualPoints(graph);
     roads = BuildVisualRoads(graph);
@@ -36,7 +40,7 @@ int main(int argc, char **argv) {
         roads->draw();
         citys->draw();
         gui::DrawBasic();
-        processOperator(window);
+        processOperator(window,graph,currentNode);
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);

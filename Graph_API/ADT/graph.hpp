@@ -49,6 +49,7 @@ struct EdgeInfo{
 };
 template <typename V = string, typename W = double>
 class WUSGraph{
+public:
     using Neighbor = Vector<std::pair<V,W>>;
     using EdgeInfo = EdgeInfo<V, W>;
     struct Edge;
@@ -56,6 +57,7 @@ class WUSGraph{
     class AdjList;
     class EdgeTable;
     class MinSpanForest;
+private:
     using Node = typename List<Edge>::Node;
     using pEdge = Node*;
     EdgeTable edgeTable;

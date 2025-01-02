@@ -8,16 +8,6 @@
 #include "commander.hpp"
 #include "window.hpp"
 
-void processOperator(GLFWwindow* window){
-    Camera2D& camera = Camera2D::getView();
-    camera.processKeyboard(window);
-    processMouse();
-}
-void processMouse(){
-    BufferRecorder& buffer = BufferRecorder::getBuffer();
-    glm::vec2 checPos = buffer.checkPos;
-    
-}
 void BufferRecorder::initIO(GLFWwindow* window){
     memset(keyRecord, GL_FALSE, sizeof(keyRecord));
     pressLeft = GL_FALSE;

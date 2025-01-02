@@ -115,9 +115,38 @@ private:
     std::vector<VertexPair> vertexID;
 };
 template <typename W>
+class Node{
+    using CityNode = WUSG::Vertex<W>;
+    CityNode city;
+    struct RoadNode{   
+        CityNode vertex1, vertex2;
+        W weight;
+    }road;
+    enum : short{isEmpty = -1, isCity = 0, isRoad = 1} state;
+public:
+    Node():state(isEmpty){}
+    Node(CityNode city):state(isCity){city = city;}
+    Node(CityNode city1, CityNode city2, W distance):state(isRoad){road = RoadNode(city1,city2,distance);}
+    short getState() const {return state;}
+    CityNode getCityNode() const {
+        if (state != isCity)
+            throw std::runtime_error("Node is not a city node");
+        return city;
+    }
+    RoadNode getRoadNode() const {
+        if (state != isRoad)
+            throw std::runtime_error("Node is not a road node");
+        return road;
+    }
+};
+template <typename W>
 std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<W>& graph);
 template <typename W>
 std::shared_ptr<Roads> BuildVisualRoads(WUSG::Graph<W>& graph);
+template <typename W>
+void processOperator(GLFWwindow* window, const WUSG::Graph<W>& graph,Node<W>& currentNode);
+template <typename W>
+void processMouse(const WUSG::Graph<W>& graph,Node<W>& currentNode);
 
 extern std::shared_ptr<CityPoints> citys;
 extern std::shared_ptr<Roads> roads;
