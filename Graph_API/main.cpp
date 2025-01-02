@@ -28,7 +28,6 @@ int main(int argc, char **argv) {
     std::shared_ptr<Roads> roads = BuildVisualRoads(graph);
     camera.setExtent(citys->getExtent());
     std::cout<<graph.vertexCount()<<' '<<graph.edgeCount()<<std::endl;
-    camera.setExtent(citys->getExtent());
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         glClearColor(0,0,0,0);

@@ -13,6 +13,7 @@
 #include <exception>
 #include <vector>
 #include <map>
+#include "linear.hpp"
 
 namespace tcb {
 using std::ostream;
@@ -222,6 +223,120 @@ protected:
             this->root->right = rightRotate(this->root->right);
             this->root = leftRotate(this->root);
         }
+    }
+};
+struct SpatialRange{
+    float minx,miny,width,height;
+    SpatialRange(float x, float y, float w, float h):minx(x),miny(y),width(w),height(h){}
+};
+template<class Object>
+struct QuadTreeNode{
+    struct Point{
+        float x,y;
+        Object element;
+        Point(float x, float y, const Object& obj):x(x),y(y),element(obj){}
+    };
+    Vector<Point> points;
+    QuadTreeNode* northeast;
+    QuadTreeNode* northwest;
+    QuadTreeNode* southeast;
+    QuadTreeNode* southwest;
+    int capacity;
+    bool isLeaf;
+    SpatialRange range;
+    QuadTreeNode(SpatialRange r,int c,QuadTreeNode* ne = nullptr, QuadTreeNode* nw = nullptr,QuadTreeNode* se = nullptr, QuadTreeNode* sw = nullptr):
+    range(r),capacity(c),northeast(ne),northwest(nw),southeast(se),southwest(sw){
+        points.clear();
+        if (ne != nullptr || nw != nullptr || se != nullptr || sw != nullptr)
+            isLeaf = false;
+        else
+            isLeaf = true;
+    }
+};
+template <class Object>
+class QuadTree : protected Tree<Object, QuadTreeNode<Object>>{
+    using node = QuadTreeNode<Object>;
+    using insertRes = std::pair<bool,node*>;
+public:
+    QuadTree(){this->root = nullptr;}
+    QuadTree(const SpatialRange& r, int c){this->root = new node(r,c);}
+    const QuadTree & operator = (const QuadTree & rhs){
+        if (this != &rhs){
+            clear();
+            this->root = clone(rhs.root);
+        }
+        return *this;
+    }
+    ~QuadTree(){clear();}
+    void clear(){destroy(this->root);}
+    node* insert(GLfloat x,GLfloat y,const Object& obj){return insert(x,y,obj,this->root).second;};
+    Vector<Object> queryRange(const SpatialRange& orientRange){return queryRange(orientRange,this->root);}
+private:
+    void destroy(node* p){
+        if (p != nullptr){
+            destroy(p->northeast);
+            destroy(p->northwest);
+            destroy(p->southeast);
+            destroy(p->southwest);
+            delete p;
+        }
+    }
+    node* clone(node* rhst) const{
+        if (rhst == nullptr)
+            return nullptr;
+        return new node(rhst->range,rhst->capacity,clone(rhst->northeast),clone(rhst->northwest),clone(rhst->southeast),clone(rhst->southwest));
+    }
+    void subdivide(node *p) {
+        SpatialRange& range = p->range;
+        p->northeast = new node(SpatialRange(range.minx + range.width / 2, range.miny, range.width / 2, range.height / 2), p->capacity);
+        p->northwest = new node(SpatialRange(range.minx, range.miny, range.width / 2, range.height / 2), p->capacity);
+        p->southeast = new node(SpatialRange(range.minx + range.width / 2, range.miny + range.height / 2, range.width / 2, range.height / 2), p->capacity);
+        p->southwest = new node(SpatialRange(range.minx, range.miny + range.height / 2, range.width / 2, range.height / 2), p->capacity);
+        p->isLeaf = false;
+    }
+    insertRes insert(GLfloat x,GLfloat y,const Object& obj,node *p){
+        const SpatialRange& range = p->range;
+        bool contain = (x >= range.minx && x < range.minx + range.width && y >= range.miny && y < range.miny + range.height);
+        if (!contain) return std::make_pair(false, nullptr);
+        if (p->points.size() < p->capacity) {
+            p->points.push_back(Point(x,y,obj));
+            return std::make_pair(true, p);
+        }
+        if (p->isLeaf)            subdivide(p);
+        insertRes ret_res = insert(x,y,obj,p->northeast);
+        if (ret_res.first) return ret_res;
+        ret_res = insert(x,y,obj,p->northwest);
+        if (ret_res.first) return ret_res;
+        ret_res = insert(x,y,obj,p->southeast);
+        if (ret_res.first) return ret_res;
+        ret_res = insert(x,y,obj,p->southwest);
+        if (ret_res.first) return ret_res;
+        return std::make_pair(false, nullptr);
+    }
+    Vector<Object> queryRange(const SpatialRange& orientRange,node *p) {
+        Vector<Object> foundPoints;
+        const SpatialRange& range = p->range;
+        bool intersect = !(orientRange.minx > range.minx + range.width || orientRange.minx + orientRange.width < range.minx || orientRange.miny > range.miny + range.height || orientRange.miny + orientRange.height < range.miny);
+        if (!intersect) return foundPoints;
+
+        for (size_t i = 0; i < p->points.size(); i++) {
+            const GLfloat px = p->points[i].x, py = p->points[i].y;
+            if (px >= orientRange.minx && px < orientRange.minx + orientRange.width && py >= orientRange.miny && py < orientRange.miny + orientRange.height) {
+                foundPoints.push_back(p->points[i].element);
+            }
+        }
+        if (!p->isLeaf) {
+            Vector<Object> northeastPoints = queryRange(orientRange,p->northeast);
+            Vector<Object> northwestPoints = queryRange(orientRange,p->northwest);
+            Vector<Object> southeastPoints = queryRange(orientRange,p->southeast);
+            Vector<Object> southwestPoints = queryRange(orientRange,p->southwest);
+            foundPoints.insert(foundPoints.end(), northeastPoints.begin(), northeastPoints.end());
+            foundPoints.insert(foundPoints.end(), northwestPoints.begin(), northwestPoints.end());
+            foundPoints.insert(foundPoints.end(), southeastPoints.begin(), southeastPoints.end());
+            foundPoints.insert(foundPoints.end(), southwestPoints.begin(), southwestPoints.end());
+        }
+
+        return foundPoints;
     }
 };
 }

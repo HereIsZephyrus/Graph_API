@@ -46,13 +46,17 @@ public:
     void setExtent(Extent extent);
     void updateProjectionMatrix(GLfloat width,GLfloat height);
     void updateViewMatrix() ;
+    double normal2worldX(GLdouble normalX);
+    double normal2worldY(GLdouble normalY);
 private:
     Camera2D();
     glm::vec2 position;
-    float zoom;
+    float zoom,extentZoom;
     glm::mat4 projectionMatrix,viewMatrix;
-    const GLfloat marginRate = 1.1;
+    const GLfloat marginRate = 1.05;
     const GLfloat deltaTime = 0.016f; // 60FPS
+    Extent extent;
+    static constexpr int worldRateFactor = 100;
 };
 
 #endif /* camera_hpp */

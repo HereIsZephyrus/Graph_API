@@ -100,7 +100,23 @@ void DrawBasic() {
     ImGui::Begin("Sidebar", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
     ImGui::BeginChild("Layers",ImVec2(0,windowPara.WINDOW_HEIGHT / 3));
     ImGui::EndChild();
+    RenderInfoPanel();
+    RenderWorkspace();
     ImGui::End();
     return;
+}
+void RenderInfoPanel(){
+    WindowParas& windowPara = WindowParas::getInstance();
+    ImGui::BeginChild("Info",ImVec2(0,windowPara.WINDOW_HEIGHT / 3));
+    double cursorX, cursorY;
+    glfwGetCursorPos(windowPara.window, &cursorX, &cursorY);
+    float normalX = windowPara.screen2normalX(cursorX), normalY = windowPara.screen2normalY(cursorY);
+    Camera2D& camera = Camera2D::getView();
+    double worldX = camera.normal2worldX(normalX), worldY = camera.normal2worldY(normalY);
+    ImGui::Text("World Position: (%.1f, %.1f)", worldX, worldY);
+    ImGui::EndChild();
+}
+void RenderWorkspace(){
+    
 }
 }
