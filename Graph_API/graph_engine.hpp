@@ -82,12 +82,14 @@ public:
     bool isCityNode() const {return state == isCity;}
     void draw(){
         if (state == isCity)     drawCity();
-        else                                    drawRoad();
+        else                     drawRoad();
     }
     std::string printInfo(){
         if (state == isCity)     return printCity();
-        else                                    return printRoad();
+        else                     return printRoad();
     }
+    CityNode getCity() const {return city;}
+    RoadNode getRoad() const {return road;}
 };
 class RouteSystem{
 public:
@@ -116,6 +118,9 @@ void ImportData();
 void AddPoint();
 void PlanRoute();
 void CalcShortestPath();
+void SearchCity();
+void SearchRoad();
+void GetBuffer();
 }
 #include "graph_engine.tpp"
 #endif /* graph_engine_h */

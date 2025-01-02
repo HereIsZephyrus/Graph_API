@@ -37,6 +37,8 @@ double Steiner(const WUSGraph<V,W>& graph,const Vector<V>& keyVertices);
 template <typename V, typename W>
 Vector<std::pair<V,V>> Prim(WUSGraph<V,W>& graph);
 template <typename V, typename W>
+std::string GetNeighbor(const WUSGraph<V,W>& graph,V node);
+template <typename V, typename W>
 void Print(const WUSGraph<V,W>& graph,ostream& os);
 }
 #include "graph_api.inl"

@@ -146,26 +146,28 @@ void RenderWorkspace(){
         toSearchRoad = true;
     
     if (buffer.currentNode != nullptr){
-        if (ImGui::Button("最小生成树",ButtonSize))
-            toCalcMST = true;
-        ImGui::SameLine();
-        std::string deleteStr = "删除城市";
-        if (!buffer.currentNode->isCityNode())
-            std::string DeleteStr = "删除道路";
-        if (ImGui::Button(deleteStr.c_str(),ButtonSize))
-            toDeleteObject = true;
-        
-        if (ImGui::Button("求最短路径",ButtonSize))
-            toCalcShortestPath = true;
-        ImGui::SameLine();
-        if (ImGui::Button("求相邻城市",ButtonSize))
-            toGetNeighbor = true;
-        
-        if (ImGui::Button("求缓冲区",ButtonSize))
-            toGetBuffer = true;
-        ImGui::SameLine();
-        if (ImGui::Button("多点路线规划",ButtonSize))
-            toPlanRoute = true;
+        if (buffer.currentNode->isCityNode()){
+            if (ImGui::Button("最小生成树",ButtonSize))
+                toCalcMST = true;
+            ImGui::SameLine();
+            if (ImGui::Button("删除城市",ButtonSize))
+                toDeleteObject = true;
+            
+            if (ImGui::Button("求最短路径",ButtonSize))
+                toCalcShortestPath = true;
+            ImGui::SameLine();
+            if (ImGui::Button("求相邻城市",ButtonSize))
+                toGetNeighbor = true;
+            
+            if (ImGui::Button("求缓冲区",ButtonSize))
+                toGetBuffer = true;
+            ImGui::SameLine();
+            if (ImGui::Button("多点路线规划",ButtonSize))
+                toPlanRoute = true;
+        }else{
+            if (ImGui::Button("删除道路",ButtonSize))
+                toDeleteObject = true;
+        }
     }
     style.FramePadding = ImVec2(4.0f, 2.0f);
     style.ItemSpacing = ImVec2(8.0f, 4.0f);

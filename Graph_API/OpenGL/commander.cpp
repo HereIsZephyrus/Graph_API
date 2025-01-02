@@ -54,7 +54,9 @@ void mouseCallback(GLFWwindow* window, int button, int action, int mods){
         float normalX = windowPara.screen2normalX(xpos), normalY = windowPara.screen2normalY(ypos);
         Camera2D& camera = Camera2D::getView();
         double worldX = camera.normal2worldX(normalX), worldY = camera.normal2worldY(normalY);
-        buffer.pressLeft = true;
-        buffer.checkPos = glm::vec2(worldX,worldY);
+        if (normalX >= -1 && normalX <=1 && normalY >= -1 && normalY <= 1){
+            buffer.pressLeft = true;
+            buffer.checkPos = glm::vec2(worldX,worldY);
+        }
     }
 }

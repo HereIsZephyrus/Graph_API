@@ -130,6 +130,17 @@ template <typename V, typename W>
 int CalcConnectCompoent(WUSGraph<V,W>& graph){
     return graph.countConnectedComponents();
 }
+template <typename V, typename W>
+std::string GetNeighbor(const WUSGraph<V,W>& graph,V node){
+    std::stringstream res;
+    res << std::fixed << std::setprecision(2);
+    using Neighbor = typename tcb::WUSGraph<V,W>::Neighbor;
+    Neighbor neighbors = graph.getNeighbor(node);
+    for (typename Neighbor::iterator it = neighbors.begin(); it != neighbors.end(); it++){
+        res << "到相邻城市" << it->first.alias << "的距离是" << it->second<<'\n';
+    }
+    return res.str();
+}
 template <typename V, typename W, typename Func>
 void DFS(WUSGraph<V,W>& graph, const V& startNode, Func func){
     graph.WalkThrough(startNode, WalkMethod::DFS, func);

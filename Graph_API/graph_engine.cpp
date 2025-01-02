@@ -191,13 +191,14 @@ namespace gui {
 void processWorkspace(){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     transport::RouteSystem& system = transport::RouteSystem::getSystem();
+    ImGui::PushFont(gui::chineseFont);
     if (toCalcMaxDegree){
         buffer.resInfo = "最大度为" + std::to_string(WUSG::MaxDegree(*system.graph));
         toCalcMaxDegree = false;
     }
     if (toCalcSparse){
         std::stringstream iss;
-        iss << "稀疏度为" << std::fixed << std::setprecision(3) << WUSG::Sparseness(*system.graph);
+        iss << "稀疏度为" << std::scientific << std::setprecision(5) << WUSG::Sparseness(*system.graph);
         buffer.resInfo = iss.str();
         toCalcSparse = false;
     }
@@ -205,6 +206,20 @@ void processWorkspace(){
         buffer.resInfo = "联通块数量为" + std::to_string(WUSG::CalcConnectCompoent(*system.graph));
         toCalcConeectCompoent = false;
     }
+    if (toGetNeighbor){
+        transport::RouteSystem& system = transport::RouteSystem::getSystem();
+        if (system.graph != nullptr && buffer.currentNode != nullptr){
+            buffer.resInfo = WUSG::GetNeighbor(*system.graph,buffer.currentNode->getCity());
+        }
+        toGetNeighbor = false;
+    }
+    if (toDeleteObject){
+        toDeleteObject = false;
+    }
+    if (toCalcMST){
+        toCalcMST = false;
+    }
+    ImGui::PopFont();
 }
 bool DrawPopup(){
     if (toImportData){
@@ -221,6 +236,18 @@ bool DrawPopup(){
     }
     if (toCalcShortestPath){
         CalcShortestPath();
+        return true;
+    }
+    if (toSearchCity){
+        SearchCity();
+        return true;
+    }
+    if (toSearchRoad){
+        SearchRoad();
+        return true;
+    }
+    if (toGetBuffer){
+        GetBuffer();
         return true;
     }
     return false;
@@ -263,5 +290,17 @@ void PlanRoute(){
 void CalcShortestPath(){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     toCalcShortestPath = false;
+}
+void SearchCity(){
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    toSearchCity = false;
+}
+void SearchRoad(){
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    toSearchRoad = false;
+}
+void GetBuffer(){
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    toGetBuffer = false;
 }
 }
