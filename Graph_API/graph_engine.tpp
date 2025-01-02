@@ -45,6 +45,7 @@ void processOperator(GLFWwindow* window, const WUSG::Graph<W>& graph){
     camera.processKeyboard(window);
     processMouse(graph);
 }
+/*
 template <typename W>
 void processMouse(const WUSG::Graph<W>& graph){
     using Node = transport::Node<W>;
@@ -66,4 +67,5 @@ void processMouse(const WUSG::Graph<W>& graph){
         buffer.pressLeft = false;
     }
 }
+*/
 }

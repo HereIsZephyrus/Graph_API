@@ -14,6 +14,7 @@
 #include "window.hpp"
 #include "graphing.hpp"
 #include "commander.hpp"
+#include "../graph_engine.hpp"
 
 void WindowParas::InitParas(){
     glfwGetWindowContentScale(window, &xScale, &yScale);
@@ -74,8 +75,7 @@ int initOpenGL(GLFWwindow *&window,std::string windowName) {
 }
 namespace gui {
 ImFont *englishFont = nullptr,*chineseFont = nullptr;
-bool toImportImage = false,toImportROI = false,toCalcDifference = false;
-bool toShowStatistic = false,toShowManageBand = false,toShowStrechLevel = false,toShowSpaceFilter = false,toShowUnsupervised = false,toShowSupervised = false,toShowPrecision = false;
+bool toImportData = false,toAddPoint = false;
 int Initialization(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -98,8 +98,6 @@ void DrawBasic() {
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(windowPara.SIDEBAR_WIDTH, windowPara.WINDOW_HEIGHT));
     ImGui::Begin("Sidebar", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-    ImGui::BeginChild("Layers",ImVec2(0,windowPara.WINDOW_HEIGHT / 3));
-    ImGui::EndChild();
     RenderInfoPanel();
     RenderWorkspace();
     ImGui::End();
@@ -114,9 +112,29 @@ void RenderInfoPanel(){
     Camera2D& camera = Camera2D::getView();
     double worldX = camera.normal2worldX(normalX), worldY = camera.normal2worldY(normalY);
     ImGui::Text("World Position:\n <%.1f, %.1f>", worldX, worldY);
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    if (buffer.currentNode != nullptr)
+        ImGui::Text("%s", buffer.currentNode->printInfo().c_str());
     ImGui::EndChild();
 }
 void RenderWorkspace(){
-    
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    WindowParas& windowPara = WindowParas::getInstance();
+    ImGuiStyle& style = ImGui::GetStyle();
+    const ImVec2 ButtonSize = ImVec2(windowPara.SIDEBAR_WIDTH * 3 / 7, 50);
+    style.FramePadding = ImVec2(6.0f, 4.0f);
+    style.ItemSpacing = ImVec2(12.0f, 8.0f);
+    ImGui::PushFont(gui::chineseFont);
+    if (ImGui::Button("导入数据集",ButtonSize))
+        toImportData = true;
+    ImGui::SameLine();
+    if (ImGui::Button("插入节点",ButtonSize))
+        toAddPoint = true;
+    if (buffer.currentNode != nullptr){
+        
+    }
+    style.FramePadding = ImVec2(4.0f, 2.0f);
+    style.ItemSpacing = ImVec2(8.0f, 4.0f);
+    ImGui::PopFont();
 }
 }

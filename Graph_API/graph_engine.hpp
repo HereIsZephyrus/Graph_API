@@ -28,7 +28,6 @@ protected:
 public:
     SpatialPrimitive(const std::vector<Point>& inputVertex,GLenum shp,Shader* shader, int elementSize):
     Primitive(inputVertex,shp,shader){
-        Extent extent = Camera2D::getView().getExtent();
         SpatialRange range = SpatialRange(extent.left,extent.botton,extent.right - extent.left,extent.top - extent.botton);
         int indexNum = static_cast<int>(vertexNum / elementSize);
         indexTree = std::make_shared<QuadTree<size_t>>(range,indexNum);
@@ -134,6 +133,16 @@ class Node{
                              Point(glm::vec3(road.vertex2.x,road.vertex2.y,0.0),clickedRoadColor)},GL_LINES,ShaderBucket["line"].get());
         primitive.draw();
     }
+    std::string printCity() const{
+        std::string name = "City: " + city.alias + " (" + std::to_string(city.id) + ")";
+        std::string coord = "Coordinate: <" + std::to_string(city.x) + "," + std::to_string(city.y) + ">";
+        return name + '\n' + coord;
+    }
+    std::string printRoad() const{
+        std::string name = "Road: " + road.vertex1.alias + " (" + std::to_string(road.vertex1.id) + ") - " + road.vertex2.alias + " (" + std::to_string(road.vertex2.id) + ")";
+        std::string weight = "Distance: " + std::to_string(road.weight);
+        return name + '\n' + weight;
+    }
 public:
     Node(CityNode city):state(isCity){city = city;}
     Node(CityNode city1, CityNode city2, W distance):state(isRoad){road = RoadNode(city1,city2,distance);}
@@ -143,7 +152,16 @@ public:
         else
             drawRoad();
     }
+    std::string printInfo(){
+        if (state == isCity)
+            return printCity();
+        else
+            return printRoad();
+    }
 };
+extern std::shared_ptr<CityPoints> citys;
+extern std::shared_ptr<Roads> roads;
+
 template <typename W>
 std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<W>& graph);
 template <typename W>
@@ -151,10 +169,27 @@ std::shared_ptr<Roads> BuildVisualRoads(WUSG::Graph<W>& graph);
 template <typename W>
 void processOperator(GLFWwindow* window, const WUSG::Graph<W>& graph);
 template <typename W>
-void processMouse(const WUSG::Graph<W>& graph);
+void processMouse(const WUSG::Graph<W>& graph){
+    using Node = transport::Node<W>;
+    using Vertex = WUSG::Vertex<W>;
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    if (buffer.pressLeft){
+        glm::vec2 checkPos = buffer.checkPos;
+        int ID = transport::citys->getClick(checkPos.x, checkPos.y);
+        if (ID > 0){
+            buffer.currentNode = std::make_shared<Node>(graph.getVertex(Vertex(ID)));
+        }else{
+            VertexPair pair = transport::roads->getClick(checkPos.x, checkPos.y);
+            Vertex v1 = graph.getVertex(Vertex(pair.first)), v2 = graph.getVertex(Vertex(pair.second));
+            if (pair.first > 0 && pair.second > 0)
+                buffer.currentNode = std::make_shared<Node>(v1,v2,graph.getWeight(v1,v2));
+            else
+                buffer.currentNode = nullptr;
+        }
+        buffer.pressLeft = false;
+    }
+}
 
-extern std::shared_ptr<CityPoints> citys;
-extern std::shared_ptr<Roads> roads;
 }
 #include "graph_engine.tpp"
 #endif /* graph_engine_h */

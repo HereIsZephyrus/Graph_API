@@ -19,6 +19,7 @@ void BufferRecorder::initIO(GLFWwindow* window){
     currentNode = nullptr;
     glfwSetKeyCallback(window, keyCallback);
     glfwSetScrollCallback(window, scrollCallback);
+    glfwSetMouseButtonCallback(window, mouseCallback);
 }
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset){
     ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
