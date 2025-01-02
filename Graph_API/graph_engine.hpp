@@ -29,14 +29,13 @@ public:
     SpatialPrimitive(const std::vector<Point>& inputVertex,GLenum shp,Shader* shader, int elementSize):
     Primitive(inputVertex,shp,shader){
         SpatialRange range = SpatialRange(extent.left,extent.botton,extent.right - extent.left,extent.top - extent.botton);
-        int indexNum = static_cast<int>(vertexNum / elementSize);
-        indexTree = std::make_shared<QuadTree<size_t>>(range,indexNum);
+        indexTree = std::make_shared<QuadTree<size_t>>(range,10);
         for (size_t i = 0; i < vertexNum; i += elementSize){
-            size_t index = i * stride;
             float x = 0,y = 0;
             for (int k = 0; k < elementSize; k++){
-                x += vertices[index + k];
-                y += vertices[index + k + 1];
+                size_t index = (i + k) * stride;
+                x += vertices[index];
+                y += vertices[index + 1];
             }
             x /= elementSize;
             y /= elementSize;
@@ -48,7 +47,7 @@ public:
 };
 namespace transport{
 class CityPoints : public SpatialPrimitive{
-    static constexpr double clickRange = 10;
+    static constexpr double clickRange = 1;
 public:
     CityPoints(const std::vector<Point>& inputVertex,GLfloat r,std::vector<int>& ID):
     SpatialPrimitive(inputVertex,GL_POINTS,ShaderBucket["ball"].get(),1),radius(r){
@@ -77,7 +76,7 @@ private:
     std::vector<int> vertexID;
 };
 class Roads : public SpatialPrimitive{
-    static constexpr double clickRange = 5;
+    static constexpr double clickRange = 0.7;
 public:
     Roads(const std::vector<Point>& inputVertex,GLfloat l,std::vector<VertexPair>& ID):
     SpatialPrimitive(inputVertex,GL_LINES,ShaderBucket["line"].get(),2),thickness(l){
@@ -144,7 +143,9 @@ class Node{
         return name + '\n' + weight;
     }
 public:
-    Node(CityNode city):state(isCity){city = city;}
+    Node(CityNode city):state(isCity){
+        this->city = city;
+    }
     Node(CityNode city1, CityNode city2, W distance):state(isRoad){road = RoadNode(city1,city2,distance);}
     void draw(){
         if (state == isCity)

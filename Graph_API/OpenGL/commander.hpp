@@ -36,6 +36,7 @@ public:
     void initIO(GLFWwindow* window);
     glm::vec2 checkPos;
     std::shared_ptr<transport::Node<valueType>> currentNode;
+    std::string resInfo;
 private:
     BufferRecorder(){}
 };

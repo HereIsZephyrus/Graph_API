@@ -75,7 +75,7 @@ int initOpenGL(GLFWwindow *&window,std::string windowName) {
 }
 namespace gui {
 ImFont *englishFont = nullptr,*chineseFont = nullptr;
-bool toImportData = false,toAddPoint = false;
+bool toImportData = false,toAddPoint = false,toCalcMaxDegree = false,toCalcSparse = false,toCalcConeectCompoent = false;
 int Initialization(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -113,6 +113,8 @@ void RenderInfoPanel(){
     double worldX = camera.normal2worldX(normalX), worldY = camera.normal2worldY(normalY);
     ImGui::Text("World Position:\n <%.1f, %.1f>", worldX, worldY);
     BufferRecorder& buffer = BufferRecorder::getBuffer();
+    if (buffer.resInfo != "")
+        ImGui::Text("%s", buffer.resInfo.c_str());
     if (buffer.currentNode != nullptr)
         ImGui::Text("%s", buffer.currentNode->printInfo().c_str());
     ImGui::EndChild();
@@ -128,10 +130,33 @@ void RenderWorkspace(){
     if (ImGui::Button("导入数据集",ButtonSize))
         toImportData = true;
     ImGui::SameLine();
-    if (ImGui::Button("插入节点",ButtonSize))
+    if (ImGui::Button("求最大度点",ButtonSize))
+        toCalcMaxDegree = true;
+    
+    if (ImGui::Button("求稀疏度",ButtonSize))
+        toCalcSparse = true;
+    ImGui::SameLine();
+    if (ImGui::Button("求连通分量",ButtonSize))
+        toCalcConeectCompoent = true;
+    
+    if (ImGui::Button("查询城市",ButtonSize))
         toAddPoint = true;
+    ImGui::SameLine();
+    if (ImGui::Button("查询道路",ButtonSize))
+        toAddPoint = true;
+    
     if (buffer.currentNode != nullptr){
+        if (ImGui::Button("求最短路径",ButtonSize))
+            toImportData = true;
+        ImGui::SameLine();
+        if (ImGui::Button("求相邻城市",ButtonSize))
+            toAddPoint = true;
         
+        if (ImGui::Button("求缓冲区",ButtonSize))
+            toImportData = true;
+        ImGui::SameLine();
+        if (ImGui::Button("多点路线规划",ButtonSize))
+            toAddPoint = true;
     }
     style.FramePadding = ImVec2(4.0f, 2.0f);
     style.ItemSpacing = ImVec2(8.0f, 4.0f);

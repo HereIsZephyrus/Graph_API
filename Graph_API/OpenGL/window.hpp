@@ -51,7 +51,7 @@ constexpr GLfloat borderDetectRange = 20.0f;
 constexpr GLfloat dragCameraSpeed = 6.0f;
 constexpr GLfloat doubleClickBias = 0.2f;
 extern ImFont *englishFont,*chineseFont;
-extern bool toImportData,toAddPoint;
+extern bool toImportData,toAddPoint,toCalcMaxDegree,toCalcSparse,toCalcConeectCompoent;
 int Initialization(GLFWwindow* window);
 void DrawBasic();
 void RenderInfoPanel();
