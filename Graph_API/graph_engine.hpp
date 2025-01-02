@@ -7,6 +7,7 @@
 
 #ifndef graph_engine_h
 #define graph_engine_h
+#include <memory>
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -20,7 +21,7 @@ class SpatialPrimitive : public Primitive{
     std::shared_ptr<QuadTree<size_t>> indexTree;
     static constexpr int windowSize = 200;
 protected:
-    Vector<size_t> searchWindow(float x,float y){
+        std::vector<size_t> searchWindow(float x,float y){
         SpatialRange range = SpatialRange(x - windowSize / 2,y - windowSize / 2,windowSize,windowSize);
         return indexTree->queryRange(range);
     }
@@ -29,7 +30,8 @@ public:
     Primitive(inputVertex,shp,shader){
         Extent extent = Camera2D::getView().getExtent();
         SpatialRange range = SpatialRange(extent.left,extent.botton,extent.right - extent.left,extent.top - extent.botton);
-        indexTree = std::make_shared<QuadTree<size_t>>(range,vertexNum / elementSize);
+        int indexNum = static_cast<int>(vertexNum / elementSize);
+        indexTree = std::make_shared<QuadTree<size_t>>(range,indexNum);
         for (size_t i = 0; i < vertexNum; i += elementSize){
             size_t index = i * stride;
             float x = 0,y = 0;
@@ -54,12 +56,12 @@ public:
     }
     void draw() const override;
     int getClick(double x,double y){
-        Vector<size_t> result = searchWindow(x,y);
+        std::vector<size_t> result = searchWindow(x,y);
         int id = -1;
-        if (result.isEmpty())
+        if (result.empty())
             return id;
         float distance = std::numeric_limits<float>::max();
-        for (Vector<size_t>::iterator it = result.begin(); it != result.end(); it++){
+        for (std::vector<size_t>::iterator it = result.begin(); it != result.end(); it++){
             size_t index = *it;
             float px = vertices[index * stride],py = vertices[index * stride + 1];
             float pdis = std::abs(px - x) + std::abs(py - y);
@@ -83,12 +85,12 @@ public:
     }
     void draw() const override;
     VertexPair getClick(double x,double y){
-        Vector<size_t> result = searchWindow(x,y);
+        std::vector<size_t> result = searchWindow(x,y);
         VertexPair id = std::make_pair(-1,-1);
-        if (result.isEmpty())
+        if (result.empty())
             return id;
         float distance = std::numeric_limits<float>::max();
-        for (Vector<size_t>::iterator it = result.begin(); it != result.end(); it++){
+        for (std::vector<size_t>::iterator it = result.begin(); it != result.end(); it++){
             size_t index1 = *it,index2 = *it + 1;
             float px1 = vertices[index1 * stride],py1 = vertices[index1 * stride + 1];
             float px2 = vertices[index2 * stride],py2 = vertices[index2 * stride + 1];

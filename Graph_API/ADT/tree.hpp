@@ -53,7 +53,7 @@ public:
         return false;
     }
     virtual void clear() = 0;
-    virtual bool contains(const Object& x) const = 0;
+    //virtual bool contains(const Object& x) const = 0;
     //virtual void insert(const Object& x, NodeStructure* & node) = 0; node structure overload problem
     //virtual void remove(const Object& x, NodeStructure* & node) = 0;
 };
@@ -69,7 +69,7 @@ public:
     const BST & operator = (const BST & rhs);
     BinarySearchTree(const BST & rhs);
     friend ostream& operator<<(ostream& os, const BST& tree);
-    virtual bool contains(const Object& x) const override{return contains(x, this->root);}
+    virtual bool contains(const Object& x) const {return contains(x, this->root);}
     virtual void insert(const Object& x){insert(x, this->root);}
     virtual void remove(const Object& x){remove(x, this->root);}
     void clear() override{destroy(this->root);}
@@ -236,7 +236,7 @@ struct QuadTreeNode{
         Object element;
         Point(float x, float y, const Object& obj):x(x),y(y),element(obj){}
     };
-    Vector<Point> points;
+    std::vector<Point> points;
     QuadTreeNode* northeast;
     QuadTreeNode* northwest;
     QuadTreeNode* southeast;
@@ -257,6 +257,7 @@ template <class Object>
 class QuadTree : protected Tree<Object, QuadTreeNode<Object>>{
     using node = QuadTreeNode<Object>;
     using insertRes = std::pair<bool,node*>;
+    using Point = node::Point;
 public:
     QuadTree(){this->root = nullptr;}
     QuadTree(const SpatialRange& r, int c){this->root = new node(r,c);}
@@ -270,7 +271,7 @@ public:
     ~QuadTree(){clear();}
     void clear(){destroy(this->root);}
     node* insert(float x,float y,const Object& obj){return insert(x,y,obj,this->root).second;};
-    Vector<Object> queryRange(const SpatialRange& orientRange){return queryRange(orientRange,this->root);}
+    std::vector<Object> queryRange(const SpatialRange& orientRange){return queryRange(orientRange,this->root);}
 private:
     void destroy(node* p){
         if (p != nullptr){
@@ -313,8 +314,8 @@ private:
         if (ret_res.first) return ret_res;
         return std::make_pair(false, nullptr);
     }
-    Vector<Object> queryRange(const SpatialRange& orientRange,node *p) {
-        Vector<Object> foundPoints;
+    std::vector<Object> queryRange(const SpatialRange& orientRange,node *p) {
+        std::vector<Object> foundPoints;
         const SpatialRange& range = p->range;
         bool intersect = !(orientRange.minx > range.minx + range.width || orientRange.minx + orientRange.width < range.minx || orientRange.miny > range.miny + range.height || orientRange.miny + orientRange.height < range.miny);
         if (!intersect) return foundPoints;
@@ -326,10 +327,10 @@ private:
             }
         }
         if (!p->isLeaf) {
-            Vector<Object> northeastPoints = queryRange(orientRange,p->northeast);
-            Vector<Object> northwestPoints = queryRange(orientRange,p->northwest);
-            Vector<Object> southeastPoints = queryRange(orientRange,p->southeast);
-            Vector<Object> southwestPoints = queryRange(orientRange,p->southwest);
+            std::vector<Object> northeastPoints = queryRange(orientRange,p->northeast);
+            std::vector<Object> northwestPoints = queryRange(orientRange,p->northwest);
+            std::vector<Object> southeastPoints = queryRange(orientRange,p->southeast);
+            std::vector<Object> southwestPoints = queryRange(orientRange,p->southwest);
             foundPoints.insert(foundPoints.end(), northeastPoints.begin(), northeastPoints.end());
             foundPoints.insert(foundPoints.end(), northwestPoints.begin(), northwestPoints.end());
             foundPoints.insert(foundPoints.end(), southeastPoints.begin(), southeastPoints.end());
