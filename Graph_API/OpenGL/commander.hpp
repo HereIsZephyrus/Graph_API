@@ -22,6 +22,7 @@
 #include "graphing.hpp"
 #include "camera.hpp"
 
+void processOperator(GLFWwindow* window);
 class BufferRecorder{
 public:
     static BufferRecorder& getBuffer(){
@@ -32,9 +33,12 @@ public:
     void operator = (const BufferRecorder&) = delete;
     GLboolean keyRecord[GLFW_KEY_LAST+1],pressLeft,pressRight,pressCtrl,pressShift,pressAlt,doubleCliked;
     void initIO(GLFWwindow* window);
+    glm::vec2 checkPos;
 private:
     BufferRecorder(){}
 };
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void mouseCallback(GLFWwindow* window, int button, int action, int mods);
+void processMouse();
 #endif /* commander_hpp */

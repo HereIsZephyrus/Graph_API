@@ -19,13 +19,14 @@ int main(int argc, char **argv) {
             return RUN_ALL_TESTS();
         }
     }
+    using namespace transport;
     GLFWwindow *& window = WindowParas::getInstance().window;
     Initialization(window);
     Camera2D& camera = Camera2D::getView();
     WUSG::Graph<double> graph(87575);
     WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/usa.txt", graph,true);
-    std::shared_ptr<CityPoints> citys = BuildVisualPoints(graph);
-    std::shared_ptr<Roads> roads = BuildVisualRoads(graph);
+    citys = BuildVisualPoints(graph);
+    roads = BuildVisualRoads(graph);
     camera.setExtent(citys->getExtent());
     std::cout<<graph.vertexCount()<<' '<<graph.edgeCount()<<std::endl;
     while (!glfwWindowShouldClose(window)) {
@@ -35,7 +36,7 @@ int main(int argc, char **argv) {
         roads->draw();
         citys->draw();
         gui::DrawBasic();
-        camera.processKeyboard(window);
+        processOperator(window);
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);

@@ -8,6 +8,7 @@
 #include <vector>
 #include <memory>
 #include "graph_engine.hpp"
+namespace transport{
 void CityPoints::draw() const{
     shader ->use();
     GLuint projectionLoc = glGetUniformLocation(shader->program, "projection");
@@ -50,4 +51,8 @@ void Roads::draw() const{
     glBindVertexArray(VAO);
     glDrawArrays(shape, 0, static_cast<GLsizei>(vertexNum));
     glBindVertexArray(0);
+}
+
+std::shared_ptr<CityPoints> citys = nullptr;
+std::shared_ptr<Roads> roads = nullptr;
 }

@@ -8,6 +8,16 @@
 #include "commander.hpp"
 #include "window.hpp"
 
+void processOperator(GLFWwindow* window){
+    Camera2D& camera = Camera2D::getView();
+    camera.processKeyboard(window);
+    processMouse();
+}
+void processMouse(){
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    glm::vec2 checPos = buffer.checkPos;
+    
+}
 void BufferRecorder::initIO(GLFWwindow* window){
     memset(keyRecord, GL_FALSE, sizeof(keyRecord));
     pressLeft = GL_FALSE;
@@ -39,5 +49,18 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         if (!buffer.keyRecord[GLFW_KEY_LEFT_CONTROL] && !buffer.keyRecord[GLFW_KEY_RIGHT_CONTROL]) buffer.pressCtrl = GL_FALSE;
         if (!buffer.keyRecord[GLFW_KEY_LEFT_SHIFT] && !buffer.keyRecord[GLFW_KEY_RIGHT_SHIFT])  buffer.pressShift = GL_FALSE;
         if (!buffer.keyRecord[GLFW_KEY_LEFT_ALT] && !buffer.keyRecord[GLFW_KEY_RIGHT_ALT])    buffer.pressAlt = GL_FALSE;
+    }
+}
+void mouseCallback(GLFWwindow* window, int button, int action, int mods){
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS ){
+        WindowParas& windowPara = WindowParas::getInstance();
+        GLdouble xpos,ypos;
+        glfwGetCursorPos(windowPara.window, &xpos, &ypos);
+        float normalX = windowPara.screen2normalX(xpos), normalY = windowPara.screen2normalY(ypos);
+        Camera2D& camera = Camera2D::getView();
+        double worldX = camera.normal2worldX(normalX), worldY = camera.normal2worldY(normalY);
+        buffer.pressLeft = true;
+        buffer.checkPos = glm::vec2(worldX,worldY);
     }
 }

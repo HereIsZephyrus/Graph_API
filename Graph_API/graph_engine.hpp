@@ -47,6 +47,7 @@ public:
     void insert(float x,float y,size_t index){indexTree->insert(x,y,index);}
     void clear(){indexTree->clear();}
 };
+namespace transport{
 class CityPoints : public SpatialPrimitive{
     static constexpr double clickRange = 10;
 public:
@@ -117,5 +118,9 @@ template <typename W>
 std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<W>& graph);
 template <typename W>
 std::shared_ptr<Roads> BuildVisualRoads(WUSG::Graph<W>& graph);
+
+extern std::shared_ptr<CityPoints> citys;
+extern std::shared_ptr<Roads> roads;
+}
 #include "graph_engine.tpp"
 #endif /* graph_engine_h */

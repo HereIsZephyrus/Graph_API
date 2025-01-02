@@ -5,6 +5,7 @@
 //  Created by ChanningTong on 1/1/25.
 //
 
+namespace transport{
 template <typename W>
 std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<W>& graph){
     std::vector<Point> vertices;
@@ -37,4 +38,5 @@ std::shared_ptr<Roads> BuildVisualRoads(WUSG::Graph<W>& graph){
         pairArray.push_back(*vpair);
     }
     return std::make_shared<Roads>(vertices,0.08,pairArray);
+}
 }
