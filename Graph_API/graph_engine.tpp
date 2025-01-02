@@ -60,6 +60,8 @@ void processMouse(const WUSG::Graph<W>& graph){
             Vertex v1 = graph.getVertex(Vertex(pair.first)), v2 = graph.getVertex(Vertex(pair.second));
             if (pair.first > 0 && pair.second > 0)
                 buffer.currentNode = std::make_shared<Node>(v1,v2,graph.getWeight(v1,v2));
+            else
+                buffer.currentNode = nullptr;
         }
         buffer.pressLeft = false;
     }

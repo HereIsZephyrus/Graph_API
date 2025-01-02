@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
     Initialization(window);
     
     Camera2D& camera = Camera2D::getView();
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
     WUSG::Graph<valueType> graph(87575);
     WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/usa.txt", graph,true);
     citys = BuildVisualPoints(graph);
@@ -38,6 +39,8 @@ int main(int argc, char **argv) {
         citys->draw();
         gui::DrawBasic();
         processOperator(window,graph);
+        if (buffer.currentNode != nullptr)
+            buffer.currentNode->draw();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);

@@ -123,19 +123,25 @@ class Node{
         W weight;
     }road;
     enum : bool{isCity = false, isRoad = true} state;
+    static constexpr glm::vec3 clickedCityColor = glm::vec3(1.0,0.0,0.0);
+    static constexpr glm::vec3 clickedRoadColor = glm::vec3(0.0,0.0,1.0);
+    void drawCity() const{
+        Primitive primitive({Point(glm::vec3(city.x,city.y,0.0),clickedCityColor)},GL_POINTS,ShaderBucket["ball"].get());
+        primitive.draw();
+    }
+    void drawRoad() const{
+        Primitive primitive({Point(glm::vec3(road.vertex1.x,road.vertex1.y,0.0),clickedRoadColor),
+                             Point(glm::vec3(road.vertex2.x,road.vertex2.y,0.0),clickedRoadColor)},GL_LINES,ShaderBucket["line"].get());
+        primitive.draw();
+    }
 public:
     Node(CityNode city):state(isCity){city = city;}
     Node(CityNode city1, CityNode city2, W distance):state(isRoad){road = RoadNode(city1,city2,distance);}
-    short getState() const {return state;}
-    CityNode getCityNode() const {
-        if (state != isCity)
-            throw std::runtime_error("Node is not a city node");
-        return city;
-    }
-    RoadNode getRoadNode() const {
-        if (state != isRoad)
-            throw std::runtime_error("Node is not a road node");
-        return road;
+    void draw(){
+        if (state == isCity)
+            drawCity();
+        else
+            drawRoad();
     }
 };
 template <typename W>
