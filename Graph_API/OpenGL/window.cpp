@@ -75,7 +75,7 @@ int initOpenGL(GLFWwindow *&window,std::string windowName) {
 }
 namespace gui {
 ImFont *englishFont = nullptr,*chineseFont = nullptr;
-bool toImportData = false,toAddPoint = false,toCalcMaxDegree = false,toCalcSparse = false,toCalcConeectCompoent = false,toSearchCity = false,toSearchRoad = false,toCalcShortestPath = false,toGetNeighbor = false,toGetBuffer = false,toPlanRoute = false,toCalcMST = false,toDeleteObject = false,toShowAddPoint = false;
+bool toImportData = false,toAddPoint = false,toCalcMaxDegree = false,toCalcSparse = false,toCalcConeectCompoent = false,toSearchCity = false,toSearchRoad = false,toCalcShortestPath = false,toGetNeighbor = false,toGetBuffer = false,toPlanRoute = false,toCalcMST = false,toDeleteObject = false,toShowAddPoint = false,toAddEdge = false;
 int Initialization(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -156,12 +156,17 @@ void RenderWorkspace(){
         if (buffer.currentNode->isCityNode()){
             if (ImGui::Button("最小生成树",ButtonSize))
                 toCalcMST = true;
-            
+            ImGui::SameLine();
             if (ImGui::Button("删除城市",ButtonSize))
                 toDeleteObject = true;
-            ImGui::SameLine();
+            
             if (ImGui::Button("求最短路径",ButtonSize)){
                 toCalcShortestPath = true;
+                buffer.resInfo = "请选择终点";
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("添加道路",ButtonSize)){
+                toAddEdge = true;
                 buffer.resInfo = "请选择终点";
             }
             

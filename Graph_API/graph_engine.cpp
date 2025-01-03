@@ -96,6 +96,8 @@ void processMouse(){
                     system.keyVertices.push_back(system.graph->getVertex(Vertex(ID)));
                 else if (gui::toCalcShortestPath)
                     gui::CalcShortestPath(system.graph->getVertex(Vertex(ID)));
+                else if (gui::toAddEdge)
+                    gui::AddEdge(system.graph->getVertex(Vertex(ID)));
                 else if (gui::toGetBuffer){
                     buffer.resInfo = "";
                     gui::toGetBuffer = false;
@@ -167,6 +169,15 @@ std::vector<int> CityPoints::getBuffer(double sx,double sy,double tx, double ty)
     }
     return resID;
 }
+void CityPoints::insert(double x,double y,int id){
+    size_t index = vertexNum * stride;
+    SpatialPrimitive::insert(x, y, vertexNum);
+    vertices[index] = x; vertices[index + 1] = y; vertices[index + 2] = 0;
+    vertices[index + 3] = cityColor.r; vertices[index + 4] = cityColor.g;   vertices[index + 5] = cityColor.b;
+    ++vertexNum;
+    update();
+    vertexID.push_back(id);
+}
 void Roads::draw() const{
     shader ->use();
     GLuint projectionLoc = glGetUniformLocation(shader->program, "projection");
@@ -229,6 +240,20 @@ void Roads::remove(double x,double y,int id1,int id2){
             vertexNum-=2;
         }
     }
+}
+void Roads::insert(base::Vertex<valueType> v1,base::Vertex<valueType> v2){
+    double x = (v1.x + v2.x) / 2, y = (v1.y + v2.y) / 2;
+    SpatialPrimitive::insert(x, y, vertexNum);
+    size_t index = vertexNum * stride;
+    vertices[index] = v1.x; vertices[index + 1] = v1.y; vertices[index + 2] = 0;
+    vertices[index + 3] = roadColor.r; vertices[index + 4] = roadColor.g;   vertices[index + 5] = roadColor.b;
+    ++vertexNum;
+    index = vertexNum * stride;
+    vertices[index] = v2.x; vertices[index + 1] = v2.y; vertices[index + 2] = 0;
+    vertices[index + 3] = roadColor.r; vertices[index + 4] = roadColor.g;   vertices[index + 5] = roadColor.b;
+    ++vertexNum;
+    update();
+    vertexID.push_back(VertexPair(v1.id,v2.id));
 }
 void CityPoints::remove(double x,double y,int id){
     std::vector<size_t> res = searchWindow(x,y,10);
@@ -424,9 +449,9 @@ void AddPoint(){
         ImGui::InputText("编号", IDBuffer, sizeof(IDBuffer),ImGuiInputTextFlags_CharsDecimal);
         ImGui::InputText("名称", aliasBuffer, sizeof(aliasBuffer));
         ImGui::PopItemWidth();
-        transport::RouteSystem& system = transport::RouteSystem::getSystem();
         if (ImGui::Button("确认")) {
             int newID = std::stoi(IDBuffer);
+            transport::RouteSystem& system = transport::RouteSystem::getSystem();
             if (!system.graph->isVertex(Vertex(newID))){
                 Vertex newVertex(std::stoi(IDBuffer),buffer.checkPos.x,buffer.checkPos.y,aliasBuffer);
                 system.citys->insert(newVertex.x,newVertex.y,newVertex.id);
@@ -452,6 +477,18 @@ void AddPoint(){
         ImGui::EndPopup();
     }
     ImGui::PopFont();
+}
+void AddEdge(base::Vertex<valueType> termNode){
+    BufferRecorder& buffer = BufferRecorder::getBuffer();
+    transport::RouteSystem& system = transport::RouteSystem::getSystem();
+    base::Vertex<valueType> startNode = buffer.currentNode->getCity();
+    if (system.graph->hasEdge(startNode, termNode))
+        return;
+    valueType dis = std::sqrt((startNode.x - termNode.x) * (startNode.x - termNode.x) + (startNode.y - termNode.y) * (startNode.y - termNode.y));
+    system.graph->addEdge(startNode, termNode, dis);
+    system.roads->insert(startNode,termNode);
+    buffer.resInfo = "";
+    toAddEdge = false;
 }
 void PlanRoute(){
     BufferRecorder& buffer = BufferRecorder::getBuffer();

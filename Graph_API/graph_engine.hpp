@@ -45,15 +45,7 @@ public:
     int getClick(double x,double y);
     std::vector<int> getBuffer(double sx,double sy,double tx, double ty);
     void remove(double x,double y,int id);
-    void insert(double x,double y,int id){
-        size_t index = vertexNum * stride;
-        vertices[index] = x; vertices[index + 1] = y; vertices[index + 2] = 0;
-        vertices[index + 3] = cityColor.r; vertices[index + 4] = cityColor.g;   vertices[index + 5] = cityColor.b;
-        ++vertexNum;
-        update();
-        SpatialPrimitive::insert(x, y, vertexID.size());
-        vertexID.push_back(id);
-    }
+    void insert(double x,double y,int id);
 private:
     GLfloat radius;
     std::vector<int> vertexID;
@@ -68,6 +60,7 @@ public:
     void draw() const override;
     VertexPair getClick(double x,double y);
     void remove(double x,double y,int id1,int id2);
+    void insert(base::Vertex<valueType> v1,base::Vertex<valueType> v2);
 private:
     GLfloat thickness;
     std::vector<VertexPair> vertexID;
@@ -137,6 +130,7 @@ void processWorkspace();
 bool DrawPopup();
 void ImportData();
 void AddPoint();
+void AddEdge(base::Vertex<valueType> termNode);
 void PlanRoute();
 void CalcShortestPath(base::Vertex<valueType> termNode);
 void SearchCity();
