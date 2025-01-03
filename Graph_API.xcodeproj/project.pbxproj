@@ -53,6 +53,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		322525222D2852AE00EFE609 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		32CABFB92D1D7C4D003AF1AC /* Graph_API */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Graph_API; sourceTree = BUILT_PRODUCTS_DIR; };
 		32CABFFE2D1D7EBD003AF1AC /* libgtest_main.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgtest_main.a; path = ../../../../usr/local/lib/libgtest_main.a; sourceTree = "<group>"; };
 		32CABFFF2D1D7EC7003AF1AC /* libgtest.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgtest.a; path = ../../../../usr/local/lib/libgtest.a; sourceTree = "<group>"; };
@@ -146,6 +147,7 @@
 				32CABFBB2D1D7C4D003AF1AC /* Graph_API */,
 				32CABFFD2D1D7EBC003AF1AC /* Frameworks */,
 				32CABFBA2D1D7C4D003AF1AC /* Products */,
+				322525222D2852AE00EFE609 /* readme.md */,
 			);
 			sourceTree = "<group>";
 		};

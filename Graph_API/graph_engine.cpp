@@ -60,11 +60,12 @@ void processOperator(GLFWwindow* window){
     if (!gui::DrawPopup()){
         camera.processKeyboard(window);
         processMouse();
+        gui::toClickBotton = false;
     }
     if (RouteSystem::getSystem().graph != nullptr){
         gui::processWorkspace();
         BufferRecorder& buffer = BufferRecorder::getBuffer();
-        if (gui::toGetBuffer && buffer.currentNode!= nullptr){
+        if (gui::toGetBuffer && buffer.currentNode != nullptr){
             base::Vertex<valueType> startNode = buffer.currentNode->getCity();
             double cursorX, cursorY;
             WindowParas& windowPara = WindowParas::getInstance();
@@ -83,13 +84,15 @@ void processMouse(){
     using Node = transport::Node<valueType>;
     using Vertex = WUSG::Vertex<valueType>;
     BufferRecorder& buffer = BufferRecorder::getBuffer();
+    RouteSystem& system = RouteSystem::getSystem();
+    if (system.graph == nullptr)
+        return;
     if (buffer.pressLeft){
         glm::vec2 checkPos = buffer.checkPos;
         if (gui::toAddPoint){
             gui::toShowAddPoint = true;
             gui::toAddPoint = false;
         }else{
-            RouteSystem& system = RouteSystem::getSystem();
             int ID = system.citys->getClick(checkPos.x, checkPos.y);
             if (ID > 0){
                 if (gui::toPlanRoute)
@@ -109,7 +112,7 @@ void processMouse(){
                 Vertex v1 = system.graph->getVertex(Vertex(pair.first)), v2 = system.graph->getVertex(Vertex(pair.second));
                 if (pair.first > 0 && pair.second > 0)
                     buffer.currentNode = std::make_shared<Node>(v1,v2,system.graph->getWeight(v1,v2));
-                else
+                else if (!gui::toClickBotton)
                     buffer.currentNode = nullptr;
             }
         }
@@ -226,7 +229,7 @@ VertexPair Roads::getClick(double x,double y){
 }
 void Roads::remove(double x,double y,int id1,int id2){
     std::vector<size_t> res = searchWindow(x,y,10);
-    for (std::vector<size_t>::iterator vLoc = res.begin(); vLoc != res.end(); vLoc++){
+    for (std::vector<size_t>::reverse_iterator vLoc = res.rbegin(); vLoc != res.rend(); vLoc++){
         size_t IDindex = (*vLoc) / 2;
         if (((vertexID[IDindex].first == id1) && (vertexID[IDindex].second == id2)) ||
             ((vertexID[IDindex].first == id2) && (vertexID[IDindex].second == id1))){
@@ -238,6 +241,12 @@ void Roads::remove(double x,double y,int id1,int id2){
             vertexID[IDindex] = vertexID.back();
             vertexID.pop_back();
             vertexNum-=2;
+            SpatialPrimitive::remove(x, y);
+            double backX = (vertices[index] + vertices[index + stride]) / 2;
+            double backY = (vertices[index + 1] + vertices[index + stride + 1]) / 2;
+            SpatialPrimitive::remove(backX,backY);
+            SpatialPrimitive::insert(backX,backY,IDindex);
+            break;
         }
     }
 }
@@ -257,7 +266,7 @@ void Roads::insert(base::Vertex<valueType> v1,base::Vertex<valueType> v2){
 }
 void CityPoints::remove(double x,double y,int id){
     std::vector<size_t> res = searchWindow(x,y,10);
-    for (std::vector<size_t>::iterator vLoc = res.begin(); vLoc != res.end(); vLoc++)
+    for (std::vector<size_t>::reverse_iterator vLoc = res.rbegin(); vLoc != res.rend(); vLoc++)
         if (vertexID[*vLoc] == id){
             size_t index = (*vLoc) * stride,backIndex = (vertexNum - 1) * stride;
             vertices[index] = vertices[backIndex];
@@ -265,6 +274,9 @@ void CityPoints::remove(double x,double y,int id){
             vertexID[*vLoc] = vertexID.back();
             vertexID.pop_back();
             vertexNum--;
+            SpatialPrimitive::remove(x, y);
+            SpatialPrimitive::remove(vertices[index],vertices[index + 1]);
+            SpatialPrimitive::insert(vertices[index],vertices[index + 1],*vLoc);
             break;
         }
 }
@@ -301,8 +313,10 @@ void RouteSystem::Draw(){
             ImGui::SetWindowPos(ImVec2(500, 10));
             ImGui::SetWindowSize(ImVec2(60, 80));
             ImGui::PushFont(gui::chineseFont);
-            if (ImGui::Button("确认"))
+            if (ImGui::Button("确认")){
                 gui::PlanRoute();
+                gui::toClickBotton = true;
+            }
             ImGui::PopFont();
             ImGui::End();
         }
@@ -420,6 +434,7 @@ void ImportData(){
             std::cout<<system.graph->vertexCount()<<' '<<system.graph->edgeCount()<<std::endl;
             inputBuffer[0] = '\0';
             toImportData = false;
+            toClickBotton = true;
             ImGui::CloseCurrentPopup();
         }
         ImGui::SameLine();
@@ -451,7 +466,6 @@ void AddPoint(){
         ImGui::PopItemWidth();
         if (ImGui::Button("确认")) {
             int newID = std::stoi(IDBuffer);
-            transport::RouteSystem& system = transport::RouteSystem::getSystem();
             if (!system.graph->isVertex(Vertex(newID))){
                 Vertex newVertex(std::stoi(IDBuffer),buffer.checkPos.x,buffer.checkPos.y,aliasBuffer);
                 system.citys->insert(newVertex.x,newVertex.y,newVertex.id);
@@ -460,6 +474,7 @@ void AddPoint(){
                 aliasBuffer[0] = '\0';
                 toShowAddPoint = false;
                 toShowFail = false;
+                toClickBotton = true;
                 ImGui::CloseCurrentPopup();
             }else
                 toShowFail = true;
@@ -529,11 +544,12 @@ void SearchCity(){
             int ID = std::stoi(inputBuffer);
             Vertex temp = Vertex(ID);
             Vertex take = system.graph->getVertex(temp);
-            if (take!= temp){
+            if (take.valiad()){
                 buffer.currentNode = std::make_shared<transport::Node<valueType>>(take);
                 inputBuffer[0] = '\0';
                 toSearchCity = false;
                 toShowFail = false;
+                toClickBotton = true;
                 Camera2D::getView().focus(take.x,take.y);
                 ImGui::CloseCurrentPopup();
             }else
@@ -570,7 +586,7 @@ void SearchRoad(){
             int currentID = std::stoi(inputBuffer);
             Vertex temp = Vertex(currentID);
             Vertex take = system.graph->getVertex(temp);
-            if (take != temp){
+            if (take.valiad()){
                 using Neighbor = typename tcb::WUSGraph<Vertex,valueType>::Neighbor;
                 Neighbor neighbors = system.graph->getNeighbor(take);
                 ImGui::BeginChild("##adding table", ImVec2(250, 200), true);
@@ -597,6 +613,7 @@ void SearchRoad(){
                 inputBuffer[0] = '\0';
                 toSearchRoad = false;
                 toShowFail = false;
+                toClickBotton = true;
                 Camera2D::getView().focus((take.x + selectedNeighbor.x)/2,(take.y + selectedNeighbor.y) / 2);
                 ImGui::CloseCurrentPopup();
             }else
