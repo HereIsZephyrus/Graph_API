@@ -147,27 +147,27 @@ void RenderWorkspace(){
     if (ImGui::Button("查询道路",ButtonSize))
         toSearchRoad = true;
     
+    if (ImGui::Button("多点路线规划",ButtonSize))
+        toPlanRoute = true;
+    ImGui::SameLine();
     if (buffer.currentNode != nullptr){
         if (buffer.currentNode->isCityNode()){
             if (ImGui::Button("最小生成树",ButtonSize))
                 toCalcMST = true;
-            ImGui::SameLine();
+            
             if (ImGui::Button("删除城市",ButtonSize))
                 toDeleteObject = true;
-            
+            ImGui::SameLine();
             if (ImGui::Button("求最短路径",ButtonSize)){
                 toCalcShortestPath = true;
                 buffer.resInfo = "请选择终点";
             }
-            ImGui::SameLine();
+            
             if (ImGui::Button("求相邻城市",ButtonSize))
                 toGetNeighbor = true;
-            
+            ImGui::SameLine();
             if (ImGui::Button("求缓冲区",ButtonSize))
                 toGetBuffer = true;
-            ImGui::SameLine();
-            if (ImGui::Button("多点路线规划",ButtonSize))
-                toPlanRoute = true;
         }else{
             if (ImGui::Button("删除道路",ButtonSize))
                 toDeleteObject = true;

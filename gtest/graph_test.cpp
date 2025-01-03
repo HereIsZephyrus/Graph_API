@@ -259,14 +259,15 @@ TEST_F(WUSGraphIntTest, MSTCalculations) {
     EXPECT_DOUBLE_EQ(graph.calcDistace(1, 1), 0);
     EXPECT_DOUBLE_EQ(graph.calcDistace(4, 2), 5);
     Vector<int> vertices;
+    Vector<std::pair<int,int>> edges;
     vertices.push_back(2);
     vertices.push_back(3);
-    EXPECT_DOUBLE_EQ(graph.steinerTree(vertices), 7);
+    EXPECT_DOUBLE_EQ(graph.steinerTree(vertices,edges), 7);
     vertices.clear();
     vertices.push_back(1);
     vertices.push_back(9);
     vertices.push_back(3);
-    EXPECT_DOUBLE_EQ(graph.steinerTree(vertices), 16);
+    EXPECT_DOUBLE_EQ(graph.steinerTree(vertices,edges), 16);
 }
 TEST_F(WUSGraphStringTest, VertexCountInitiallyZero) {
     EXPECT_EQ(graph.vertexCount(), 0);

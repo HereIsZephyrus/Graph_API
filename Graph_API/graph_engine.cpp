@@ -90,7 +90,9 @@ void processMouse(){
         RouteSystem& system = RouteSystem::getSystem();
         int ID = system.citys->getClick(checkPos.x, checkPos.y);
         if (ID > 0){
-            if (gui::toCalcShortestPath)
+            if (gui::toPlanRoute)
+                system.keyVertices.push_back(system.graph->getVertex(Vertex(ID)));
+            else if (gui::toCalcShortestPath)
                 gui::CalcShortestPath(system.graph->getVertex(Vertex(ID)));
             else if (gui::toGetBuffer){
                 buffer.resInfo = "";
@@ -221,17 +223,48 @@ void RouteSystem::Draw(){
         return;
     roads->draw();
     citys->draw();
+    if (!keyVertices.isEmpty()){
+        feature = nullptr;
+        CreateFeature(keyVertices);
+    }
     if (feature != nullptr){
         feature->draw();
-        ImGui::SetNextWindowPos(ImVec2(300, 10));
-        ImGui::SetNextWindowSize(ImVec2(100,80));
-        ImGui::Begin("##cancel_feature", nullptr, ImGuiWindowFlags_NoResize);
-        ImGui::PushFont(gui::chineseFont);
-        if (ImGui::Button("取消显示",ImVec2(80, 30)))
-            feature = nullptr;
-        ImGui::PopFont();
-        ImGui::End();
+        if (!gui::toPlanRoute){
+            ImGui::SetNextWindowPos(ImVec2(300, 10));
+            ImGui::SetNextWindowSize(ImVec2(100,80));
+            ImGui::Begin("##cancel_feature", nullptr, ImGuiWindowFlags_NoResize);
+            ImGui::PushFont(gui::chineseFont);
+            if (ImGui::Button("取消显示",ImVec2(80, 30)))
+                feature = nullptr;
+            ImGui::PopFont();
+            ImGui::End();
+        }else{
+            ImGui::Begin("##confirm_key",nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+            ImGui::SetWindowPos(ImVec2(500, 10));
+            ImGui::SetWindowSize(ImVec2(80, 80));
+            ImGui::PushFont(gui::chineseFont);
+            if (ImGui::Button("确认"))
+                gui::PlanRoute();
+            ImGui::PopFont();
+            ImGui::End();
+        }
     }
+}
+void RouteSystem::CreateFeature(Vector<std::pair<base::Vertex<valueType>,base::Vertex<valueType>>>& vertices){
+    std::vector<Point> vertexArray;
+    if (feature != nullptr) feature = nullptr;
+    for (VertexVec::iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++){
+        vertexArray.push_back(Point(glm::vec3(vertex->first.x,vertex->first.y,0.0),featureRoadColor));
+        vertexArray.push_back(Point(glm::vec3(vertex->second.x,vertex->second.y,0.0),featureRoadColor));
+    }
+    feature = std::make_shared<Primitive>(vertexArray,GL_LINES,ShaderBucket["line"].get());
+}
+void RouteSystem::CreateFeature(Vector<base::Vertex<valueType>>& vertices){
+    if (feature != nullptr) feature = nullptr;
+    std::vector<Point> vertexArray;
+    for (Vector<base::Vertex<valueType>>::iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++)
+        vertexArray.push_back(Point(glm::vec3(vertex->x,vertex->y,0.0),featureCityColor));
+    feature = std::make_shared<Primitive>(vertexArray,GL_POINTS,ShaderBucket["ball"].get());
 }
 }
 namespace gui {
@@ -282,10 +315,6 @@ bool DrawPopup(){
         AddPoint();
         return true;
     }
-    if (toPlanRoute){
-        PlanRoute();
-        return true;
-    }
     if (toSearchCity){
         SearchCity();
         return true;
@@ -329,6 +358,14 @@ void AddPoint(){
 }
 void PlanRoute(){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
+    transport::RouteSystem& system = transport::RouteSystem::getSystem();
+    VertexVec vertices;
+    valueType dis = WUSG::Steiner(*system.graph,system.keyVertices,vertices);
+    std::stringstream iss;
+    iss << "多点最短路径为" << std::fixed <<std::setprecision(3) <<dis;
+    buffer.resInfo = iss.str();
+    system.CreateFeature(vertices);
+    system.keyVertices.clear();
     toPlanRoute = false;
 }
 void CalcShortestPath(base::Vertex<valueType> termNode){

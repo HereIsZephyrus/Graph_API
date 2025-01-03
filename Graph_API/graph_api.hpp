@@ -33,7 +33,7 @@ void DFS(WUSGraph<V,W>& graph, const V& startNode, Func func);
 template <typename V, typename W, typename Func>
 void BFS(WUSGraph<V,W>& graph, const V& startNode, Func func);
 template <typename V, typename W>
-double Steiner(const WUSGraph<V,W>& graph,const Vector<V>& keyVertices);
+double Steiner(WUSGraph<V,W>& graph,const Vector<V>& keyVertices,Vector<std::pair<V,V>>& vertices);
 template <typename V, typename W>
 W Prim(WUSGraph<V,W>& graph,Vector<std::pair<V,V>>& vertices,V startNode);
 template <typename V, typename W>

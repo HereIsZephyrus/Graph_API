@@ -388,10 +388,11 @@ void WUSGraph<V,W>::Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent
     }
 }
 template <typename V, typename W>
-W WUSGraph<V,W>::steinerTree(const Vector<V>& keyVertices) const{
+W WUSGraph<V,W>::steinerTree(const Vector<V>& keyVertices,Vector<std::pair<V,V>>& vertices){
     using item = std::pair<W,size_t>;
     size_t vertexSize = vertexCount();
     size_t keySize = keyVertices.getSize();
+    vertices.clear();
     if (keySize == 0 || keySize == 1)
         return W();
     if (keySize > 20){
@@ -405,7 +406,8 @@ W WUSGraph<V,W>::steinerTree(const Vector<V>& keyVertices) const{
         dp[locateMap[alias[keyVertices[i]]]][1<<i] = 0;
     }
     Heap<item> subtree;
-    for (int s = 1; s < (1 << keySize); s ++){
+    int fullConnect = (1 << keySize) - 1;
+    for (int s = 1; s <= fullConnect; s ++){
         for (int i = 0; i < vertexSize; i++){
             for (int subs = s & (s - 1); subs; subs = s & (subs - 1))
                 dp[i][s] = std::min(dp[i][s],dp[i][subs] + dp[i][s ^ subs]);
@@ -423,13 +425,28 @@ W WUSGraph<V,W>::steinerTree(const Vector<V>& keyVertices) const{
                 size_t next = locateMap[alias[it->data.orient]];
                 W weight = it->data.weight;
                 if (dp[next][s] > dp[current][s] + weight){
+                    if (s == fullConnect){
+                        vertices.push_back(std::make_pair(graph[current].vertex,it->data.orient));
+                    }
                     dp[next][s] = dp[current][s] + weight;
                     subtree.insert(std::make_pair(dp[next][s],next));
                 }
             }
         }
     }
-    return dp[alias[keyVertices[0]]][(1<<keySize)-1];
+    /*
+    auto visit = [this,&fullConnect,&dp](const V& vertex,Vector<std::pair<V,V>>* vertices){
+        size_t current = locateMap[alias[vertex]];
+        for (typename AdjList::iterator it = graph[current].begin(); it != graph[current].end(); it++){
+                size_t next = locateMap[alias[it->data.orient]];
+                W weight = it->data.weight;
+                if ((dp[current][fullConnect] != dp[next][fullConnect] + weight) && (dp[next][fullConnect] != dp[current][fullConnect] + weight))
+                    vertices->push_back(std::make_pair(vertex,it->data.orient));
+            }
+    };
+    DFS(keyVertices[0],std::bind(visit, std::placeholders::_1, &vertices));
+    */
+    return dp[locateMap[alias[keyVertices[0]]]][fullConnect];
 }
 /*
 template <typename V, typename W>

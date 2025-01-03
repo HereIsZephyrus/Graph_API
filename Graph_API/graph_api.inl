@@ -154,8 +154,8 @@ void BFS(WUSGraph<V,W>& graph, const V& startNode, Func func){
     graph.WalkThrough(startNode, WalkMethod::BFS, func);
 }
 template <typename V, typename W>
-double Steiner(const WUSGraph<V,W>& graph,const Vector<V>& keyVertices){
-    return graph.steinerTree(keyVertices);
+double Steiner(WUSGraph<V,W>& graph,const Vector<V>& keyVertices,Vector<std::pair<V,V>>& vertices){
+    return graph.steinerTree(keyVertices,vertices);
 }
 template <typename V, typename W>
 W Prim(WUSGraph<V,W>& graph,Vector<std::pair<V,V>>& vertices,V startNode){
