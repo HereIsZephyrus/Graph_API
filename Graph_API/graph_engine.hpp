@@ -22,10 +22,9 @@
 using VertexVec = Vector<std::pair<base::Vertex<valueType>,base::Vertex<valueType>>>;
 class SpatialPrimitive : public Primitive{
     std::shared_ptr<QuadTree<size_t>> indexTree;
-    static constexpr int windowSize = 200;
 protected:
-    std::vector<size_t> searchWindow(float x,float y){
-        SpatialRange range = SpatialRange(x - windowSize / 2,y - windowSize / 2,windowSize,windowSize);
+    std::vector<size_t> searchWindow(float x,float y,valueType windowXsize = 200,valueType windowYsize = 200){
+        SpatialRange range = SpatialRange(x - windowXsize / 2,y - windowYsize / 2,windowXsize,windowYsize);
         return indexTree->queryRange(range);
     }
 public:
@@ -43,6 +42,7 @@ public:
     }
     void draw() const override;
     int getClick(double x,double y);
+    std::vector<int> getBuffer(double sx,double sy,double tx, double ty);
 private:
     GLfloat radius;
     std::vector<int> vertexID;
@@ -104,17 +104,21 @@ public:
     std::shared_ptr<Primitive> feature;
     void ImportData(const std::string& filePath);
     void Draw();
-    void CreateFeature(Vector<std::pair<base::Vertex<valueType>,base::Vertex<valueType>>>& vertices, bool isCity){
+    void CreateFeature(Vector<std::pair<base::Vertex<valueType>,base::Vertex<valueType>>>& vertices){
         std::vector<Point> vertexArray;
-        if (isCity){
-            
-        }else{
-            for (VertexVec::iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++){
-                vertexArray.push_back(Point(glm::vec3(vertex->first.x,vertex->first.y,0.0),featureRoadColor));
-                vertexArray.push_back(Point(glm::vec3(vertex->second.x,vertex->second.y,0.0),featureRoadColor));
-            }
-            feature = std::make_shared<Primitive>(vertexArray,GL_LINES,ShaderBucket["line"].get());
+        if (feature != nullptr) feature = nullptr;
+        for (VertexVec::iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++){
+            vertexArray.push_back(Point(glm::vec3(vertex->first.x,vertex->first.y,0.0),featureRoadColor));
+            vertexArray.push_back(Point(glm::vec3(vertex->second.x,vertex->second.y,0.0),featureRoadColor));
         }
+        feature = std::make_shared<Primitive>(vertexArray,GL_LINES,ShaderBucket["line"].get());
+    }
+    void CreateFeature(Vector<base::Vertex<valueType>>& vertices){
+        if (feature != nullptr) feature = nullptr;
+        std::vector<Point> vertexArray;
+        for (Vector<base::Vertex<valueType>>::iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++)
+            vertexArray.push_back(Point(glm::vec3(vertex->x,vertex->y,0.0),featureCityColor));
+        feature = std::make_shared<Primitive>(vertexArray,GL_LINES,ShaderBucket["ball"].get());
     }
 private:
     RouteSystem():citys(nullptr),roads(nullptr),graph(nullptr),feature(nullptr){}
@@ -133,10 +137,10 @@ bool DrawPopup();
 void ImportData();
 void AddPoint();
 void PlanRoute();
-void CalcShortestPath(base::Vertex<valueType> startNode,base::Vertex<valueType> termNode);
+void CalcShortestPath(base::Vertex<valueType> termNode);
 void SearchCity();
 void SearchRoad();
-void GetBuffer();
+void GetBuffer(double termX, double termY);
 }
 #include "graph_engine.tpp"
 #endif /* graph_engine_h */

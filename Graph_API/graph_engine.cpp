@@ -76,7 +76,9 @@ void processMouse(){
         int ID = system.citys->getClick(checkPos.x, checkPos.y);
         if (ID > 0){
             if (gui::toCalcShortestPath)
-                gui::CalcShortestPath(buffer.currentNode->getCity(),system.graph->getVertex(Vertex(ID)));
+                gui::CalcShortestPath(system.graph->getVertex(Vertex(ID)));
+            else if (gui::toGetBuffer)
+                gui::toGetBuffer = false;
             else
                 buffer.currentNode = std::make_shared<Node>(system.graph->getVertex(Vertex(ID)));
         }else{
@@ -128,7 +130,22 @@ int CityPoints::getClick(double x,double y){
     }
     return id;
 }
-
+std::vector<int> CityPoints::getBuffer(double sx,double sy,double tx, double ty){
+    std::vector<int> resID;
+    double windowXsize = std::abs(tx - sx) * 2, windowYsize = std::abs(ty - sy) * 2;
+    double sqrR = (tx - sx) * (tx - sx) + (ty - sy) * (ty - sy);
+    std::vector<size_t> res = searchWindow(sx,sy,windowXsize,windowYsize);
+    if (res.empty())
+        return resID;
+    for (std::vector<size_t>::iterator it = res.begin(); it != res.end(); it++){
+        size_t index = *it;
+        float px = vertices[index * stride],py = vertices[index * stride + 1];
+        float pdis = (px - sx) * (px - sx) + (py - sy) * (py - sy);
+        if (pdis < sqrR)
+            resID.push_back(vertexID[index]);
+    }
+    return resID;
+}
 void Roads::draw() const{
     shader ->use();
     GLuint projectionLoc = glGetUniformLocation(shader->program, "projection");
@@ -236,7 +253,7 @@ void processWorkspace(){
         std::stringstream iss;
         iss << "总距离为" << std::scientific << std::setprecision(5) << totalDis;
         buffer.resInfo = iss.str();
-        system.CreateFeature(vertices, false);
+        system.CreateFeature(vertices);
         toCalcMST = false;
     }
 }
@@ -259,10 +276,6 @@ bool DrawPopup(){
     }
     if (toSearchRoad){
         SearchRoad();
-        return true;
-    }
-    if (toGetBuffer){
-        GetBuffer();
         return true;
     }
     return false;
@@ -302,15 +315,16 @@ void PlanRoute(){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     toPlanRoute = false;
 }
-void CalcShortestPath(base::Vertex<valueType> startNode,base::Vertex<valueType> termNode){
+void CalcShortestPath(base::Vertex<valueType> termNode){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
+    base::Vertex<valueType> startNode = buffer.currentNode->getCity();
     transport::RouteSystem& system = transport::RouteSystem::getSystem();
     VertexVec vertices;
     valueType dis = WUSG::ShortestPath(*system.graph, startNode, termNode,vertices);
     std::stringstream iss;
     iss << "最短路径长度为" <<std::fixed <<std::setprecision(3) <<dis;
     buffer.resInfo = iss.str();
-    system.CreateFeature(vertices,false);
+    system.CreateFeature(vertices);
     toCalcShortestPath = false;
 }
 void SearchCity(){
@@ -321,8 +335,16 @@ void SearchRoad(){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     toSearchRoad = false;
 }
-void GetBuffer(){
+void GetBuffer(double termX, double termY){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
-    toGetBuffer = false;
+    if (buffer.currentNode == nullptr || !buffer.currentNode->isCityNode())
+        return;
+    transport::RouteSystem& system = transport::RouteSystem::getSystem();
+    base::Vertex<valueType> startNode = buffer.currentNode->getCity();
+    std::vector<int> cityInBuffer = system.citys->getBuffer(startNode.x, startNode.y, termX, termY);
+    Vector<base::Vertex<valueType>> vertices;
+    for (std::vector<int>::iterator cityID = cityInBuffer.begin(); cityID != cityInBuffer.end(); cityID++)
+        vertices.push_back(system.graph->getVertex(base::Vertex<valueType>(*cityID)));
+    system.CreateFeature(vertices);
 }
 }
