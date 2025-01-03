@@ -131,6 +131,10 @@ int CalcConnectCompoent(WUSGraph<V,W>& graph){
     return graph.countConnectedComponents();
 }
 template <typename V, typename W>
+W ShortestPath(WUSGraph<V,W>& graph,V startNode,V termNode,Vector<std::pair<V,V>>& vertices){
+    return graph.calcDistace(startNode, termNode,vertices);
+}
+template <typename V, typename W>
 std::string GetNeighbor(const WUSGraph<V,W>& graph,V node){
     std::stringstream res;
     res << std::fixed << std::setprecision(2);

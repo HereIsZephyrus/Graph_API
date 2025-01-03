@@ -37,6 +37,8 @@ double Steiner(const WUSGraph<V,W>& graph,const Vector<V>& keyVertices);
 template <typename V, typename W>
 W Prim(WUSGraph<V,W>& graph,Vector<std::pair<V,V>>& vertices,V startNode);
 template <typename V, typename W>
+W ShortestPath(WUSGraph<V,W>& graph,V startNode,V termNode,Vector<std::pair<V,V>>& vertices);
+template <typename V, typename W>
 std::string GetNeighbor(const WUSGraph<V,W>& graph,V node);
 template <typename V, typename W>
 void Print(const WUSGraph<V,W>& graph,ostream& os);

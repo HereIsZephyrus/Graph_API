@@ -19,6 +19,7 @@
 #include "./OpenGL/commander.hpp"
 #include "graph_api.hpp"
 
+using VertexVec = Vector<std::pair<base::Vertex<valueType>,base::Vertex<valueType>>>;
 class SpatialPrimitive : public Primitive{
     std::shared_ptr<QuadTree<size_t>> indexTree;
     static constexpr int windowSize = 200;
@@ -103,10 +104,22 @@ public:
     std::shared_ptr<Primitive> feature;
     void ImportData(const std::string& filePath);
     void Draw();
-    static constexpr glm::vec3 featureRoadColor{0.58,0.0,0.83};
-    static constexpr glm::vec3 featureCityColor{1.0,0.85,0.19};
+    void CreateFeature(Vector<std::pair<base::Vertex<valueType>,base::Vertex<valueType>>>& vertices, bool isCity){
+        std::vector<Point> vertexArray;
+        if (isCity){
+            
+        }else{
+            for (VertexVec::iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++){
+                vertexArray.push_back(Point(glm::vec3(vertex->first.x,vertex->first.y,0.0),featureRoadColor));
+                vertexArray.push_back(Point(glm::vec3(vertex->second.x,vertex->second.y,0.0),featureRoadColor));
+            }
+            feature = std::make_shared<Primitive>(vertexArray,GL_LINES,ShaderBucket["line"].get());
+        }
+    }
 private:
     RouteSystem():citys(nullptr),roads(nullptr),graph(nullptr),feature(nullptr){}
+    static constexpr glm::vec3 featureRoadColor{0.58,0.0,0.83};
+    static constexpr glm::vec3 featureCityColor{1.0,0.85,0.19};
 };
 
 std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<valueType>& graph);
@@ -120,7 +133,7 @@ bool DrawPopup();
 void ImportData();
 void AddPoint();
 void PlanRoute();
-void CalcShortestPath();
+void CalcShortestPath(base::Vertex<valueType> startNode,base::Vertex<valueType> termNode);
 void SearchCity();
 void SearchRoad();
 void GetBuffer();

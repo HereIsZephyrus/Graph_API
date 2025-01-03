@@ -155,8 +155,10 @@ void RenderWorkspace(){
             if (ImGui::Button("删除城市",ButtonSize))
                 toDeleteObject = true;
             
-            if (ImGui::Button("求最短路径",ButtonSize))
+            if (ImGui::Button("求最短路径",ButtonSize)){
                 toCalcShortestPath = true;
+                buffer.resInfo = "请选择终点";
+            }
             ImGui::SameLine();
             if (ImGui::Button("求相邻城市",ButtonSize))
                 toGetNeighbor = true;

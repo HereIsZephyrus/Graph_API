@@ -75,7 +75,10 @@ void processMouse(){
         RouteSystem& system = RouteSystem::getSystem();
         int ID = system.citys->getClick(checkPos.x, checkPos.y);
         if (ID > 0){
-            buffer.currentNode = std::make_shared<Node>(system.graph->getVertex(Vertex(ID)));
+            if (gui::toCalcShortestPath)
+                gui::CalcShortestPath(buffer.currentNode->getCity(),system.graph->getVertex(Vertex(ID)));
+            else
+                buffer.currentNode = std::make_shared<Node>(system.graph->getVertex(Vertex(ID)));
         }else{
             VertexPair pair = system.roads->getClick(checkPos.x, checkPos.y);
             Vertex v1 = system.graph->getVertex(Vertex(pair.first)), v2 = system.graph->getVertex(Vertex(pair.second));
@@ -228,18 +231,12 @@ void processWorkspace(){
         toDeleteObject = false;
     }
     if (toCalcMST){
-        using VertexVec = Vector<std::pair<base::Vertex<valueType>,base::Vertex<valueType>>>;
         VertexVec vertices;
         valueType totalDis = WUSG::Prim(*system.graph,vertices,buffer.currentNode->getCity());
         std::stringstream iss;
         iss << "总距离为" << std::scientific << std::setprecision(5) << totalDis;
         buffer.resInfo = iss.str();
-        std::vector<Point> vertexArray;
-        for (VertexVec::iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++){
-            vertexArray.push_back(Point(glm::vec3(vertex->first.x,vertex->first.y,0.0),system.featureRoadColor));
-            vertexArray.push_back(Point(glm::vec3(vertex->second.x,vertex->second.y,0.0),system.featureRoadColor));
-        }
-        system.feature = std::make_shared<Primitive>(vertexArray,GL_LINES,ShaderBucket["line"].get());
+        system.CreateFeature(vertices, false);
         toCalcMST = false;
     }
 }
@@ -254,10 +251,6 @@ bool DrawPopup(){
     }
     if (toPlanRoute){
         PlanRoute();
-        return true;
-    }
-    if (toCalcShortestPath){
-        CalcShortestPath();
         return true;
     }
     if (toSearchCity){
@@ -309,8 +302,15 @@ void PlanRoute(){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     toPlanRoute = false;
 }
-void CalcShortestPath(){
+void CalcShortestPath(base::Vertex<valueType> startNode,base::Vertex<valueType> termNode){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
+    transport::RouteSystem& system = transport::RouteSystem::getSystem();
+    VertexVec vertices;
+    valueType dis = WUSG::ShortestPath(*system.graph, startNode, termNode,vertices);
+    std::stringstream iss;
+    iss << "最短路径长度为" <<std::fixed <<std::setprecision(3) <<dis;
+    buffer.resInfo = iss.str();
+    system.CreateFeature(vertices,false);
     toCalcShortestPath = false;
 }
 void SearchCity(){
