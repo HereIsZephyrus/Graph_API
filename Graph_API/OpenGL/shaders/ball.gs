@@ -9,7 +9,6 @@ const int resolution = 40;
 uniform float radius;
 void main() {
     fragColor = geoColor[0];
-    
     vec4 center =  gl_in[0].gl_Position;
     gl_Position = center;
     EmitVertex();

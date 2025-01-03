@@ -64,6 +64,19 @@ void processOperator(GLFWwindow* window){
     if (RouteSystem::getSystem().graph != nullptr){
         gui::processWorkspace();
         processMouse();
+        if (gui::toGetBuffer){
+            base::Vertex<valueType> startNode = BufferRecorder::getBuffer().currentNode->getCity();
+            double cursorX, cursorY;
+            WindowParas& windowPara = WindowParas::getInstance();
+            glfwGetCursorPos(windowPara.window, &cursorX, &cursorY);
+            float normalX = windowPara.screen2normalX(cursorX), normalY = windowPara.screen2normalY(cursorY);
+            Camera2D& camera = Camera2D::getView();
+            double termX = camera.normal2worldX(normalX), termY = camera.normal2worldY(normalY);
+            Primitive bufferCircle({
+                Point(glm::vec3(startNode.x,startNode.y,0.0),glm::vec3(1.0,1.0,1.0)),
+                Point(glm::vec3(termX,termY,0.0),glm::vec3(1.0,1.0,1.0))},GL_LINES,ShaderBucket["circle"].get());
+            bufferCircle.draw();
+        }
     }
 }
 void processMouse(){
@@ -132,9 +145,8 @@ int CityPoints::getClick(double x,double y){
 }
 std::vector<int> CityPoints::getBuffer(double sx,double sy,double tx, double ty){
     std::vector<int> resID;
-    double windowXsize = std::abs(tx - sx) * 2, windowYsize = std::abs(ty - sy) * 2;
-    double sqrR = (tx - sx) * (tx - sx) + (ty - sy) * (ty - sy);
-    std::vector<size_t> res = searchWindow(sx,sy,windowXsize,windowYsize);
+    double sqrR = (tx - sx) * (tx - sx) + (ty - sy) * (ty - sy),windowSize = std::sqrt(sqrR) * 2;
+    std::vector<size_t> res = searchWindow(sx,sy,windowSize);
     if (res.empty())
         return resID;
     for (std::vector<size_t>::iterator it = res.begin(); it != res.end(); it++){

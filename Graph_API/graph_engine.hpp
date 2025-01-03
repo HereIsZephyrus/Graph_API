@@ -23,8 +23,8 @@ using VertexVec = Vector<std::pair<base::Vertex<valueType>,base::Vertex<valueTyp
 class SpatialPrimitive : public Primitive{
     std::shared_ptr<QuadTree<size_t>> indexTree;
 protected:
-    std::vector<size_t> searchWindow(float x,float y,valueType windowXsize = 200,valueType windowYsize = 200){
-        SpatialRange range = SpatialRange(x - windowXsize / 2,y - windowYsize / 2,windowXsize,windowYsize);
+    std::vector<size_t> searchWindow(float x,float y,valueType windowSize = 200){
+        SpatialRange range = SpatialRange(x - windowSize / 2,y - windowSize / 2,windowSize,windowSize);
         return indexTree->queryRange(range);
     }
 public:
@@ -118,7 +118,7 @@ public:
         std::vector<Point> vertexArray;
         for (Vector<base::Vertex<valueType>>::iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++)
             vertexArray.push_back(Point(glm::vec3(vertex->x,vertex->y,0.0),featureCityColor));
-        feature = std::make_shared<Primitive>(vertexArray,GL_LINES,ShaderBucket["ball"].get());
+        feature = std::make_shared<Primitive>(vertexArray,GL_POINTS,ShaderBucket["ball"].get());
     }
 private:
     RouteSystem():citys(nullptr),roads(nullptr),graph(nullptr),feature(nullptr){}

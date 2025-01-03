@@ -190,4 +190,12 @@ void InitResource(GLFWwindow *window){
         arrow->linkProgram();
         ShaderBucket["arrow"] = std::move(arrow);
     }
+    {
+        pShader arrow (new Shader());
+        arrow->attchShader(filePath("vertices.vs"),GL_VERTEX_SHADER);
+        arrow->attchShader(filePath("circle.gs"),GL_GEOMETRY_SHADER);
+        arrow->attchShader(filePath("line.frag"),GL_FRAGMENT_SHADER);
+        arrow->linkProgram();
+        ShaderBucket["circle"] = std::move(arrow);
+    }
 }
