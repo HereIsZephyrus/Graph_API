@@ -38,12 +38,12 @@ template <typename W>
 void CreateGraphFromFile(const string& filename, Graph<W>& graph,bool BatchRead = false) {
     using V = Vertex<W>;
     std::ifstream file(filename);
-    if (!file.is_open()) {
+    if (!file.is_open())
         throw std::runtime_error("Unable to open file");
-    }
     int numVertices, numEdges;
     if (BatchRead){
-        static constexpr int bufferSize = 2048;\
+        static constexpr int bufferSize = 2048;
+        static constexpr int maxLineSize = 200;
         int currentVertex = 0, currentEdge = 0;
         bool gap = false;
         std::streampos filePos = file.tellg();
@@ -51,11 +51,11 @@ void CreateGraphFromFile(const string& filename, Graph<W>& graph,bool BatchRead 
         file.read(buffer.data(), bufferSize);
         std::istringstream iss(buffer.data());
         iss >> numVertices >> numEdges;
-        while (iss.str().size() >= 50){
+        while (iss.str().size() >= maxLineSize){
             std::streampos pos;
             while (iss){
                 pos = iss.tellg();
-                if (pos > bufferSize - 50)
+                if (pos > bufferSize - maxLineSize)
                     break;
                 if (currentVertex < numVertices) {
                     int id;
@@ -154,8 +154,8 @@ double Steiner(const WUSGraph<V,W>& graph,const Vector<V>& keyVertices){
     return graph.steinerTree(keyVertices);
 }
 template <typename V, typename W>
-Vector<std::pair<V,V>> Prim(WUSGraph<V,W>& graph){
-    return graph.calcMST();
+W Prim(WUSGraph<V,W>& graph,Vector<std::pair<V,V>>& vertices,V startNode){
+    return graph.calcMST(startNode,vertices);
 }
 template <typename V, typename W>
 void Print(const WUSGraph<V,W>& graph,ostream& os){os<<graph;}

@@ -312,32 +312,37 @@ int WUSGraph<V,W>::countConnectedComponents(){
     }
     return count;
 }
+/*
 template <typename V, typename W>
 Vector<std::pair<V,V>> WUSGraph<V,W>::calcMST(){
     V startNode = graph[0].vertex;
     return calcMST(startNode);
 }
+*/
 template <typename V, typename W>
-Vector<std::pair<V,V>> WUSGraph<V,W>::calcMST(V startNode){
+W WUSGraph<V,W>::calcMST(V startNode,Vector<std::pair<V,V>>& vertices){
     if (!isVertex(startNode))
         throw std::out_of_range("The start or end node is not in the graph");
     size_t vertexSize = vertexCount();
     Vector<W> distance(vertexSize,std::numeric_limits<W>::max());
     Vector<int> parent(vertexSize,-1);
     Dijkstra(startNode,distance,parent);
-    Vector<std::pair<V,V>> res;
+    vertices.clear();
     std::queue<V> q;
     Vector<bool> visited(vertexSize,false);
     size_t startLocation = locateMap[alias[startNode]];
     Queue<size_t> queue;
     queue.enqueue(startLocation);
     visited[startLocation] = true;
+    W total = W();
     while (!queue.isEmpty()){
         size_t currentLocation = queue.front();
         if (parent[currentLocation] != -1){
             size_t parentLoc = locateMap[parent[currentLocation]];
-            std::pair<V,V> vertex = std::make_pair(graph[parent[parentLoc]].vertex, graph[currentLocation].vertex);
-            res.push_back(vertex);
+            V v1 = graph[parentLoc].vertex, v2 = graph[currentLocation].vertex;
+            std::pair<V,V> vertex = std::make_pair(v1, v2);
+            vertices.push_back(vertex);
+            total += getWeight(v1,v2);
         }
         queue.dequeue();
         for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
@@ -348,8 +353,9 @@ Vector<std::pair<V,V>> WUSGraph<V,W>::calcMST(V startNode){
             }
         }
     }
-    return res;
+    return total;
 }
+/*
 template <typename V, typename W>
 void WUSGraph<V,W>::Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent){
     distance[alias[startNode]] = 0;
@@ -370,6 +376,7 @@ void WUSGraph<V,W>::Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent
         }
     }
 }
+*/
 template <typename V, typename W>
 W WUSGraph<V,W>::steinerTree(const Vector<V>& keyVertices) const{
     using item = std::pair<W,size_t>;

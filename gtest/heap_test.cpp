@@ -65,17 +65,16 @@ TEST_F(HeapStringTest, DeleteMinWithReturn) {
     EXPECT_EQ(minItem, "apple");
     EXPECT_EQ(heap.findMin(), "banana");
 }
-/*
 TEST_F(HeapIntTest, ComprehensiveTest) {
-    for (int i = 1000; i >= 1; --i)
+    for (int i = 10000; i >= 1; --i)
         heap.insert(i);
     EXPECT_EQ(heap.findMin(), 1);
-    for (int i = 0; i < 500; ++i)
+    for (int i = 0; i < 5000; ++i)
         heap.deleteMin();
-    EXPECT_EQ(heap.findMin(), 501);
-    for (int i = 1001; i <= 1500; ++i)
+    EXPECT_EQ(heap.findMin(), 5001);
+    for (int i = 10001; i <= 15000; ++i)
         heap.insert(i);
-    EXPECT_EQ(heap.findMin(), 501);
+    EXPECT_EQ(heap.findMin(), 5001);
     while (!heap.isEmpty())
         heap.deleteMin();
     EXPECT_TRUE(heap.isEmpty());
@@ -134,4 +133,3 @@ TEST_F(HeapStringTest, ComprehensiveTest) {
         heap.deleteMin();
     EXPECT_TRUE(heap.isEmpty());
 }
-*/

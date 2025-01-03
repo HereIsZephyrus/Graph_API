@@ -185,13 +185,25 @@ void RouteSystem::Draw(){
         return;
     roads->draw();
     citys->draw();
+    if (feature != nullptr){
+        feature->draw();
+        ImGui::SetNextWindowPos(ImVec2(300, 10));
+        ImGui::SetNextWindowSize(ImVec2(100,80));
+        ImGui::Begin("##cancel_feature", nullptr, ImGuiWindowFlags_NoResize);
+        ImGui::PushFont(gui::chineseFont);
+        if (ImGui::Button("取消显示",ImVec2(80, 30)))
+            feature = nullptr;
+        ImGui::PopFont();
+        ImGui::End();
+    }
 }
 }
 namespace gui {
 void processWorkspace(){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     transport::RouteSystem& system = transport::RouteSystem::getSystem();
-    ImGui::PushFont(gui::chineseFont);
+    if (system.graph == nullptr)
+        return;
     if (toCalcMaxDegree){
         buffer.resInfo = "最大度为" + std::to_string(WUSG::MaxDegree(*system.graph));
         toCalcMaxDegree = false;
@@ -207,7 +219,6 @@ void processWorkspace(){
         toCalcConeectCompoent = false;
     }
     if (toGetNeighbor){
-        transport::RouteSystem& system = transport::RouteSystem::getSystem();
         if (system.graph != nullptr && buffer.currentNode != nullptr){
             buffer.resInfo = WUSG::GetNeighbor(*system.graph,buffer.currentNode->getCity());
         }
@@ -217,9 +228,20 @@ void processWorkspace(){
         toDeleteObject = false;
     }
     if (toCalcMST){
+        using VertexVec = Vector<std::pair<base::Vertex<valueType>,base::Vertex<valueType>>>;
+        VertexVec vertices;
+        valueType totalDis = WUSG::Prim(*system.graph,vertices,buffer.currentNode->getCity());
+        std::stringstream iss;
+        iss << "总距离为" << std::scientific << std::setprecision(5) << totalDis;
+        buffer.resInfo = iss.str();
+        std::vector<Point> vertexArray;
+        for (VertexVec::iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++){
+            vertexArray.push_back(Point(glm::vec3(vertex->first.x,vertex->first.y,0.0),system.featureRoadColor));
+            vertexArray.push_back(Point(glm::vec3(vertex->second.x,vertex->second.y,0.0),system.featureRoadColor));
+        }
+        system.feature = std::make_shared<Primitive>(vertexArray,GL_LINES,ShaderBucket["line"].get());
         toCalcMST = false;
     }
-    ImGui::PopFont();
 }
 bool DrawPopup(){
     if (toImportData){

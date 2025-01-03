@@ -100,10 +100,13 @@ public:
     std::shared_ptr<CityPoints> citys;
     std::shared_ptr<Roads> roads;
     std::shared_ptr<WUSG::Graph<valueType>> graph;
+    std::shared_ptr<Primitive> feature;
     void ImportData(const std::string& filePath);
     void Draw();
+    static constexpr glm::vec3 featureRoadColor{0.58,0.0,0.83};
+    static constexpr glm::vec3 featureCityColor{1.0,0.85,0.19};
 private:
-    RouteSystem():citys(nullptr),roads(nullptr),graph(nullptr){}
+    RouteSystem():citys(nullptr),roads(nullptr),graph(nullptr),feature(nullptr){}
 };
 
 std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<valueType>& graph);

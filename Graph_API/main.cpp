@@ -28,8 +28,8 @@ int main(int argc, char **argv) {
         glfwPollEvents();
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        system.Draw();
         gui::DrawBasic();
+        system.Draw();
         processOperator(window);
         if (buffer.currentNode != nullptr)
             buffer.currentNode->draw();

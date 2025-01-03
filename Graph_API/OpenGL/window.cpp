@@ -111,12 +111,14 @@ void RenderInfoPanel(){
     float normalX = windowPara.screen2normalX(cursorX), normalY = windowPara.screen2normalY(cursorY);
     Camera2D& camera = Camera2D::getView();
     double worldX = camera.normal2worldX(normalX), worldY = camera.normal2worldY(normalY);
-    ImGui::Text("World Position:\n <%.1f, %.1f>", worldX, worldY);
+    ImGui::PushFont(gui::chineseFont);
+    ImGui::Text("当前坐标:\n <%.1f, %.1f>", worldX, worldY);
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     if (buffer.resInfo != "")
         ImGui::Text("%s", buffer.resInfo.c_str());
     if (buffer.currentNode != nullptr)
         ImGui::Text("%s", buffer.currentNode->printInfo().c_str());
+    ImGui::PopFont();
     ImGui::EndChild();
 }
 void RenderWorkspace(){

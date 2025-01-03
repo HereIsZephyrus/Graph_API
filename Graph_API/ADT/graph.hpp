@@ -100,9 +100,27 @@ public:
     std::stringstream getLongestPath(V startNode);
     W steinerTree(const Vector<V>& keyVertices) const;
     int countConnectedComponents();
-    Vector<std::pair<V,V>> calcMST();
-    Vector<std::pair<V,V>> calcMST(V startNode);
-    void Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent);
+    //Vector<std::pair<V,V>> calcMST();
+    W calcMST(V startNode,Vector<std::pair<V,V>>& vertices);
+    void Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent){
+        distance[alias[startNode]] = 0;
+        Heap<std::pair<W,V>> heap;
+        heap.insert(std::make_pair(0,startNode));
+        while (!heap.isEmpty()){
+            V current = heap.findMin().second;
+            heap.deleteMin();
+            size_t currentLocation = locateMap[alias[current]];
+            for (typename AdjList::iterator it = graph[currentLocation].begin(); it != graph[currentLocation].end(); it++){
+                size_t nextLocation = locateMap[alias[it->data.orient]];
+                W weight = it->data.weight;
+                if (distance[nextLocation] > distance[currentLocation] + weight){
+                    distance[nextLocation] = distance[currentLocation] + weight;
+                    parent[nextLocation] = alias[current];
+                    heap.insert(std::make_pair(distance[nextLocation],it->data.orient));
+                }
+            }
+        }
+    }
     friend std::ostream& operator<<(std::ostream& os, const WUSGraph<V, W>& graph){
         os << "Vertices: " << graph.vertexCount() << "\n";
         os << "Edges: " << graph.edgeCount() << "\n";
