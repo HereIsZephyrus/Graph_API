@@ -164,7 +164,26 @@ void QuadTree<Object>::subdivide(QuadTreeNode<Object> *p) {
     p->isLeaf = false;
 }
 template <class Object>
-    std::pair<bool,QuadTreeNode<Object>*> QuadTree<Object>::insert(float x,float y,const Object& obj,QuadTreeNode<Object> *p){
+void QuadTree<Object>::remove(float x,float y,QuadTreeNode<Object> *p){
+    const SpatialRange& range = p->range;
+    bool contain = (x >= range.minx && x < range.minx + range.width && y >= range.miny && y < range.miny + range.height);
+    if (!contain) return;
+    
+    for (typename std::vector<Point>::iterator it = p->points.begin(); it != p->points.end(); it++) {
+        if (it->x == x && it->y == y){
+            p->points.erase(it);
+            return;
+        }
+    }
+    if (!p->isLeaf) {
+        remove(x,y,p->northeast);
+        remove(x,y,p->northwest);
+        remove(x,y,p->southeast);
+        remove(x,y,p->southwest);
+    }
+}
+template <class Object>
+std::pair<bool,QuadTreeNode<Object>*> QuadTree<Object>::insert(float x,float y,const Object& obj,QuadTreeNode<Object> *p){
     const SpatialRange& range = p->range;
     bool contain = (x >= range.minx && x < range.minx + range.width && y >= range.miny && y < range.miny + range.height);
     if (!contain) return std::make_pair(false, nullptr);

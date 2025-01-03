@@ -257,13 +257,15 @@ public:
     const QuadTree & operator = (const QuadTree & rhs);
     ~QuadTree(){clear();}
     void clear(){destroy(this->root);}
-    node* insert(float x,float y,const Object& obj){return insert(x,y,obj,this->root).second;};
+    void insert(float x,float y,const Object& obj){ insert(x,y,obj,this->root);}
+    void remove(float x,float y){remove(x,y,this->root);}
     std::vector<Object> queryRange(const SpatialRange& orientRange){return queryRange(orientRange,this->root);}
 private:
     void destroy(node* p);
     node* clone(node* rhst) const;
     void subdivide(node *p);
     insertRes insert(float x,float y,const Object& obj,node *p);
+    void remove(float x,float y,node *p);
     std::vector<Object> queryRange(const SpatialRange& orientRange,node *p);
 };
 }

@@ -29,6 +29,7 @@ protected:
     }
     SpatialPrimitive(const std::vector<Point>& inputVertex,GLenum shp,Shader* shader, int elementSize);
     void insert(float x,float y,size_t index){indexTree->insert(x,y,index);}
+    void remove(float x,float y){indexTree->remove(x,y);}
     void clear(){indexTree->clear();}
 };
 namespace transport{

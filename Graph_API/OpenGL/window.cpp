@@ -75,7 +75,7 @@ int initOpenGL(GLFWwindow *&window,std::string windowName) {
 }
 namespace gui {
 ImFont *englishFont = nullptr,*chineseFont = nullptr;
-bool toImportData = false,toAddPoint = false,toCalcMaxDegree = false,toCalcSparse = false,toCalcConeectCompoent = false,toSearchCity = false,toSearchRoad = false,toCalcShortestPath = false,toGetNeighbor = false,toGetBuffer = false,toPlanRoute = false,toCalcMST = false,toDeleteObject = false,toShowAddPoint = false,toAddEdge = false;
+bool toImportData = false,toAddPoint = false,toCalcMaxDegree = false,toCalcSparse = false,toCalcConeectCompoent = false,toSearchCity = false,toSearchRoad = false,toCalcShortestPath = false,toGetNeighbor = false,toGetBuffer = false,toPlanRoute = false,toCalcMST = false,toDeleteObject = false,toShowAddPoint = false,toAddEdge = false,toClickBotton = false;
 int Initialization(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
