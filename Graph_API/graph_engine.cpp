@@ -64,8 +64,9 @@ void processOperator(GLFWwindow* window){
     if (RouteSystem::getSystem().graph != nullptr){
         gui::processWorkspace();
         processMouse();
-        if (gui::toGetBuffer){
-            base::Vertex<valueType> startNode = BufferRecorder::getBuffer().currentNode->getCity();
+        BufferRecorder& buffer = BufferRecorder::getBuffer();
+        if (gui::toGetBuffer && buffer.currentNode!= nullptr){
+            base::Vertex<valueType> startNode = buffer.currentNode->getCity();
             double cursorX, cursorY;
             WindowParas& windowPara = WindowParas::getInstance();
             glfwGetCursorPos(windowPara.window, &cursorX, &cursorY);
@@ -340,12 +341,105 @@ void CalcShortestPath(base::Vertex<valueType> termNode){
     toCalcShortestPath = false;
 }
 void SearchCity(){
+    using Vertex = WUSG::Vertex<valueType>;
     BufferRecorder& buffer = BufferRecorder::getBuffer();
-    toSearchCity = false;
+    static char inputBuffer[256] = "";
+    ImGui::PushFont(gui::chineseFont);
+    ImGui::OpenPopup("Search City");
+    ImVec2 pos = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(pos);
+    static bool toShowFail = false;
+    if (ImGui::BeginPopup("Search City")) {
+        transport::RouteSystem& system = transport::RouteSystem::getSystem();
+        ImGui::Text("输入待查城市编号");
+        ImGui::InputText("##input", inputBuffer, sizeof(inputBuffer),ImGuiInputTextFlags_CharsDecimal);
+        if (ImGui::Button("确认")) {
+            int ID = std::stoi(inputBuffer);
+            Vertex temp = Vertex(ID);
+            Vertex take = system.graph->getVertex(temp);
+            if (take!= temp){
+                buffer.currentNode = std::make_shared<transport::Node<valueType>>(take);
+                inputBuffer[0] = '\0';
+                toSearchCity = false;
+                toShowFail = false;
+                Camera2D::getView().focus(take.x,take.y);
+                ImGui::CloseCurrentPopup();
+            }else
+                toShowFail = true;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("取消")) {
+            inputBuffer[0] = '\0';
+            toSearchCity = false;
+            ImGui::CloseCurrentPopup();
+        }
+        if (toShowFail)
+            ImGui::Text("城市不存在!");
+        ImGui::EndPopup();
+    }
+    ImGui::PopFont();
 }
 void SearchRoad(){
+    using Vertex = WUSG::Vertex<valueType>;
     BufferRecorder& buffer = BufferRecorder::getBuffer();
-    toSearchRoad = false;
+    static char inputBuffer[256] = "";
+    ImGui::PushFont(gui::chineseFont);
+    ImGui::OpenPopup("Search Road");
+    ImVec2 pos = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(pos);
+    static bool toShowFail = false;
+    static Vertex selectedNeighbor = Vertex();
+    if (ImGui::BeginPopup("Search Road")) {
+        ImGui::Text("输入待查城市编号");
+        ImGui::InputText("##input", inputBuffer, sizeof(inputBuffer));
+        transport::RouteSystem& system = transport::RouteSystem::getSystem();
+        if (inputBuffer[0] != '\0'){
+            int currentID = std::stoi(inputBuffer);
+            Vertex temp = Vertex(currentID);
+            Vertex take = system.graph->getVertex(temp);
+            if (take != temp){
+                using Neighbor = typename tcb::WUSGraph<Vertex,valueType>::Neighbor;
+                Neighbor neighbors = system.graph->getNeighbor(take);
+                ImGui::BeginChild("##adding table", ImVec2(250, 200), true);
+                ImGui::Text("<相邻城市列表>");
+                for (Neighbor::iterator city = neighbors.begin(); city != neighbors.end(); city++){
+                    bool isSelected = (selectedNeighbor == city->first);
+                    std::stringstream iss;
+                    iss << city->first;
+                    if (ImGui::Selectable(iss.str().c_str(),isSelected)) {
+                        selectedNeighbor = city->first;
+                        if (isSelected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndChild();
+            }
+        }
+        if (ImGui::Button("确认")) {
+            int ID = std::stoi(inputBuffer);
+            Vertex take = system.graph->getVertex(Vertex(ID));
+            if (system.graph->hasEdge(take, selectedNeighbor)){
+                valueType dis = system.graph->getWeight(take, selectedNeighbor);
+                buffer.currentNode = std::make_shared<transport::Node<valueType>>(take,selectedNeighbor,dis);
+                inputBuffer[0] = '\0';
+                toSearchRoad = false;
+                toShowFail = false;
+                Camera2D::getView().focus((take.x + selectedNeighbor.x)/2,(take.y + selectedNeighbor.y) / 2);
+                ImGui::CloseCurrentPopup();
+            }else
+                toShowFail = true;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("取消")) {
+            inputBuffer[0] = '\0';
+            toSearchRoad = false;
+            ImGui::CloseCurrentPopup();
+        }
+        if (toShowFail)
+            ImGui::Text("道路不存在!");
+        ImGui::EndPopup();
+    }
+    ImGui::PopFont();
 }
 void GetBuffer(double termX, double termY){
     BufferRecorder& buffer = BufferRecorder::getBuffer();

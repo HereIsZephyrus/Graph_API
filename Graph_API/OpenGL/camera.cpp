@@ -50,6 +50,10 @@ Camera2D::Camera2D() : position(0.0f, 0.0f), zoom(1.0f){
     projectionMatrix = glm::ortho(-1.0f * worldRateFactor, 1.0f * worldRateFactor, -1.0f * worldRateFactor, 1.0f * worldRateFactor, -1000.0f, 100.0f);
     viewMatrix = glm::mat4(1.0f);
 }
+void Camera2D::focus(double x,double y){
+    position.x = x; position.y = y;
+    zoom = 6;
+}
 void Camera2D::setExtent(Extent inputExtent){
     extent = inputExtent;
     position.x = (extent.left + extent.right) / 2;

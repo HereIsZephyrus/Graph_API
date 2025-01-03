@@ -49,6 +49,7 @@ public:
     void updateViewMatrix() ;
     double normal2worldX(GLdouble normalX);
     double normal2worldY(GLdouble normalY);
+    void focus(double x,double y);
 private:
     Camera2D();
     glm::vec2 position;
