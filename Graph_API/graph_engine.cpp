@@ -92,8 +92,10 @@ void processMouse(){
         if (ID > 0){
             if (gui::toCalcShortestPath)
                 gui::CalcShortestPath(system.graph->getVertex(Vertex(ID)));
-            else if (gui::toGetBuffer)
+            else if (gui::toGetBuffer){
+                buffer.resInfo = "";
                 gui::toGetBuffer = false;
+            }
             else
                 buffer.currentNode = std::make_shared<Node>(system.graph->getVertex(Vertex(ID)));
         }else{
@@ -450,8 +452,15 @@ void GetBuffer(double termX, double termY){
     base::Vertex<valueType> startNode = buffer.currentNode->getCity();
     std::vector<int> cityInBuffer = system.citys->getBuffer(startNode.x, startNode.y, termX, termY);
     Vector<base::Vertex<valueType>> vertices;
-    for (std::vector<int>::iterator cityID = cityInBuffer.begin(); cityID != cityInBuffer.end(); cityID++)
-        vertices.push_back(system.graph->getVertex(base::Vertex<valueType>(*cityID)));
+    std::stringstream iss;
+    iss<<"<相邻城市列表>"<<'\n'<<std::fixed<<std::setprecision(3);
+    for (std::vector<int>::iterator cityID = cityInBuffer.begin(); cityID != cityInBuffer.end(); cityID++){
+        base::Vertex<valueType> orientCity = system.graph->getVertex(base::Vertex<valueType>(*cityID));
+        vertices.push_back(orientCity);
+        double dis = std::sqrt((startNode.x - orientCity.x) * (startNode.x - orientCity.x) + (startNode.y - orientCity.y) * (startNode.y - orientCity.y));
+        iss<<orientCity<<"距离为"<<dis<<'\n';
+    }
+    buffer.resInfo = iss.str();
     system.CreateFeature(vertices);
 }
 }
