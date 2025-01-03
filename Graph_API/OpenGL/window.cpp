@@ -75,7 +75,7 @@ int initOpenGL(GLFWwindow *&window,std::string windowName) {
 }
 namespace gui {
 ImFont *englishFont = nullptr,*chineseFont = nullptr;
-bool toImportData = false,toAddPoint = false,toCalcMaxDegree = false,toCalcSparse = false,toCalcConeectCompoent = false,toSearchCity = false,toSearchRoad = false,toCalcShortestPath = false,toGetNeighbor = false,toGetBuffer = false,toPlanRoute = false,toCalcMST = false,toDeleteObject = false;
+bool toImportData = false,toAddPoint = false,toCalcMaxDegree = false,toCalcSparse = false,toCalcConeectCompoent = false,toSearchCity = false,toSearchRoad = false,toCalcShortestPath = false,toGetNeighbor = false,toGetBuffer = false,toPlanRoute = false,toCalcMST = false,toDeleteObject = false,toShowAddPoint = false;
 int Initialization(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -150,6 +150,8 @@ void RenderWorkspace(){
     if (ImGui::Button("多点路线规划",ButtonSize))
         toPlanRoute = true;
     ImGui::SameLine();
+    if (ImGui::Button("添加城市",ButtonSize))
+        toAddPoint = true;
     if (buffer.currentNode != nullptr){
         if (buffer.currentNode->isCityNode()){
             if (ImGui::Button("最小生成树",ButtonSize))

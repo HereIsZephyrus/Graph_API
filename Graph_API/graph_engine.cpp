@@ -31,7 +31,6 @@ std::shared_ptr<CityPoints> BuildVisualPoints(WUSG::Graph<valueType>& graph){
     std::vector<int> ID;
     vertices.reserve(graph.vertexCount());
     ID.reserve(graph.vertexCount());
-    static constexpr glm::vec3 cityColor = glm::vec3(1.0,0.63,0.48);
     auto visit = [](const WUSG::Vertex<valueType>& node,std::vector<Point>* verticesArray,std::vector<int>* IDarray){
         valueType x = node.x, y = node.y;
         verticesArray->push_back(Point(glm::vec3(x,y,0.0),cityColor));
@@ -45,7 +44,6 @@ std::shared_ptr<Roads> BuildVisualRoads(WUSG::Graph<valueType>& graph){
     std::vector<Point> vertices;
     std::vector<VertexPair> pairArray;
     vertices.reserve(graph.edgeCount());
-    static constexpr glm::vec3 roadColor = glm::vec3(0.69,0.93,0.94);
     const std::set<VertexPair>& pairs = graph.getVertexpairs();
     for (std::set<VertexPair>::const_iterator vpair = pairs.begin(); vpair != pairs.end(); vpair++){
         int id1 = vpair->first, id2 = vpair->second;
@@ -87,26 +85,31 @@ void processMouse(){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     if (buffer.pressLeft){
         glm::vec2 checkPos = buffer.checkPos;
-        RouteSystem& system = RouteSystem::getSystem();
-        int ID = system.citys->getClick(checkPos.x, checkPos.y);
-        if (ID > 0){
-            if (gui::toPlanRoute)
-                system.keyVertices.push_back(system.graph->getVertex(Vertex(ID)));
-            else if (gui::toCalcShortestPath)
-                gui::CalcShortestPath(system.graph->getVertex(Vertex(ID)));
-            else if (gui::toGetBuffer){
-                buffer.resInfo = "";
-                gui::toGetBuffer = false;
-            }
-            else
-                buffer.currentNode = std::make_shared<Node>(system.graph->getVertex(Vertex(ID)));
+        if (gui::toAddPoint){
+            gui::toShowAddPoint = true;
+            gui::toAddPoint = false;
         }else{
-            VertexPair pair = system.roads->getClick(checkPos.x, checkPos.y);
-            Vertex v1 = system.graph->getVertex(Vertex(pair.first)), v2 = system.graph->getVertex(Vertex(pair.second));
-            if (pair.first > 0 && pair.second > 0)
-                buffer.currentNode = std::make_shared<Node>(v1,v2,system.graph->getWeight(v1,v2));
-            else
-                buffer.currentNode = nullptr;
+            RouteSystem& system = RouteSystem::getSystem();
+            int ID = system.citys->getClick(checkPos.x, checkPos.y);
+            if (ID > 0){
+                if (gui::toPlanRoute)
+                    system.keyVertices.push_back(system.graph->getVertex(Vertex(ID)));
+                else if (gui::toCalcShortestPath)
+                    gui::CalcShortestPath(system.graph->getVertex(Vertex(ID)));
+                else if (gui::toGetBuffer){
+                    buffer.resInfo = "";
+                    gui::toGetBuffer = false;
+                }
+                else
+                    buffer.currentNode = std::make_shared<Node>(system.graph->getVertex(Vertex(ID)));
+            }else{
+                VertexPair pair = system.roads->getClick(checkPos.x, checkPos.y);
+                Vertex v1 = system.graph->getVertex(Vertex(pair.first)), v2 = system.graph->getVertex(Vertex(pair.second));
+                if (pair.first > 0 && pair.second > 0)
+                    buffer.currentNode = std::make_shared<Node>(v1,v2,system.graph->getWeight(v1,v2));
+                else
+                    buffer.currentNode = nullptr;
+            }
         }
         buffer.pressLeft = false;
     }
@@ -327,12 +330,9 @@ void processWorkspace(){
         if (buffer.currentNode->isCityNode()){
             transport::Node<valueType>::CityNode city = buffer.currentNode->getCity();
             using Neighbor = typename tcb::WUSGraph<WUSG::Vertex<valueType>,valueType>::Neighbor;
-            using Edge = transport::EdgeMessage;
             Neighbor neighors = system.graph->getNeighbor(city);
-            std::vector<Edge> edges;
             for (Neighbor::iterator neighbor = neighors.begin(); neighbor != neighors.end(); neighbor++){
                 double x = (city.x + neighbor->first.x) / 2, y = (city.y + neighbor->first.y) / 2;
-                edges.push_back(Edge(x,y,VertexPair(city.id,neighbor->first.id)));
                 system.roads->remove(x,y,city.id,neighbor->first.id);
             }
             system.graph->removeVertex(city);
@@ -366,16 +366,16 @@ bool DrawPopup(){
         ImportData();
         return true;
     }
-    if (toAddPoint){
-        AddPoint();
-        return true;
-    }
     if (toSearchCity){
         SearchCity();
         return true;
     }
     if (toSearchRoad){
         SearchRoad();
+        return true;
+    }
+    if (toShowAddPoint){ 
+        AddPoint();
         return true;
     }
     return false;
@@ -408,8 +408,50 @@ void ImportData(){
     ImGui::PopFont();
 }
 void AddPoint(){
+    using Vertex = base::Vertex<valueType>;
     BufferRecorder& buffer = BufferRecorder::getBuffer();
-    toAddPoint = false;
+    transport::RouteSystem& system = transport::RouteSystem::getSystem();
+    static char IDBuffer[256] = "";
+    static char aliasBuffer[256] = "";
+    ImGui::PushFont(gui::chineseFont);
+    ImGui::OpenPopup("Add Point");
+    ImVec2 pos = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(pos);
+    static bool toShowFail = false;
+    if (ImGui::BeginPopup("Add Point")) {
+        ImGui::Text("输入待加入城市信息");
+        ImGui::PushItemWidth(60);
+        ImGui::InputText("编号", IDBuffer, sizeof(IDBuffer),ImGuiInputTextFlags_CharsDecimal);
+        ImGui::InputText("名称", aliasBuffer, sizeof(aliasBuffer));
+        ImGui::PopItemWidth();
+        transport::RouteSystem& system = transport::RouteSystem::getSystem();
+        if (ImGui::Button("确认")) {
+            int newID = std::stoi(IDBuffer);
+            if (!system.graph->isVertex(Vertex(newID))){
+                Vertex newVertex(std::stoi(IDBuffer),buffer.checkPos.x,buffer.checkPos.y,aliasBuffer);
+                system.citys->insert(newVertex.x,newVertex.y,newVertex.id);
+                system.graph->addVertex(newVertex);
+                IDBuffer[0] = '\0';
+                aliasBuffer[0] = '\0';
+                toShowAddPoint = false;
+                toShowFail = false;
+                ImGui::CloseCurrentPopup();
+            }else
+                toShowFail = true;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("取消")) {
+            IDBuffer[0] = '\0';
+            aliasBuffer[0] = '\0';
+            toShowAddPoint = false;
+            toShowFail = false;
+            ImGui::CloseCurrentPopup();
+        }
+        if (toShowFail)
+            ImGui::Text("城市编号已存在!");
+        ImGui::EndPopup();
+    }
+    ImGui::PopFont();
 }
 void PlanRoute(){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
@@ -464,6 +506,7 @@ void SearchCity(){
         if (ImGui::Button("取消")) {
             inputBuffer[0] = '\0';
             toSearchCity = false;
+            toShowFail = false;
             ImGui::CloseCurrentPopup();
         }
         if (toShowFail)
@@ -526,6 +569,7 @@ void SearchRoad(){
         if (ImGui::Button("取消")) {
             inputBuffer[0] = '\0';
             toSearchRoad = false;
+            toShowFail = false;
             ImGui::CloseCurrentPopup();
         }
         if (toShowFail)

@@ -26,7 +26,6 @@ struct Vertex{
             alias = name;
         else
             alias = std::to_string(id);
-            alias = std::to_string(id);
     }
     Vertex():alias(""),x(W()),y(W()),id(-1){}
     bool operator!=(const Vertex& rhs) const {return (id != rhs.id) || (alias != rhs.alias);}

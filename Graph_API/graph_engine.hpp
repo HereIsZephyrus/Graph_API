@@ -27,17 +27,13 @@ protected:
         SpatialRange range = SpatialRange(x - windowSize / 2,y - windowSize / 2,windowSize,windowSize);
         return indexTree->queryRange(range);
     }
-public:
     SpatialPrimitive(const std::vector<Point>& inputVertex,GLenum shp,Shader* shader, int elementSize);
     void insert(float x,float y,size_t index){indexTree->insert(x,y,index);}
     void clear(){indexTree->clear();}
 };
 namespace transport{
-struct EdgeMessage{
-    double x,y;
-    VertexPair vertex;
-    EdgeMessage(double x,double y,VertexPair v) : x(x),y(y),vertex(v){}
-};
+constexpr glm::vec3 cityColor = glm::vec3(1.0,0.63,0.48);
+constexpr glm::vec3 roadColor = glm::vec3(0.69,0.93,0.94);
 class CityPoints : public SpatialPrimitive{
     static constexpr double clickRange = 1;
 public:
@@ -49,6 +45,15 @@ public:
     int getClick(double x,double y);
     std::vector<int> getBuffer(double sx,double sy,double tx, double ty);
     void remove(double x,double y,int id);
+    void insert(double x,double y,int id){
+        size_t index = vertexNum * stride;
+        vertices[index] = x; vertices[index + 1] = y; vertices[index + 2] = 0;
+        vertices[index + 3] = cityColor.r; vertices[index + 4] = cityColor.g;   vertices[index + 5] = cityColor.b;
+        ++vertexNum;
+        update();
+        SpatialPrimitive::insert(x, y, vertexID.size());
+        vertexID.push_back(id);
+    }
 private:
     GLfloat radius;
     std::vector<int> vertexID;
