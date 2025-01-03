@@ -99,7 +99,7 @@ public:
     W calcDistace(V startNode,V endNode);
     W calcDistace(V startNode,V endNode,Vector<std::pair<V,V>>& vertices);
     std::stringstream getLongestPath(V startNode);
-    W steinerTree(const Vector<V>& keyVertices,Vector<std::pair<V,V>>& vertices);
+    W steinerTree(const Vector<V>& keyVertices);
     int countConnectedComponents();
     W calcMST(V startNode,Vector<std::pair<V,V>>& vertices);
     void Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent);

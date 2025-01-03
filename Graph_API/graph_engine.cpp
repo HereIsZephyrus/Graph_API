@@ -241,7 +241,7 @@ void RouteSystem::Draw(){
         }else{
             ImGui::Begin("##confirm_key",nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
             ImGui::SetWindowPos(ImVec2(500, 10));
-            ImGui::SetWindowSize(ImVec2(80, 80));
+            ImGui::SetWindowSize(ImVec2(60, 80));
             ImGui::PushFont(gui::chineseFont);
             if (ImGui::Button("确认"))
                 gui::PlanRoute();
@@ -359,12 +359,10 @@ void AddPoint(){
 void PlanRoute(){
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     transport::RouteSystem& system = transport::RouteSystem::getSystem();
-    VertexVec vertices;
-    valueType dis = WUSG::Steiner(*system.graph,system.keyVertices,vertices);
+    valueType dis = WUSG::Steiner(*system.graph,system.keyVertices);
     std::stringstream iss;
     iss << "多点最短路径为" << std::fixed <<std::setprecision(3) <<dis;
     buffer.resInfo = iss.str();
-    system.CreateFeature(vertices);
     system.keyVertices.clear();
     toPlanRoute = false;
 }
