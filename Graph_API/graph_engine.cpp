@@ -210,6 +210,36 @@ VertexPair Roads::getClick(double x,double y){
     }
     return id;
 }
+void Roads::remove(double x,double y,int id1,int id2){
+    std::vector<size_t> res = searchWindow(x,y,10);
+    for (std::vector<size_t>::iterator vLoc = res.begin(); vLoc != res.end(); vLoc++){
+        size_t IDindex = (*vLoc) / 2;
+        if (((vertexID[IDindex].first == id1) && (vertexID[IDindex].second == id2)) ||
+            ((vertexID[IDindex].first == id2) && (vertexID[IDindex].second == id1))){
+            size_t index = (*vLoc) * stride,backIndex = (vertexNum - 2) * stride;
+            vertices[index] = vertices[backIndex];
+            vertices[index + 1] = vertices[backIndex + 1];
+            vertices[index + stride] = vertices[backIndex + stride];
+            vertices[index + stride + 1] = vertices[backIndex + stride + 1];
+            vertexID[IDindex] = vertexID.back();
+            vertexID.pop_back();
+            vertexNum-=2;
+        }
+    }
+}
+void CityPoints::remove(double x,double y,int id){
+    std::vector<size_t> res = searchWindow(x,y,10);
+    for (std::vector<size_t>::iterator vLoc = res.begin(); vLoc != res.end(); vLoc++)
+        if (vertexID[*vLoc] == id){
+            size_t index = (*vLoc) * stride,backIndex = (vertexNum - 1) * stride;
+            vertices[index] = vertices[backIndex];
+            vertices[index + 1] = vertices[backIndex + 1];
+            vertexID[*vLoc] = vertexID.back();
+            vertexID.pop_back();
+            vertexNum--;
+            break;
+        }
+}
 void RouteSystem::ImportData(const std::string& filePath){
     graph = std::make_shared<WUSG::Graph<valueType>>(40000);
     WUSG::CreateGraphFromFile(filePath, *graph,true);
@@ -294,6 +324,31 @@ void processWorkspace(){
         toGetNeighbor = false;
     }
     if (toDeleteObject){
+        if (buffer.currentNode->isCityNode()){
+            transport::Node<valueType>::CityNode city = buffer.currentNode->getCity();
+            using Neighbor = typename tcb::WUSGraph<WUSG::Vertex<valueType>,valueType>::Neighbor;
+            using Edge = transport::EdgeMessage;
+            Neighbor neighors = system.graph->getNeighbor(city);
+            std::vector<Edge> edges;
+            for (Neighbor::iterator neighbor = neighors.begin(); neighbor != neighors.end(); neighbor++){
+                double x = (city.x + neighbor->first.x) / 2, y = (city.y + neighbor->first.y) / 2;
+                edges.push_back(Edge(x,y,VertexPair(city.id,neighbor->first.id)));
+                system.roads->remove(x,y,city.id,neighbor->first.id);
+            }
+            system.graph->removeVertex(city);
+            buffer.currentNode = nullptr;
+            system.citys->remove(city.x,city.y,city.id);
+            system.citys->update();
+            system.roads->update();
+        }
+        else{
+            transport::Node<valueType>::RoadNode road = buffer.currentNode->getRoad();
+            system.graph->removeEdge(road.vertex1, road.vertex2);
+            double x = (road.vertex1.x + road.vertex2.x) / 2, y = (road.vertex1.y + road.vertex2.y) / 2;
+            buffer.currentNode = nullptr;
+            system.roads->remove(x,y,road.vertex1.id,road.vertex2.id);
+            system.roads->update();
+        }
         toDeleteObject = false;
     }
     if (toCalcMST){

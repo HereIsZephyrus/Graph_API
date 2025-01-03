@@ -33,6 +33,11 @@ public:
     void clear(){indexTree->clear();}
 };
 namespace transport{
+struct EdgeMessage{
+    double x,y;
+    VertexPair vertex;
+    EdgeMessage(double x,double y,VertexPair v) : x(x),y(y),vertex(v){}
+};
 class CityPoints : public SpatialPrimitive{
     static constexpr double clickRange = 1;
 public:
@@ -43,6 +48,7 @@ public:
     void draw() const override;
     int getClick(double x,double y);
     std::vector<int> getBuffer(double sx,double sy,double tx, double ty);
+    void remove(double x,double y,int id);
 private:
     GLfloat radius;
     std::vector<int> vertexID;
@@ -56,18 +62,21 @@ public:
     }
     void draw() const override;
     VertexPair getClick(double x,double y);
+    void remove(double x,double y,int id1,int id2);
 private:
     GLfloat thickness;
     std::vector<VertexPair> vertexID;
 };
 template <typename W>
 class Node{
+public:
     using CityNode = WUSG::Vertex<W>;
     CityNode city;
     struct RoadNode{   
         CityNode vertex1, vertex2;
         W weight;
     }road;
+private:
     enum : bool{isCity = false, isRoad = true} state;
     static constexpr glm::vec3 clickedCityColor = glm::vec3(1.0,0.0,0.0);
     static constexpr glm::vec3 clickedRoadColor = glm::vec3(0.0,0.0,1.0);
