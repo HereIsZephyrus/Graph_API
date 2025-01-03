@@ -84,6 +84,7 @@ public:
     void addVertex(V newVertex);
     void removeVertex(V delVertex);
     int getDegree(V checkVertex) const;
+    int getDegree(size_t location) const {return static_cast<int>(graph[location].getSize());}
     void addEdge(V v1,V v2,W weight);
     void removeEdge(V v1,V v2);
     bool hasEdge(V v1,V v2) const;
@@ -96,11 +97,11 @@ public:
     template <typename Func>
     void WalkThrough(V startNode,WalkMethod method,Func func);
     W calcDistace(V startNode,V endNode);
+    W calcDistace(V startNode,V endNode,Vector<std::pair<V,V>>& vertices);
     std::stringstream getLongestPath(V startNode);
-    W steinerTree(const Vector<V>& keyVertices) const;
+    W steinerTree(const Vector<V>& keyVertices);
     int countConnectedComponents();
-    Vector<std::pair<V,V>> calcMST();
-    Vector<std::pair<V,V>> calcMST(V startNode);
+    W calcMST(V startNode,Vector<std::pair<V,V>>& vertices);
     void Dijkstra(V startNode,Vector<W>& distance,Vector<int>& parent);
     friend std::ostream& operator<<(std::ostream& os, const WUSGraph<V, W>& graph){
         os << "Vertices: " << graph.vertexCount() << "\n";

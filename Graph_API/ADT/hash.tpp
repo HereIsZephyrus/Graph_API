@@ -60,8 +60,16 @@ inline int calcHash(const double& key) {
     bits ^= (bits >> 33);
     return static_cast<int>(bits);
 }
-template <typename W>
-inline int calcHash(const base::Vertex<W>& key) {
+template <>
+inline int calcHash(const base::Vertex<double>& key) {
+    return key.id;
+}
+template <>
+inline int calcHash(const base::Vertex<int>& key) {
+    return key.id;
+}
+template <>
+inline int calcHash(const base::Vertex<float>& key) {
     return key.id;
 }
 }

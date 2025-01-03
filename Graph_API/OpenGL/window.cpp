@@ -75,7 +75,7 @@ int initOpenGL(GLFWwindow *&window,std::string windowName) {
 }
 namespace gui {
 ImFont *englishFont = nullptr,*chineseFont = nullptr;
-bool toImportData = false,toAddPoint = false,toCalcMaxDegree = false,toCalcSparse = false,toCalcConeectCompoent = false,toSearchCity = false,toSearchRoad = false,toCalcShortestPath = false,toGetNeighbor = false,toGetBuffer = false,toPlanRoute = false,toCalcMST = false,toDeleteObject = false;
+bool toImportData = false,toAddPoint = false,toCalcMaxDegree = false,toCalcSparse = false,toCalcConeectCompoent = false,toSearchCity = false,toSearchRoad = false,toCalcShortestPath = false,toGetNeighbor = false,toGetBuffer = false,toPlanRoute = false,toCalcMST = false,toDeleteObject = false,toShowAddPoint = false,toAddEdge = false;
 int Initialization(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -111,12 +111,14 @@ void RenderInfoPanel(){
     float normalX = windowPara.screen2normalX(cursorX), normalY = windowPara.screen2normalY(cursorY);
     Camera2D& camera = Camera2D::getView();
     double worldX = camera.normal2worldX(normalX), worldY = camera.normal2worldY(normalY);
-    ImGui::Text("World Position:\n <%.1f, %.1f>", worldX, worldY);
+    ImGui::PushFont(gui::chineseFont);
+    ImGui::Text("当前坐标:\n <%.1f, %.1f>", worldX, worldY);
     BufferRecorder& buffer = BufferRecorder::getBuffer();
     if (buffer.resInfo != "")
         ImGui::Text("%s", buffer.resInfo.c_str());
     if (buffer.currentNode != nullptr)
         ImGui::Text("%s", buffer.currentNode->printInfo().c_str());
+    ImGui::PopFont();
     ImGui::EndChild();
 }
 void RenderWorkspace(){
@@ -145,27 +147,38 @@ void RenderWorkspace(){
     if (ImGui::Button("查询道路",ButtonSize))
         toSearchRoad = true;
     
+    if (ImGui::Button("多点路线规划",ButtonSize))
+        toPlanRoute = true;
+    ImGui::SameLine();
+    if (ImGui::Button("添加城市",ButtonSize))
+        toAddPoint = true;
     if (buffer.currentNode != nullptr){
-        if (ImGui::Button("最小生成树",ButtonSize))
-            toCalcMST = true;
-        ImGui::SameLine();
-        std::string deleteStr = "删除城市";
-        if (!buffer.currentNode->isCityNode())
-            std::string DeleteStr = "删除道路";
-        if (ImGui::Button(deleteStr.c_str(),ButtonSize))
-            toDeleteObject = true;
-        
-        if (ImGui::Button("求最短路径",ButtonSize))
-            toCalcShortestPath = true;
-        ImGui::SameLine();
-        if (ImGui::Button("求相邻城市",ButtonSize))
-            toGetNeighbor = true;
-        
-        if (ImGui::Button("求缓冲区",ButtonSize))
-            toGetBuffer = true;
-        ImGui::SameLine();
-        if (ImGui::Button("多点路线规划",ButtonSize))
-            toPlanRoute = true;
+        if (buffer.currentNode->isCityNode()){
+            if (ImGui::Button("最小生成树",ButtonSize))
+                toCalcMST = true;
+            ImGui::SameLine();
+            if (ImGui::Button("删除城市",ButtonSize))
+                toDeleteObject = true;
+            
+            if (ImGui::Button("求最短路径",ButtonSize)){
+                toCalcShortestPath = true;
+                buffer.resInfo = "请选择终点";
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("添加道路",ButtonSize)){
+                toAddEdge = true;
+                buffer.resInfo = "请选择终点";
+            }
+            
+            if (ImGui::Button("求相邻城市",ButtonSize))
+                toGetNeighbor = true;
+            ImGui::SameLine();
+            if (ImGui::Button("求缓冲区",ButtonSize))
+                toGetBuffer = true;
+        }else{
+            if (ImGui::Button("删除道路",ButtonSize))
+                toDeleteObject = true;
+        }
     }
     style.FramePadding = ImVec2(4.0f, 2.0f);
     style.ItemSpacing = ImVec2(8.0f, 4.0f);

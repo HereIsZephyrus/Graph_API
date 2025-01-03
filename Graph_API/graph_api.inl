@@ -38,12 +38,12 @@ template <typename W>
 void CreateGraphFromFile(const string& filename, Graph<W>& graph,bool BatchRead = false) {
     using V = Vertex<W>;
     std::ifstream file(filename);
-    if (!file.is_open()) {
+    if (!file.is_open())
         throw std::runtime_error("Unable to open file");
-    }
     int numVertices, numEdges;
     if (BatchRead){
-        static constexpr int bufferSize = 2048;\
+        static constexpr int bufferSize = 2048;
+        static constexpr int maxLineSize = 200;
         int currentVertex = 0, currentEdge = 0;
         bool gap = false;
         std::streampos filePos = file.tellg();
@@ -51,11 +51,11 @@ void CreateGraphFromFile(const string& filename, Graph<W>& graph,bool BatchRead 
         file.read(buffer.data(), bufferSize);
         std::istringstream iss(buffer.data());
         iss >> numVertices >> numEdges;
-        while (iss.str().size() >= 50){
+        while (iss.str().size() >= maxLineSize){
             std::streampos pos;
             while (iss){
                 pos = iss.tellg();
-                if (pos > bufferSize - 50)
+                if (pos > bufferSize - maxLineSize)
                     break;
                 if (currentVertex < numVertices) {
                     int id;
@@ -109,14 +109,41 @@ void CreateGraphFromFile(const string& filename, Graph<W>& graph,bool BatchRead 
 }
 template <typename V, typename W>
 int MaxDegree(const WUSGraph<V,W>& graph){
-    std::set<string> vertices = graph.getVertice();
+    std::set<V> vertices = graph.getVertice();
     int maxDegree = 0;
-    for (std::set<string>::const_iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++){
+    for (typename std::set<V>::const_iterator vertex = vertices.begin(); vertex != vertices.end(); vertex++){
         int degree = graph.getDegree(*vertex);
         if (degree > maxDegree)
             maxDegree = degree;
     }
     return maxDegree;
+}
+template <typename V, typename W>
+double Sparseness(const WUSGraph<V,W>& graph){
+    int totalDegree = 0;
+    int vertexNum = static_cast<int>(graph.vertexCount());
+    for (size_t i = 0; i < graph.vertexCount(); i++)
+        totalDegree += graph.getDegree(i);
+    return static_cast<double>(totalDegree) / ((vertexNum) * (vertexNum - 1));
+}
+template <typename V, typename W>
+int CalcConnectCompoent(WUSGraph<V,W>& graph){
+    return graph.countConnectedComponents();
+}
+template <typename V, typename W>
+W ShortestPath(WUSGraph<V,W>& graph,V startNode,V termNode,Vector<std::pair<V,V>>& vertices){
+    return graph.calcDistace(startNode, termNode,vertices);
+}
+template <typename V, typename W>
+std::string GetNeighbor(const WUSGraph<V,W>& graph,V node){
+    std::stringstream res;
+    res << std::fixed << std::setprecision(2);
+    using Neighbor = typename tcb::WUSGraph<V,W>::Neighbor;
+    Neighbor neighbors = graph.getNeighbor(node);
+    for (typename Neighbor::iterator it = neighbors.begin(); it != neighbors.end(); it++){
+        res << "到相邻城市" << it->first.alias << "的距离是" << it->second<<'\n';
+    }
+    return res.str();
 }
 template <typename V, typename W, typename Func>
 void DFS(WUSGraph<V,W>& graph, const V& startNode, Func func){
@@ -127,12 +154,12 @@ void BFS(WUSGraph<V,W>& graph, const V& startNode, Func func){
     graph.WalkThrough(startNode, WalkMethod::BFS, func);
 }
 template <typename V, typename W>
-double Steiner(const WUSGraph<V,W>& graph,const Vector<V>& keyVertices){
+double Steiner(WUSGraph<V,W>& graph,const Vector<V>& keyVertices){
     return graph.steinerTree(keyVertices);
 }
 template <typename V, typename W>
-Vector<std::pair<V,V>> Prim(WUSGraph<V,W>& graph){
-    return graph.calcMST();
+W Prim(WUSGraph<V,W>& graph,Vector<std::pair<V,V>>& vertices,V startNode){
+    return graph.calcMST(startNode,vertices);
 }
 template <typename V, typename W>
 void Print(const WUSGraph<V,W>& graph,ostream& os){os<<graph;}

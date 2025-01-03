@@ -13,6 +13,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+using valueType = double;
 namespace base {
 template <typename W>
 struct Vertex{
@@ -26,6 +28,7 @@ struct Vertex{
             alias = std::to_string(id);
     }
     Vertex():alias(""),x(W()),y(W()),id(-1){}
+    bool operator!=(const Vertex& rhs) const {return (id != rhs.id) || (alias != rhs.alias);}
     bool operator==(const Vertex& rhs) const {return id == rhs.id;}
     bool operator<(const Vertex& rhs) const {return id < rhs.id;}
     bool operator>(const Vertex& rhs) const {return id > rhs.id;}

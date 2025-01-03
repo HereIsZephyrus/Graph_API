@@ -23,8 +23,7 @@ typedef std::pair<int,int> VertexPair;
 namespace tcb{
 template <typename T>
 int calcHash(const T& key){
-    std::logic_error("specify the hash calc function!");
-    return 0;
+    throw std::logic_error("specify the hash calc function!");
 }
 template <typename Key,typename Element>
 class HashTable {
