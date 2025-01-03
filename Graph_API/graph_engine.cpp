@@ -59,11 +59,12 @@ std::shared_ptr<Roads> BuildVisualRoads(WUSG::Graph<valueType>& graph){
 }
 void processOperator(GLFWwindow* window){
     Camera2D& camera = Camera2D::getView();
-    if (!gui::DrawPopup())
+    if (!gui::DrawPopup()){
         camera.processKeyboard(window);
+        processMouse();
+    }
     if (RouteSystem::getSystem().graph != nullptr){
         gui::processWorkspace();
-        processMouse();
         BufferRecorder& buffer = BufferRecorder::getBuffer();
         if (gui::toGetBuffer && buffer.currentNode!= nullptr){
             base::Vertex<valueType> startNode = buffer.currentNode->getCity();
