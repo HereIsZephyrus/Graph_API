@@ -32,6 +32,7 @@ struct Vertex{
     bool operator==(const Vertex& rhs) const {return id == rhs.id;}
     bool operator<(const Vertex& rhs) const {return id < rhs.id;}
     bool operator>(const Vertex& rhs) const {return id > rhs.id;}
+    bool valiad() {return ((x > W()) && (y > W()));}
     operator std::string() const {return alias;}
     friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex){
         os << vertex.alias << "("<< vertex.id << ')';

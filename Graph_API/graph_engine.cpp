@@ -544,7 +544,7 @@ void SearchCity(){
             int ID = std::stoi(inputBuffer);
             Vertex temp = Vertex(ID);
             Vertex take = system.graph->getVertex(temp);
-            if (take.x != temp.x){
+            if (take.valiad()){
                 buffer.currentNode = std::make_shared<transport::Node<valueType>>(take);
                 inputBuffer[0] = '\0';
                 toSearchCity = false;
@@ -586,7 +586,7 @@ void SearchRoad(){
             int currentID = std::stoi(inputBuffer);
             Vertex temp = Vertex(currentID);
             Vertex take = system.graph->getVertex(temp);
-            if (take.x != temp.x){
+            if (take.valiad()){
                 using Neighbor = typename tcb::WUSGraph<Vertex,valueType>::Neighbor;
                 Neighbor neighbors = system.graph->getNeighbor(take);
                 ImGui::BeginChild("##adding table", ImVec2(250, 200), true);
