@@ -26,13 +26,13 @@
 2. 文件读入和场景漫游
 
 <p align="center">
-    <img src=https://cdn.jsdelivr.net/gh/HereIsZephyrus/zephyrus.img/images/blog/20250103234331409-ezgif.com-video-to-gif-converter.gif"" alt="read file and roaming" />
+    <img src="https://cdn.jsdelivr.net/gh/HereIsZephyrus/zephyrus.img/images/blog/20250103234331409-ezgif.com-video-to-gif-converter.gif" alt="read file and roaming" />
 </p>
 
 3. 数据库全局特征查询
 
 <p align="center">
-    <img src=https://cdn.jsdelivr.net/gh/HereIsZephyrus/zephyrus.img/images/blog/global.gif"" alt="query city and road" />
+    <img src="https://cdn.jsdelivr.net/gh/HereIsZephyrus/zephyrus.img/images/blog/global.gif" alt="query city and road" />
 </p>
 
 4. 城市和道路查询
@@ -50,29 +50,29 @@
 6. 添加和删除道路
 
 <p align="center">
-    <img src="" alt="add and remove road" />
+    <img src="https://cdn.jsdelivr.net/gh/HereIsZephyrus/zephyrus.img/images/blog/add_and_remove_road.gif" alt="add and remove road" />
 </p>
 
 7. 获取相邻城市和缓冲区内城市信息
 
 <p align="center">
-    <img src="" alt="add and remove road" />
+    <img src="https://cdn.jsdelivr.net/gh/HereIsZephyrus/zephyrus.img/images/blog/get_neighbors.gif" alt="add and remove road" />
 </p>
 
 8. 求两点间最短路径
 
 <p align="center">
-    <img src="" alt="add and remove road" />
+    <img src="https://cdn.jsdelivr.net/gh/HereIsZephyrus/zephyrus.img/images/blog/get_twocity_shortest.gif" alt="add and remove road" />
 </p>
 
 9. 求多点最短距离(斯坦纳树)
 
 <p align="center">
-    <img src="" alt="add and remove road" />
+    <img src="https://cdn.jsdelivr.net/gh/HereIsZephyrus/zephyrus.img/images/blog/multi_shortest.gif" alt="add and remove road" />
 </p>
 
 10. 求某点出发的最小生成树
 
 <p align="center">
-    <img src="" alt="add and remove road" />
+    <img src="https://cdn.jsdelivr.net/gh/HereIsZephyrus/zephyrus.img/images/blog/calcMST.gif" alt="add and remove road" />
 </p>
