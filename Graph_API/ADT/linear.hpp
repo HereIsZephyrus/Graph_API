@@ -94,7 +94,7 @@ public:
 };
 
 template <class Object>
-class Queue : public List<Object> {
+class Queue : protected List<Object> {
 public:
     Queue() : List<Object>() {}
     void enqueue(const Object& x) {this->push_back(x);}
@@ -110,6 +110,7 @@ public:
     }
     bool isEmpty() const {return List<Object>::isEmpty();}
     size_t getSize() const {return List<Object>::getSize();}
+    void clear(){List<Object>::clear();}
 };
 }// namespace tcb;
 #include "linear.tpp"
