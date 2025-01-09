@@ -26,7 +26,6 @@ const Object& Heap<Object>::findMin() const {
         throw std::out_of_range("heap is empty");
     return array[1];
 }
-/*
 template <typename Object>
 void Heap<Object>::insert(const Object& x){
     if (size == array.getSize() - 1)
@@ -36,7 +35,6 @@ void Heap<Object>::insert(const Object& x){
         array[hole] = array[hole/2];
     array[hole] = x;
 }
-*/
 template <typename Object>
 void Heap<Object>::deleteMin(){
     if (isEmpty())

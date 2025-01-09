@@ -20,14 +20,7 @@ public:
     ~Heap(){array.clear();}//why I should clear manually?
     bool isEmpty() const{return size == 0;}
     const Object& findMin() const;
-    void insert(const Object& x){
-        if (size == array.getSize() - 1)
-            array.resizeList(size * 2);
-        int hole = ++size; // heap index from 1 for a sample symbol
-        for (; hole > 1 && x < array[hole/2]; hole/=2)
-            array[hole] = array[hole/2];
-        array[hole] = x;
-    }
+    void insert(const Object& x);
     void deleteMin();
     void deleteMin(Object& minItem);
     void makeEmpty();
