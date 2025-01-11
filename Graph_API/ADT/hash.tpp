@@ -62,15 +62,15 @@ inline int calcHash(const double& key) {
 }
 template <>
 inline int calcHash(const base::Vertex<double>& key) {
-    return key.id;
+    return calcHash(key.id);
 }
 template <>
 inline int calcHash(const base::Vertex<int>& key) {
-    return key.id;
+    return calcHash(key.id);
 }
 template <>
 inline int calcHash(const base::Vertex<float>& key) {
-    return key.id;
+    return calcHash(key.id);
 }
 }
 
