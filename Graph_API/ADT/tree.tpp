@@ -33,8 +33,8 @@ const Object& BinarySearchTree<Object,TreeNode>::findMax() const{
         throw std::logic_error("the tree is empty");
     return findMax(this->root)->element;
 }
-template <class Object,class TreeNode>
-ostream& BinarySearchTree<Object,TreeNode>::print(ostream& os, TreeNode* p){
+template <class Object,class NodeStructure>
+ostream& SearchTree<Object,NodeStructure>::print(ostream& os, NodeStructure* p){
     if (p == nullptr)
         return os;
     switch (outputFlag) {
@@ -55,6 +55,40 @@ void BinarySearchTree<Object,TreeNode>::destroy(TreeNode* p){
         destroy(p->left);
         destroy(p->right);
         delete p;
+    }
+}
+template <class Object,class TreeNode>
+void BinarySearchTree<Object,TreeNode>::insert(const Object& x, node* & p){
+    if ( p == nullptr)
+        p  = new node(x, nullptr, nullptr);
+    if (p->element == x)
+        return;
+    else if (x < p->element)
+        insert(x, p->left);
+    else
+        insert(x, p->right);
+}
+template <class Object,class TreeNode>
+void BinarySearchTree<Object,TreeNode>::remove(const Object& x, node* & p){
+    if (p == nullptr)
+        return;
+    if (x < p->element)
+        remove(x, p->left);
+    else if (x > p->element)
+        remove(x, p->right);
+    else{// find it
+        if (p->left != nullptr && p->right != nullptr){
+            p->element = findMin(p->right)->element;
+            remove(p->element, p->right);
+        }
+        else{
+            node* ret_p = p;
+            if (p->left == nullptr)
+                p = p->right;
+            else
+                p = p->left;
+            delete ret_p;
+        }
     }
 }
 template <class Object,class TreeNode>
@@ -114,6 +148,70 @@ AVLTreeNode<Object>*AVLSearchTree<Object>::leftRotate(AVLTreeNode<Object>* x) {
     x->height = std::max(getHeight(x->left), getHeight(x->right)) + 1;
     y->height = std::max(getHeight(y->left), getHeight(y->right)) + 1;
     return y;
+}
+template <class Object>
+void AVLSearchTree<Object>::insert(const Object& x, node* & p){
+    if ( p == nullptr)
+        p  = new node(x, nullptr, nullptr, 1);
+    if (p->element == x)
+        return;
+    else if (x < p->element)
+        insert(x, p->left);
+    else
+        insert(x, p->right);
+    p->height = 1 + std::max(getHeight(p->left),getHeight(p->right));
+    int balance = getBalance(p);
+    if (balance > 1 && x < p->left->element)
+        p = rightRotate(p);
+    else if (balance < -1 && x > p->right->element)
+       p = leftRotate(p);
+    else if (balance > 1 && x > p->left->element) {
+        p->left = leftRotate(p->left);
+        p = rightRotate(p);
+   }
+    else if (balance < -1 && x < p->right->element) {
+        p->right = rightRotate(p->right);
+       p = leftRotate(p);
+   }
+}
+template <class Object>
+void AVLSearchTree<Object>::remove(const Object& x, node* & p){
+    if (p == nullptr)
+        return;
+    if (x < p->element)
+        remove(x, p->left);
+    else if (x > p->element)
+        remove(x, p->right);
+    else{// find it
+        if (p->left != nullptr && p->right != nullptr){
+            p->element = this->findMin(p->right)->element;
+            remove(p->element, p->right);
+        }
+        else{
+            node* ret_p = p;
+            if (p->left == nullptr)
+                p = p->right;
+            else
+                p = p->left;
+            delete ret_p;
+        }
+    }
+    if (this->root == nullptr)
+        return;
+    this->root->height = 1 + std::max(getHeight(this->root->left), getHeight(this->root->right));
+    int balance = getBalance(this->root);
+    if (balance > 1 && getBalance(this->root->left) >= 0)
+        this->root = rightRotate(this->root);
+    else if (balance < -1 && getBalance(this->root->right) <= 0)
+        this->root = leftRotate(this->root);
+    else if (balance > 1 && getBalance(this->root->left) < 0) {
+        this->root->left = leftRotate(this->root->left);
+        this->root = rightRotate(this->root);
+    }
+    else if (balance < -1 && getBalance(this->root->right) > 0) {
+        this->root->right = rightRotate(this->root->right);
+        this->root = leftRotate(this->root);
+    }
 }
 template <class Object>
 AVLTreeNode<Object>* AVLSearchTree<Object>::clone(AVLTreeNode<Object>* rhst){
