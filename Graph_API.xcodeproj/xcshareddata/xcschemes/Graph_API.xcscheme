@@ -51,6 +51,12 @@
             ReferencedContainer = "container:Graph_API.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "/Users/channingtong/Program/Graph_API/Graph_API/OpenGL/shaders/"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

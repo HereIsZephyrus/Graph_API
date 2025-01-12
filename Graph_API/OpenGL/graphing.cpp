@@ -15,11 +15,11 @@
 #include "commander.hpp"
 
 std::map<std::string,pShader > ShaderBucket;
+std::string shaderSearchPath = "";
 GLchar* filePath(const char* fileName){
-    //checkSourceRelevantPath();
-    const char * shaderSearchPath ="/Users/channingtong/Program/Graph_API/Graph_API/OpenGL/shaders/";
-    GLchar* resource = new char[strlen(shaderSearchPath) + strlen(fileName) + 1];
-    strcpy(resource, shaderSearchPath);
+    std::string resourcePath = shaderSearchPath + std::string(fileName);
+    GLchar* resource = new char[shaderSearchPath.size() + strlen(fileName) + 1];
+    strcpy(resource, shaderSearchPath.c_str());
     strcat(resource, fileName);
     return resource;
 }

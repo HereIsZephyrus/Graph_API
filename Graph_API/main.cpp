@@ -12,13 +12,12 @@
 
 static void Initialization(GLFWwindow *&window);
 int main(int argc, char **argv) {
-    if (argc > 1){
-        std::string program_type = argv[1];
-        if (program_type == "utest"){
-            ::testing::InitGoogleTest(&argc, argv);
-            return RUN_ALL_TESTS();
-        }
+    std::string program_type = argv[1];
+    if (argv[1] == std::string("utest")){
+        ::testing::InitGoogleTest(&argc, argv);
+        return RUN_ALL_TESTS();
     }
+    shaderSearchPath = argv[1];
     using namespace transport;
     GLFWwindow *& window = WindowParas::getInstance().window;
     Initialization(window);
