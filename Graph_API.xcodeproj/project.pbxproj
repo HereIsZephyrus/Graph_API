@@ -439,6 +439,7 @@
 					/opt/homebrew/Cellar/glew/2.2.0_1/lib,
 					/opt/homebrew/Cellar/glfw/3.4/lib,
 					/opt/homebrew/Cellar/glm/1.0.1/lib,
+					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-CXX/bin",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -459,6 +460,7 @@
 					/opt/homebrew/Cellar/glew/2.2.0_1/lib,
 					/opt/homebrew/Cellar/glfw/3.4/lib,
 					/opt/homebrew/Cellar/glm/1.0.1/lib,
+					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-CXX/bin",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;
