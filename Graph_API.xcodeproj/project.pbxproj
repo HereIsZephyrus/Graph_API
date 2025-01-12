@@ -93,6 +93,8 @@
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = 32CABFB52D1D7C4D003AF1AC /* Sources */;
 			membershipExceptions = (
+				cmake/Modules/FindGLFW.cmake,
+				cmake/Modules/Findimgui.cmake,
 				include/ADT/graph.tpp,
 				include/ADT/hash.tpp,
 				include/ADT/heap.tpp,
