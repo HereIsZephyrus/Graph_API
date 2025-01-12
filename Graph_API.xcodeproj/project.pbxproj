@@ -113,9 +113,9 @@
 			path = Graph_API;
 			sourceTree = "<group>";
 		};
-		32CAC01F2D1D8341003AF1AC /* gtest */ = {
+		32CAC01F2D1D8341003AF1AC /* tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = gtest;
+			path = tests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -144,7 +144,7 @@
 			children = (
 				32F8A7402D255A050028CFA2 /* ImGUIopengl3 */,
 				32F8A69B2D2516030028CFA2 /* usa.txt */,
-				32CAC01F2D1D8341003AF1AC /* gtest */,
+				32CAC01F2D1D8341003AF1AC /* tests */,
 				32CABFBB2D1D7C4D003AF1AC /* Graph_API */,
 				32CABFFD2D1D7EBC003AF1AC /* Frameworks */,
 				32CABFBA2D1D7C4D003AF1AC /* Products */,
@@ -222,7 +222,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				32CABFBB2D1D7C4D003AF1AC /* Graph_API */,
-				32CAC01F2D1D8341003AF1AC /* gtest */,
+				32CAC01F2D1D8341003AF1AC /* tests */,
 			);
 			name = Graph_API;
 			packageProductDependencies = (

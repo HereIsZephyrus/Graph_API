@@ -8,7 +8,7 @@
 #include "function_test.hpp"
 
 TEST_F(GraphAPITest, CreateGraphFromFile) {
-    WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/gtest/test_basic_input.txt", graph);
+    WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/tests/test_basic_input.txt", graph);
     EXPECT_EQ(graph.vertexCount(), 5);
     EXPECT_EQ(graph.edgeCount(), 6);
     EXPECT_EQ(WUSG::MaxDegree(graph), 3);
@@ -61,7 +61,7 @@ TEST_F(GraphAPITest, CreateGraphFromFile) {
     EXPECT_FALSE(graph.hasEdge("F", "D"));
 }
 TEST_F(GraphAPITest, WalkThrough){
-    WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/gtest/test_basic_input.txt", graph);
+    WUSG::CreateGraphFromFile("/Users/channingtong/Program/Graph_API/tests/test_basic_input.txt", graph);
     auto visit = [](const std::string& node, std::stringstream* res){
         (*res) << node << "->";
     };
