@@ -7,7 +7,7 @@
 
 #include "commander.hpp"
 #include "window.hpp"
-#include "../graph_engine.hpp"
+#include "graph_engine.hpp"
 
 void BufferRecorder::initIO(GLFWwindow* window){
     memset(keyRecord, GL_FALSE, sizeof(keyRecord));

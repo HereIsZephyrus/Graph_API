@@ -17,7 +17,7 @@
 #include <array>
 #include <glm/glm.hpp>
 #include "camera.hpp"
-#include "../base.hpp"
+#include "base.hpp"
 
 using base::Point;
 GLchar* filePath(const char* fileName);

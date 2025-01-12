@@ -6,7 +6,7 @@
 //
 
 #include "tree_test.hpp"
-#include "../Graph_API/ADT/tree.hpp"
+#include "tree.hpp"
 TEST_F(BinarySearchTreeTest, containsValuesTest) {
     EXPECT_TRUE(bst.contains(10));
     EXPECT_TRUE(bst.contains(5));

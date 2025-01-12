@@ -13,7 +13,7 @@
 #include <functional>
 #include <cstring>
 #include <string>
-#include "./ADT/graph.hpp"
+#include "graph.hpp"
 namespace WUSG{
 using namespace tcb;
 using namespace base;

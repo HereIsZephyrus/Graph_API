@@ -11,7 +11,7 @@
 #include <gtest/gtest.h>
 #include <cstring>
 #include <string>
-#include "../Graph_API/ADT/hash.hpp"
+#include "hash.hpp"
 using namespace tcb;
 using std::string;
 template <typename Key,typename Element>

@@ -93,13 +93,13 @@
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = 32CABFB52D1D7C4D003AF1AC /* Sources */;
 			membershipExceptions = (
-				ADT/graph.tpp,
-				ADT/hash.tpp,
-				ADT/heap.tpp,
-				ADT/linear.tpp,
-				ADT/tree.tpp,
-				graph_api.inl,
-				graph_engine.tpp,
+				include/ADT/graph.tpp,
+				include/ADT/hash.tpp,
+				include/ADT/heap.tpp,
+				include/ADT/linear.tpp,
+				include/ADT/tree.tpp,
+				include/graph_api.inl,
+				include/graph_engine.tpp,
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -340,6 +340,7 @@
 					"${glew_header-2.2}",
 					"${glfw_header-3.4}",
 					"${glm_header-1.0}",
+					"$(SRCROOT)/include/ADT",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib/,
@@ -408,6 +409,7 @@
 					"${glew_header-2.2}",
 					"${glfw_header-3.4}",
 					"${glm_header-1.0}",
+					"$(SRCROOT)/include/ADT",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib/,

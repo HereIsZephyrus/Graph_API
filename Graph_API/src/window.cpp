@@ -14,7 +14,7 @@
 #include "window.hpp"
 #include "graphing.hpp"
 #include "commander.hpp"
-#include "../graph_engine.hpp"
+#include "graph_engine.hpp"
 
 void WindowParas::InitParas(){
     glfwGetWindowContentScale(window, &xScale, &yScale);

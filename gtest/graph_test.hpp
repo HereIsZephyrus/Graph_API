@@ -11,7 +11,7 @@
 #include <gtest/gtest.h>
 #include <cstring>
 #include <string>
-#include "../Graph_API/ADT/graph.hpp"
+#include "graph.hpp"
 using namespace tcb;
 using std::string;
 template <typename V,typename W>

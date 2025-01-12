@@ -11,7 +11,7 @@
 #include <gtest/gtest.h>
 #include <cstring>
 #include <string>
-#include "../Graph_API/ADT/tree.hpp"
+#include "tree.hpp"
 using namespace tcb;
 using std::string;
 class BinarySearchTreeTest : public ::testing::Test {

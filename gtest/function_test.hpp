@@ -11,7 +11,7 @@
 #include <cstring>
 #include <string>
 #include <sstream>
-#include "../Graph_API/graph_api.hpp"
+#include "graph_api.hpp"
 
 class GraphAPITest : public ::testing::Test {
 protected:

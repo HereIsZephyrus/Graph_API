@@ -11,7 +11,7 @@
 #include <gtest/gtest.h>
 #include <cstring>
 #include <string>
-#include "../Graph_API/ADT/linear.hpp"
+#include "linear.hpp"
 using namespace tcb;
 using std::string;
 template<class Object>
