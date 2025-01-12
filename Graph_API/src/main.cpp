@@ -5,19 +5,26 @@
 //  Created by ChanningTong on 12/26/24.
 //
 
+#ifdef CONFIG_H
+#include "config.h"
+#else
+#define SHADER_PATH "/Users/channingtong/Program/Graph_API/Graph_API/shaders/"
+#endif
 #include <gtest/gtest.h>
-#include <benchmark/benchmark.h>
+#include <filesystem>
 #include "graph_api.hpp"
 #include "graph_engine.hpp"
 
 static void Initialization(GLFWwindow *&window);
 int main(int argc, char **argv) {
-    std::string program_type = argv[1];
-    if (argv[1] == std::string("utest")){
-        ::testing::InitGoogleTest(&argc, argv);
-        return RUN_ALL_TESTS();
+    if (argc > 1){
+        std::string program_type = argv[1];
+        if (program_type == std::string("utest")){
+            ::testing::InitGoogleTest(&argc, argv);
+            return RUN_ALL_TESTS();
+        }
     }
-    shaderSearchPath = argv[1];
+    shaderSearchPath = SHADER_PATH;
     using namespace transport;
     GLFWwindow *& window = WindowParas::getInstance().window;
     Initialization(window);
