@@ -61,7 +61,7 @@
 		32CAC0042D1D7EEF003AF1AC /* libbenchmark_main.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbenchmark_main.a; path = ../../../../usr/local/lib/libbenchmark_main.a; sourceTree = "<group>"; };
 		32CAC0272D1D99BF003AF1AC /* libclang-cpp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libclang-cpp.dylib"; path = "../../../../opt/homebrew/Cellar/llvm/19.1.6/lib/libclang-cpp.dylib"; sourceTree = "<group>"; };
 		32CAC02B2D1D99CF003AF1AC /* libclang.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libclang.dylib; path = ../../../../opt/homebrew/Cellar/llvm/19.1.6/lib/libclang.dylib; sourceTree = "<group>"; };
-		32E7591B2D33BA7B004E3B75 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		32E759662D340362004E3B75 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		32F8A69B2D2516030028CFA2 /* usa.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = usa.txt; sourceTree = "<group>"; };
 		32F8A70C2D2558150028CFA2 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		32F8A70E2D2558340028CFA2 /* libGLEW.2.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.2.0.dylib; path = ../../../../opt/homebrew/Cellar/glew/2.2.0_1/lib/libGLEW.2.2.0.dylib; sourceTree = "<group>"; };
@@ -149,7 +149,7 @@
 				32CABFFD2D1D7EBC003AF1AC /* Frameworks */,
 				32CABFBA2D1D7C4D003AF1AC /* Products */,
 				322525222D2852AE00EFE609 /* readme.md */,
-				32E7591B2D33BA7B004E3B75 /* CMakeLists.txt */,
+				32E759662D340362004E3B75 /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
