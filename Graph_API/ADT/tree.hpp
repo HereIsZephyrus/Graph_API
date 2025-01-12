@@ -42,7 +42,6 @@ struct BinaryTreeNode{
 template <class Object,class NodeStructure>
 class Tree {
 protected:
-    //size_t size;
     NodeStructure* root;
 public:
     Tree():root(nullptr){}
@@ -53,28 +52,23 @@ public:
         return false;
     }
     virtual void clear() = 0;
-    //virtual bool contains(const Object& x) const = 0;
-    //virtual void insert(const Object& x, NodeStructure* & node) = 0; node structure overload problem
-    //virtual void remove(const Object& x, NodeStructure* & node) = 0;
 };
-
-template <class Object,class TreeNode = BinaryTreeNode<Object>>
-class BinarySearchTree : protected Tree<Object, TreeNode>{
-    using node = TreeNode;
-    using BST = BinarySearchTree;
+template <class Object,class NodeStructure>
+class SearchTree : public Tree<Object, NodeStructure>{
+protected:
     static TraversalType outputFlag;
+    static ostream& print(ostream& os, NodeStructure* p);
 public:
-    BinarySearchTree(){this->root = nullptr;}
-    ~BinarySearchTree(){clear();}
-    const BST & operator = (const BST & rhs);
-    BinarySearchTree(const BST & rhs);
-    friend ostream& operator<<(ostream& os, const BST& tree);
-    virtual bool contains(const Object& x) const {return contains(x, this->root);}
-    virtual void insert(const Object& x){insert(x, this->root);}
-    virtual void remove(const Object& x){remove(x, this->root);}
-    void clear() override{destroy(this->root);}
-    const Object& findMin() const;
-    const Object& findMax() const;
+    SearchTree():Tree<Object, NodeStructure>(){}
+    ~SearchTree(){}
+    bool isEmpty(){
+        if (this->root == nullptr)
+            return true;
+        return false;
+    }
+    virtual bool contains(const Object& x) const = 0;
+    virtual void insert(const Object& x, NodeStructure* & node) = 0;
+    virtual void remove(const Object& x, NodeStructure* & node) = 0;
     static ostream& preorder(ostream& os){
         outputFlag = TraversalType::preorder;
         return os;
@@ -87,49 +81,36 @@ public:
         outputFlag = TraversalType::postorder;
         return os;
     }
+};
+
+template <class Object,class TreeNode = BinaryTreeNode<Object>>
+class BinarySearchTree : protected SearchTree<Object, TreeNode>{
+    using node = TreeNode;
+    using BST = BinarySearchTree;
+public:
+    BinarySearchTree(){this->root = nullptr;}
+    ~BinarySearchTree(){clear();}
+    const BST & operator = (const BST & rhs);
+    BinarySearchTree(const BST & rhs);
+    friend ostream& operator<<(ostream& os, const BST& tree);
+    bool contains(const Object& x) const override {return contains(x, this->root);}
+    virtual void insert(const Object& x){insert(x, this->root);}
+    virtual void remove(const Object& x){remove(x, this->root);}
+    void clear() override{destroy(this->root);}
+    const Object& findMin() const;
+    const Object& findMax() const;
+private:
+    void insert(const Object& x, node* & p) override;
+    void remove(const Object& x, node* & p) override;
+    node* clone(node* rhst);
 protected:
-    static ostream& print(ostream& os, node* p);
     void destroy(node* p);
     bool contains(const Object& x, node* p) const;
     node* findMin(node* p) const;
     node* findMax(node * p) const;
-    virtual node* clone(node* rhst);
-    virtual void insert(const Object& x, node* & p){
-        if ( p == nullptr)
-            p  = new node(x, nullptr, nullptr);
-        if (p->element == x)
-            return;
-        else if (x < p->element)
-            insert(x, p->left);
-        else
-            insert(x, p->right);
-    }
-    virtual void remove(const Object& x, node* & p){
-        if (p == nullptr)
-            return;
-        if (x < p->element)
-            remove(x, p->left);
-        else if (x > p->element)
-            remove(x, p->right);
-        else{// find it
-            if (p->left != nullptr && p->right != nullptr){
-                p->element = findMin(p->right)->element;
-                remove(p->element, p->right);
-            }
-            else{
-                node* ret_p = p;
-                if (p->left == nullptr)
-                    p = p->right;
-                else
-                    p = p->left;
-                delete ret_p;
-            }
-        }
-    }
-
 };
 template <class Object,class TreeNode>
-TraversalType BinarySearchTree<Object,TreeNode>::outputFlag = TraversalType::inorder;
+TraversalType SearchTree<Object,TreeNode>::outputFlag = TraversalType::inorder;
 template <class Object>
 ostream& operator<<(ostream& os,const BinarySearchTree<Object>& tree){return BinarySearchTree<Object>::print(os,tree.root);}
 template <class Object>
@@ -160,70 +141,9 @@ private:
     int getBalance(node* p) const {return (p != nullptr) ?  0 : getHeight(p->left) - getHeight(p->right);}
     node* rightRotate(node* y);
     node* leftRotate(node* x);
-protected:
-    node* clone(node* rhst) override;
-    void insert(const Object& x, node* & p) override{
-        if ( p == nullptr)
-            p  = new node(x, nullptr, nullptr, 1);
-        if (p->element == x)
-            return;
-        else if (x < p->element)
-            insert(x, p->left);
-        else
-            insert(x, p->right);
-        p->height = 1 + std::max(getHeight(p->left),getHeight(p->right));
-        int balance = getBalance(p);
-        if (balance > 1 && x < p->left->element)
-            p = rightRotate(p);
-        else if (balance < -1 && x > p->right->element)
-           p = leftRotate(p);
-        else if (balance > 1 && x > p->left->element) {
-            p->left = leftRotate(p->left);
-            p = rightRotate(p);
-       }
-        else if (balance < -1 && x < p->right->element) {
-            p->right = rightRotate(p->right);
-           p = leftRotate(p);
-       }
-    }
-    void remove(const Object& x, node* & p) override{
-        if (p == nullptr)
-            return;
-        if (x < p->element)
-            remove(x, p->left);
-        else if (x > p->element)
-            remove(x, p->right);
-        else{// find it
-            if (p->left != nullptr && p->right != nullptr){
-                p->element = this->findMin(p->right)->element;
-                remove(p->element, p->right);
-            }
-            else{
-                node* ret_p = p;
-                if (p->left == nullptr)
-                    p = p->right;
-                else
-                    p = p->left;
-                delete ret_p;
-            }
-        }
-        if (this->root == nullptr)
-            return;
-        this->root->height = 1 + std::max(getHeight(this->root->left), getHeight(this->root->right));
-        int balance = getBalance(this->root);
-        if (balance > 1 && getBalance(this->root->left) >= 0)
-            this->root = rightRotate(this->root);
-        else if (balance < -1 && getBalance(this->root->right) <= 0)
-            this->root = leftRotate(this->root);
-        else if (balance > 1 && getBalance(this->root->left) < 0) {
-            this->root->left = leftRotate(this->root->left);
-            this->root = rightRotate(this->root);
-        }
-        else if (balance < -1 && getBalance(this->root->right) > 0) {
-            this->root->right = rightRotate(this->root->right);
-            this->root = leftRotate(this->root);
-        }
-    }
+    node* clone(node* rhst);
+    void insert(const Object& x, node* & p) override;
+    void remove(const Object& x, node* & p) override;
 };
 struct SpatialRange{
     float minx,miny,width,height;
