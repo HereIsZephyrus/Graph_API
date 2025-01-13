@@ -1,0 +1,6 @@
+[submodule "glew"]
+	path = glew
+	url = https://github.com/nigels-com/glew
+[submodule "Graph_API/glew"]
+	path = Graph_API/glew
+	url = https://github.com/nigels-com/glew
