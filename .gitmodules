@@ -1,0 +1,12 @@
+[submodule "glew"]
+	path = glew
+	url = https://github.com/nigels-com/glew
+[submodule "Graph_API/glew"]
+	path = Graph_API/glew
+	url = https://github.com/nigels-com/glew
+[submodule "Graph_API/glm"]
+	path = Graph_API/glm
+	url = https://github.com/icaven/glm
+[submodule "Graph_API/glfw"]
+	path = Graph_API/glfw
+	url = https://github.com/glfw/glfw

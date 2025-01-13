@@ -61,6 +61,7 @@
 		32CAC0042D1D7EEF003AF1AC /* libbenchmark_main.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbenchmark_main.a; path = ../../../../usr/local/lib/libbenchmark_main.a; sourceTree = "<group>"; };
 		32CAC0272D1D99BF003AF1AC /* libclang-cpp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libclang-cpp.dylib"; path = "../../../../opt/homebrew/Cellar/llvm/19.1.6/lib/libclang-cpp.dylib"; sourceTree = "<group>"; };
 		32CAC02B2D1D99CF003AF1AC /* libclang.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libclang.dylib; path = ../../../../opt/homebrew/Cellar/llvm/19.1.6/lib/libclang.dylib; sourceTree = "<group>"; };
+		32E759662D340362004E3B75 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		32F8A69B2D2516030028CFA2 /* usa.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = usa.txt; sourceTree = "<group>"; };
 		32F8A70C2D2558150028CFA2 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		32F8A70E2D2558340028CFA2 /* libGLEW.2.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.2.0.dylib; path = ../../../../opt/homebrew/Cellar/glew/2.2.0_1/lib/libGLEW.2.2.0.dylib; sourceTree = "<group>"; };
@@ -92,13 +93,14 @@
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = 32CABFB52D1D7C4D003AF1AC /* Sources */;
 			membershipExceptions = (
-				ADT/graph.tpp,
-				ADT/hash.tpp,
-				ADT/heap.tpp,
-				ADT/linear.tpp,
-				ADT/tree.tpp,
-				graph_api.inl,
-				graph_engine.tpp,
+				cmake/Modules/Findimgui.cmake,
+				include/ADT/graph.tpp,
+				include/ADT/hash.tpp,
+				include/ADT/heap.tpp,
+				include/ADT/linear.tpp,
+				include/ADT/tree.tpp,
+				include/graph_api.inl,
+				include/graph_engine.tpp,
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -112,9 +114,9 @@
 			path = Graph_API;
 			sourceTree = "<group>";
 		};
-		32CAC01F2D1D8341003AF1AC /* gtest */ = {
+		32CAC01F2D1D8341003AF1AC /* tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = gtest;
+			path = tests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -143,11 +145,12 @@
 			children = (
 				32F8A7402D255A050028CFA2 /* ImGUIopengl3 */,
 				32F8A69B2D2516030028CFA2 /* usa.txt */,
-				32CAC01F2D1D8341003AF1AC /* gtest */,
+				32CAC01F2D1D8341003AF1AC /* tests */,
 				32CABFBB2D1D7C4D003AF1AC /* Graph_API */,
 				32CABFFD2D1D7EBC003AF1AC /* Frameworks */,
 				32CABFBA2D1D7C4D003AF1AC /* Products */,
 				322525222D2852AE00EFE609 /* readme.md */,
+				32E759662D340362004E3B75 /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
@@ -220,7 +223,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				32CABFBB2D1D7C4D003AF1AC /* Graph_API */,
-				32CAC01F2D1D8341003AF1AC /* gtest */,
+				32CAC01F2D1D8341003AF1AC /* tests */,
 			);
 			name = Graph_API;
 			packageProductDependencies = (
@@ -338,6 +341,7 @@
 					"${glew_header-2.2}",
 					"${glfw_header-3.4}",
 					"${glm_header-1.0}",
+					"$(SRCROOT)/include/ADT",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib/,
@@ -406,6 +410,7 @@
 					"${glew_header-2.2}",
 					"${glfw_header-3.4}",
 					"${glm_header-1.0}",
+					"$(SRCROOT)/include/ADT",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib/,
@@ -435,6 +440,12 @@
 					/opt/homebrew/Cellar/glew/2.2.0_1/lib,
 					/opt/homebrew/Cellar/glfw/3.4/lib,
 					/opt/homebrew/Cellar/glm/1.0.1/lib,
+					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-CXX/bin",
+					"$(PROJECT_DIR)/Graph_API/build/_deps/glm_repo-build/glm",
+					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-C/bin",
+					"$(PROJECT_DIR)/Graph_API/build/glfw/src",
+					"$(PROJECT_DIR)/Graph_API/build/lib",
+					"$(PROJECT_DIR)/Graph_API/build/glm/glm",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -455,6 +466,12 @@
 					/opt/homebrew/Cellar/glew/2.2.0_1/lib,
 					/opt/homebrew/Cellar/glfw/3.4/lib,
 					/opt/homebrew/Cellar/glm/1.0.1/lib,
+					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-CXX/bin",
+					"$(PROJECT_DIR)/Graph_API/build/_deps/glm_repo-build/glm",
+					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-C/bin",
+					"$(PROJECT_DIR)/Graph_API/build/glfw/src",
+					"$(PROJECT_DIR)/Graph_API/build/lib",
+					"$(PROJECT_DIR)/Graph_API/build/glm/glm",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;
