@@ -4,9 +4,16 @@ message(STATUS "CMake version: ${CMAKE_VERSION}")
 project(
     RouteSystem
     VERSION 1.0
-    LANGUAGES CXX)
+    LANGUAGES CXX C) # glew use C compiler
 
-file(GLOB SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+add_subdirectory(${PROJECT_SOURCE_DIR}/glew/build/cmake)
+add_subdirectory(${PROJECT_SOURCE_DIR}/glm)
+add_subdirectory(${PROJECT_SOURCE_DIR}/glfw)
+file(GLOB SOURCE_FILES 
+    ${PROJECT_SOURCE_DIR}/src/*.cpp
+    ${PROJECT_SOURCE_DIR}/../ImGUIopengl3/*.cpp
+    ${PROJECT_SOURCE_DIR}/glew/src/glew.c
+)
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
 
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -18,11 +25,19 @@ find_package(Boost REQUIRED)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
-find_package(imgui REQUIRED)
+if (APPLE)
+    set(glew_platform_libs "-framework AGL" "-framework OpenGL")
+elseif (WIN32)
+    set(glew_lib glew32)
+    set(glew_platform_libs opengl32 glu32)
+else()
+    find_package(OpenGL REQUIRED)
+    set(glew_platform_libs ${OPENGL_LIBRARIES})
+endif()
 find_package(glfw3 REQUIRED)
-#find_package(glew REQUIRED)
-find_package(glm REQUIRED)
+find_package(imgui REQUIRED)
 # find_package(GTest REQUIRED)
+# target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE gtest)
 
 set(SHADER_PATH "${PROJECT_SOURCE_DIR}/OpenGL/shaders/")
 configure_file(${PROJECT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_PROJECT_NAME}/include/config.h)
@@ -30,7 +45,7 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_PROJECT_NAME}/inc
 include(CheckIPOSupported)
 check_ipo_supported(RESULT result)
 if(result)
-  set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+  set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION FALSE) # glew don't support IPO
 endif()
 set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
@@ -43,12 +58,6 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${PROJECT_SOURCE_DIR}/include/OpenGL
 )
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw)
-#target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glew)
-add_subdirectory(${PROJECT_SOURCE_DIR}/glew/build/cmake)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glm::glm)
-# target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE gtest)
 
 add_custom_command(
     TARGET ${CMAKE_PROJECT_NAME} 

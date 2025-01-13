@@ -445,6 +445,7 @@
 					/opt/homebrew/Cellar/glm/1.0.1/lib,
 					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-CXX/bin",
 					"$(PROJECT_DIR)/Graph_API/build/_deps/glm_repo-build/glm",
+					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-C/bin",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -467,6 +468,7 @@
 					/opt/homebrew/Cellar/glm/1.0.1/lib,
 					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-CXX/bin",
 					"$(PROJECT_DIR)/Graph_API/build/_deps/glm_repo-build/glm",
+					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-C/bin",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;
