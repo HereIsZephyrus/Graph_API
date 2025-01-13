@@ -51,6 +51,7 @@ struct Vertex{
 struct Point {
     glm::vec3 position;
     glm::vec3 color;
+    Point(const glm::vec3& pos,const glm::vec3& c) : position(pos), color(c){}
 };
 }
 #endif /* base_hpp */

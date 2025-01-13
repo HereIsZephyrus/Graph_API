@@ -19,6 +19,7 @@ find_package(imgui REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(GLFW REQUIRED)
 find_package(glm REQUIRED)
+# find_package(GTest REQUIRED)
 
 set(SHADER_PATH "${PROJECT_SOURCE_DIR}/OpenGL/shaders/")
 configure_file(${PROJECT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_PROJECT_NAME}/include/config.h)
@@ -46,10 +47,11 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 )
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE imgui)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw)
+#target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE imgui)
+# target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE GLEW)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glm)
+# target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE gtest)
 
 add_custom_command(
     TARGET ${CMAKE_PROJECT_NAME} 

@@ -13,11 +13,12 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "./OpenGL/graphing.hpp"
-#include "./OpenGL/window.hpp"
-#include "./OpenGL/camera.hpp"
-#include "./OpenGL/commander.hpp"
+#include "graphing.hpp"
+#include "window.hpp"
+#include "camera.hpp"
+#include "commander.hpp"
 #include "graph_api.hpp"
+#include "base.hpp"
 
 using VertexVec = Vector<std::pair<base::Vertex<valueType>,base::Vertex<valueType>>>;
 class SpatialPrimitive : public Primitive{
@@ -74,6 +75,8 @@ public:
     struct RoadNode{   
         CityNode vertex1, vertex2;
         W weight;
+        RoadNode(const CityNode& v1, const CityNode& v2, W w): vertex1(v1),vertex2(v2),weight(w){}
+        RoadNode() = default;
     }road;
 private:
     enum : bool{isCity = false, isRoad = true} state;

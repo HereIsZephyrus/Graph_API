@@ -8,11 +8,13 @@
 using namespace tcb;
 template <typename V, typename W>
 struct WUSGraph<V,W>::Message{
-    enum {add = true,remove = false} type;
+    enum msgType{add = true,remove = false} type;
     EdgeInfo edge;
     bool operator==(const Message& other) const {
         return type == other.type && edge == other.edge;
     }
+    Message(msgType t, const EdgeInfo& e): type(t),edge(e){}
+    Message() = default;
 };
 template <typename V, typename W>
 struct WUSGraph<V,W>::Edge{
@@ -31,7 +33,7 @@ template <typename V, typename W>
 class  WUSGraph<V,W>::EdgeTable : public HashMap<VertexPair, pEdge>{
 public:
     pEdge removeNode(VertexPair vertices,bool oneway){
-        using Bucket = HashMap<VertexPair, pEdge>::Bucket;
+        using Bucket = typename HashMap<VertexPair, pEdge>::Bucket;
         pEdge orientEdge = this->getRefValue(vertices);
         pEdge ret_p = orientEdge->next;
         orientEdge->prev->next = orientEdge->next;
@@ -226,7 +228,7 @@ W WUSGraph<V,W>::getWeight(V v1,V v2) const{
     return W();
 }
 template <typename V, typename W>
-WUSGraph<V,W>::Neighbor WUSGraph<V,W>::getNeighbor(V checkNode) const{
+typename WUSGraph<V,W>::Neighbor WUSGraph<V,W>::getNeighbor(V checkNode) const{
     Neighbor neighbors;
     const AdjList& list = graph[alias[checkNode]];
     for (typename AdjList::iterator it = list.begin(); it != list.end(); it++)

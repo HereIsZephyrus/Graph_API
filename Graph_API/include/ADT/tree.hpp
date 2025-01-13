@@ -170,7 +170,7 @@ template <class Object>
 class QuadTree : protected Tree<Object, QuadTreeNode<Object>>{
     using node = QuadTreeNode<Object>;
     using insertRes = std::pair<bool,node*>;
-    using Point = node::Point;
+    using Point = typename node::Point;
 public:
     QuadTree(){this->root = nullptr;}
     QuadTree(const SpatialRange& r, int c){this->root = new node(r,c);}

@@ -179,7 +179,7 @@ int HashTable<Key,Element>::getBucketSize(int i) const{
 template <typename Key,typename Element>
 class HashTable<Key,Element>::Bucket : public List<HashObject>{
 public:
-    using iterator = List<HashObject>::iterator;
+    using iterator = typename List<HashObject>::iterator;
     Bucket():List<HashObject>(){}
     iterator find(const HashObject& val) const override{
         iterator it = this->begin();
@@ -191,7 +191,7 @@ public:
 };
 template <typename Key,typename Element>
 const Element& HashMap<Key,Element>::getValue(const Key&key) const{
-    if (!keySet.contains(key))
+    if (keySet.find(key) == keySet.end())
         return this->zeroElement;
     const Bucket& orientList = this->hashList[this->hash(key)];
     for (typename Bucket::iterator itr = orientList.begin(); itr != orientList.end(); itr++){
@@ -202,7 +202,7 @@ const Element& HashMap<Key,Element>::getValue(const Key&key) const{
 }
 template <typename Key,typename Element>
 Element& HashMap<Key,Element>::getRefValue(const Key&key){
-    if (!keySet.contains(key))
+    if (keySet.find(key) == keySet.end())
         throw std::runtime_error("Don't have the key'");
     const Bucket& orientList = this->hashList[this->hash(key)];
     for (typename Bucket::iterator itr = orientList.begin(); itr != orientList.end(); itr++){
@@ -213,7 +213,7 @@ Element& HashMap<Key,Element>::getRefValue(const Key&key){
 }
 template <typename Key,typename Element>
 bool HashMap<Key,Element>::insert(const Key& key,const Element& element){
-    if (keySet.contains(key))
+    if (keySet.find(key) != keySet.end())
         remove(key);
     keySet.insert(key);
     return HashTable<Key,Element>::insert(key, element);

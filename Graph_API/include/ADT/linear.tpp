@@ -255,14 +255,14 @@ void List<Object>::pop_back(){
 }
 
 template <class Object>
-List<Object>::iterator List<Object>::insert(iterator it, const Object& x){
+typename List<Object>::iterator List<Object>::insert(iterator it, const Object& x){
     Node *p = it._ptr();
     size ++;
     p->prev = p->prev->next = new Node(x,p->prev,p);
     return iterator(p->prev);
 }
 template <class Object>
-List<Object>::iterator List<Object>::remove(iterator it){
+typename List<Object>::iterator List<Object>::remove(iterator it){
     if (isEmpty() || head == nullptr)
         throw std::runtime_error("List is empty");
     Node *p = it._ptr();
@@ -274,7 +274,7 @@ List<Object>::iterator List<Object>::remove(iterator it){
     return ret_p;
 }
 template <class Object>
-List<Object>::iterator List<Object>::remove(iterator start,iterator end){
+typename List<Object>::iterator List<Object>::remove(iterator start,iterator end){
     for (iterator it = start; it!= end;)
         it = remove(it);
     return end;
@@ -295,7 +295,7 @@ Object& List<Object>::at(size_t index){
     return *current;
 }
 template <class Object>
-List<Object>::iterator List<Object>::find(const Object& val) const{// the first find value's iter
+typename List<Object>::iterator List<Object>::find(const Object& val) const{// the first find value's iter
     iterator it = begin();
     for (; it != end(); it++)
         if (*it == val)

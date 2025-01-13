@@ -10,20 +10,20 @@
 #else
 #define SHADER_PATH "/Users/channingtong/Program/Graph_API/Graph_API/shaders/"
 #endif
-#include <gtest/gtest.h>
+//#include <gtest/gtest.h>
 #include <filesystem>
 #include "graph_api.hpp"
 #include "graph_engine.hpp"
 
 static void Initialization(GLFWwindow *&window);
 int main(int argc, char **argv) {
-    if (argc > 1){
-        std::string program_type = argv[1];
-        if (program_type == std::string("utest")){
-            ::testing::InitGoogleTest(&argc, argv);
-            return RUN_ALL_TESTS();
-        }
-    }
+    //if (argc > 1){
+    //    std::string program_type = argv[1];
+    //    if (program_type == std::string("utest")){
+    //        ::testing::InitGoogleTest(&argc, argv);
+    //        return RUN_ALL_TESTS();
+    //    }
+    //}
     shaderSearchPath = SHADER_PATH;
     using namespace transport;
     GLFWwindow *& window = WindowParas::getInstance().window;
