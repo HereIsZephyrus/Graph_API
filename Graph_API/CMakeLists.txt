@@ -4,7 +4,6 @@ message(STATUS "CMake version: ${CMAKE_VERSION}")
 set(CMAKE_CXX_EXTENSIONS OFF)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 include(FetchContent) # not neccessary
-find_package(Boost REQUIRED)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ## create executable
@@ -27,16 +26,6 @@ add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
 
 ## add include directories
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
-if (APPLE)
-    set(opengl_platform_libs "-framework AGL" "-framework OpenGL")
-elseif (WIN32)
-    set(glew_lib glew32)
-    set(opengl_platform_libs opengl32 glu32)
-else()
-    find_package(OpenGL REQUIRED)
-    set(opengl_platform_libs ${OPENGL_LIBRARIES})
-endif()
-find_package(glfw3 REQUIRED)
 find_package(imgui REQUIRED)
 # find_package(GTest REQUIRED)
 # target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE gtest)
@@ -72,6 +61,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${PROJECT_SOURCE_DIR}/glfw/include
     ${PROJECT_SOURCE_DIR}/glew/include
     ${PROJECT_SOURCE_DIR}/glm
+	${PROJECT_SOURCE_DIR}/../glm
 )
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw)

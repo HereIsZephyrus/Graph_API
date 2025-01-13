@@ -342,7 +342,6 @@ W WUSGraph<V,W>::calcMST(V startNode,Vector<std::pair<V,V>>& vertices){
     Vector<int> parent(vertexSize,-1);
     Dijkstra(startNode,distance,parent);
     vertices.clear();
-    std::queue<V> q;
     Vector<bool> visited(vertexSize,false);
     size_t startLocation = locateMap[alias[startNode]];
     Queue<size_t> queue;
