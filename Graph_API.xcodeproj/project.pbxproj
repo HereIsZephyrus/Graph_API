@@ -93,9 +93,6 @@
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = 32CABFB52D1D7C4D003AF1AC /* Sources */;
 			membershipExceptions = (
-				cmake/Modules/FindGLEW.cmake,
-				cmake/Modules/FindGLFW.cmake,
-				cmake/Modules/FindGLM.cmake,
 				cmake/Modules/Findimgui.cmake,
 				include/ADT/graph.tpp,
 				include/ADT/hash.tpp,
@@ -446,6 +443,9 @@
 					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-CXX/bin",
 					"$(PROJECT_DIR)/Graph_API/build/_deps/glm_repo-build/glm",
 					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-C/bin",
+					"$(PROJECT_DIR)/Graph_API/build/glfw/src",
+					"$(PROJECT_DIR)/Graph_API/build/lib",
+					"$(PROJECT_DIR)/Graph_API/build/glm/glm",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -469,6 +469,9 @@
 					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-CXX/bin",
 					"$(PROJECT_DIR)/Graph_API/build/_deps/glm_repo-build/glm",
 					"$(PROJECT_DIR)/Graph_API/build/CMakeFiles/_CMakeLTOTest-C/bin",
+					"$(PROJECT_DIR)/Graph_API/build/glfw/src",
+					"$(PROJECT_DIR)/Graph_API/build/lib",
+					"$(PROJECT_DIR)/Graph_API/build/glm/glm",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;
